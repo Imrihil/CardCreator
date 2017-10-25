@@ -49,7 +49,7 @@ namespace MyWarCreator
             {
                 string dirPath = @"./equipment";
 #if DEBUG
-                dirPath = @"../../equipment";
+                dirPath = @"../../AppData/equipment";
 #endif
                 string filePath = dirPath + "/equipment.xlsx";
                 if (Directory.Exists(dirPath))
@@ -158,7 +158,7 @@ namespace MyWarCreator
             {
                 string dirPath = @"./skills";
 #if DEBUG
-                dirPath = @"../../skills";
+                dirPath = @"../../AppData/skills";
 #endif
                 string filePath = dirPath + "/skills.xlsx";
                 if (Directory.Exists(dirPath))
@@ -188,7 +188,7 @@ namespace MyWarCreator
             // Equipment
             string dirPath = @"./equipment";
 #if DEBUG
-            dirPath = @"../../equipment";
+            dirPath = @"../../AppData/equipment";
 #endif
             updateProgressBar(0);
             updateTextBlockResultMessage("");
@@ -197,7 +197,7 @@ namespace MyWarCreator
             // Skills
             dirPath = @"./skills";
 #if DEBUG
-            dirPath = @"../../skills";
+            dirPath = @"../../AppData/skills";
 #endif
             appendTextBlockResultMessage(preparePdf(dirPath + "/results", 50, 100));
         }
