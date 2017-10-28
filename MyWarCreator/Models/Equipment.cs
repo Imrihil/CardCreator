@@ -11,18 +11,8 @@ namespace MyWarCreator.Models
 {
     class Equipment : Card
     {
-#if DEBUG
-        protected const string dicesDirPath = @"../../dices";
-#else
-        protected const string dicesDirPath = @"./dices";
-#endif
-        public Image MainImage { get; set; }
-        public Rectangle MainImageArea { get; set; } = new Rectangle(65, 40, 230, 230);
-        public Image DiceImage { get; set; }
-        public Rectangle DiceArea { get; set; } = new Rectangle(235, 20, 110, 110);
-        public Rectangle DiceTextArea { get; set; } = new Rectangle(245, 30, 90, 90);
         public Image UpgradesImage { get; set; }
-        public Rectangle UpgradesArea { get; set; } = new Rectangle(295, 120, 40, 160);
+        public Rectangle UpgradesArea { get; set; } = new Rectangle(295, 110, 40, 160);
         public Equipment(IList<string> row, string dirPath) : base(row, dirPath)
         {
             if (row.Count < 5)
@@ -43,16 +33,8 @@ namespace MyWarCreator.Models
         public override void DrawCard(Graphics graphics)
         {
             base.DrawCard(graphics);
-            if (MainImage != null)
-                DrawingHelper.MapDrawing(graphics, MainImage, MainImageArea);
-            if (DiceImage != null)
-            {
-                DrawingHelper.MapDrawing(graphics, DiceImage, DiceArea);
-            }
             if (UpgradesImage != null)
-            {
                 DrawingHelper.MapDrawing(graphics, UpgradesImage, UpgradesArea);
-            }
         }
     }
 }

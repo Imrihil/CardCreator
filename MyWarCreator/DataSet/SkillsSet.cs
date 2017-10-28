@@ -9,10 +9,18 @@ namespace MyWarCreator.DataSet
 {
     class SkillsSet : CardSet
     {
-        public override void AddRow(IList<string> row, string dirPath)
+        public override bool AddRow(IList<string> row, string dirPath)
         {
             if (row.Skip(1).Take(1).Any(x => !string.IsNullOrEmpty(x)))
-                Add(new Skill(row, dirPath));
+            {
+                Skill skill = new Skill(row, dirPath);
+                if (!string.IsNullOrEmpty(skill.Name))
+                {
+                    Add(skill);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

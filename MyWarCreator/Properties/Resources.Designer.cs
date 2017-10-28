@@ -73,6 +73,16 @@ namespace MyWarCreator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] colonna_mt {
+            get {
+                object obj = ResourceManager.GetObject("colonna_mt", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] Exocet1 {
             get {
                 object obj = ResourceManager.GetObject("Exocet1", resourceCulture);
@@ -107,26 +117,6 @@ namespace MyWarCreator.Properties {
             get {
                 object obj = ResourceManager.GetObject("icon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] icon1 {
-            get {
-                object obj = ResourceManager.GetObject("icon1", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] icon2 {
-            get {
-                object obj = ResourceManager.GetObject("icon2", resourceCulture);
-                return ((byte[])(obj));
             }
         }
         

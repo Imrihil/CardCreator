@@ -125,6 +125,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -133,11 +134,10 @@
     </None>
     <AppDesigner Include="Properties\" />
     <None Include="Resources\Akvaléir_Normal_v2007.ttf" />
+    <None Include="Resources\colonna-mt.ttf" />
     <None Include="Resources\Exocet1.ttf" />
     <None Include="Resources\Gargoyles Normal.ttf" />
     <None Include="Resources\Got_Heroin.ttf" />
-    <None Include="Resources\icon.xcf" />
-    <None Include="Resources\icon2.xcf" />
     <None Include="Resources\Neverwinter.ttf" />
     <None Include="Resources\runic.ttf" />
     <None Include="Resources\runic_altno.ttf" />
@@ -151,10 +151,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="Resources\icon.ico" />
+    <Resource Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="icon.ico" />
+    <None Include="Resources\icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

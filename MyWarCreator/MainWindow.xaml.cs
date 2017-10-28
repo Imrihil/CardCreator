@@ -28,19 +28,26 @@ namespace MyWarCreator
             InitializeFonts();
             progressBar.Visibility = Visibility.Collapsed;
             progressBarText.Visibility = Visibility.Collapsed;
-            textBoxResultMessage.Visibility = Visibility.Collapsed;
+            textBoxResultMessage.Visibility = Visibility.Visible;
             textBoxResultMessage.IsReadOnly = true;
         }
 
         private void InitializeFonts()
         {
+            updateTextBlockResultMessage("");
             FontsHelper.AddFont(Properties.Resources.Akvaléir_Normal_v2007);
+            appendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.pfc.Families.LastOrDefault().Name}.");
+            FontsHelper.AddFont(Properties.Resources.colonna_mt);
+            appendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.pfc.Families.LastOrDefault().Name}.");
+            FontsHelper.AddFont(Properties.Resources.runic);
+            appendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.pfc.Families.LastOrDefault().Name}.");
+            FontsHelper.AddFont(Properties.Resources.runic_altno);
+            appendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.pfc.Families.LastOrDefault().Name}.");
             FontsHelper.AddFont(Properties.Resources.trebuc);
             FontsHelper.AddFont(Properties.Resources.trebucbd);
             FontsHelper.AddFont(Properties.Resources.trebucbi);
             FontsHelper.AddFont(Properties.Resources.trebucit);
-            FontsHelper.AddFont(Properties.Resources.runic);
-            FontsHelper.AddFont(Properties.Resources.runic_altno);
+            appendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.pfc.Families.LastOrDefault().Name}.");
         }
 
         private void buttonGenerateWeapons_Click(object sender, RoutedEventArgs e)
@@ -71,84 +78,6 @@ namespace MyWarCreator
             catch (Exception ex)
             {
                 appendTextBlockResultMessage("Podczas generowania ekwipunku wystąpił błąd: " + ex.Message);
-            }
-        }
-
-        private string loadCards(string dirPath, string filePath, CardSet cardSet, int minProgressBar, int maxProgressBar)
-        {
-            if (Directory.Exists(dirPath))
-            {
-                if (File.Exists(filePath))
-                {
-                    try
-                    {
-                        using (ExcelPackage xlPackage = new ExcelPackage(new FileInfo(filePath)))
-                        {
-                            var myWorksheet = xlPackage.Workbook.Worksheets.First(); //select sheet here
-                            var totalRows = myWorksheet.Dimension.End.Row;
-                            var totalColumns = myWorksheet.Dimension.End.Column;
-
-                            for (int rowNum = 2; rowNum <= totalRows; ++rowNum) //selet starting row here
-                            {
-                                List<string> row = new List<string>();
-                                for (int colNum = 1; colNum <= totalColumns; ++colNum)
-                                {
-                                    var cell = myWorksheet.Cells[rowNum, colNum];
-                                    row.Add(cell.Value == null ? string.Empty : cell.Value.ToString());
-                                }
-                                cardSet.AddRow(row, dirPath);
-                                updateProgressBar(minProgressBar + (double)(rowNum - 1) * (maxProgressBar - minProgressBar) / (totalRows - 1));
-                                appendTextBlockResultMessage($"Wczytano kartę {cardSet.Last().Name}.");
-                            }
-                        }
-                        return $"Pomyślnie wczytano plik {filePath}.";
-                    }
-                    catch (IOException ex)
-                    {
-                        return ex.Message;
-                    }
-                }
-                else
-                {
-                    return $"Nie znaleziono pliku {filePath}.";
-                }
-            }
-            else
-            {
-                return $"Nie znaleziono katalogu {dirPath}!";
-            }
-        }
-
-        private string generateCards(string dirPath, string filePath, CardSet cardSet, int minProgressBar, int maxProgressBar)
-        {
-            try
-            {
-                int n = cardSet.Count;
-                string result;
-                Dictionary<string, int> cardsNames = new Dictionary<string, int>();
-                for (int i = 0; i < n; ++i)
-                {
-                    Card card = cardSet[i];
-                    if (cardsNames.ContainsKey(card.Name))
-                    {
-                        result = card.GenerateFile(card.Type + " - ", " " + (++cardsNames[card.Name]).ToString());
-                    }
-                    else
-                    {
-                        result = card.GenerateFile(card.Type + " - ");
-                        cardsNames.Add(card.Name, 1);
-                    }
-                    updateProgressBar(minProgressBar + (double)(i + 1) * (maxProgressBar - minProgressBar) / n);
-                    appendTextBlockResultMessage(result);
-                }
-                string cardForm = "";
-                if (n == 1) cardForm = "ę";
-                if (n % 10 >= 2 && n % 10 < 5) cardForm = "y";
-                return $"Pomyślnie stworzono {n} kart{cardForm} ekwipunku.";
-            }
-            catch (Exception ex)
-            {
-                return "W czasie generowania kart ekwipunktu wystąpił błąd: " + ex.Message;
             }
         }
 
@@ -183,6 +112,86 @@ namespace MyWarCreator
             }
         }
 
+        private string loadCards(string dirPath, string filePath, CardSet cardSet, int minProgressBar, int maxProgressBar)
+        {
+            if (Directory.Exists(dirPath))
+            {
+                if (File.Exists(filePath))
+                {
+                    try
+                    {
+                        using (ExcelPackage xlPackage = new ExcelPackage(new FileInfo(filePath)))
+                        {
+                            var myWorksheet = xlPackage.Workbook.Worksheets.First(); //select sheet here
+                            var totalRows = myWorksheet.Dimension.End.Row;
+                            var totalColumns = myWorksheet.Dimension.End.Column;
+
+                            for (int rowNum = 2; rowNum <= totalRows; ++rowNum) //selet starting row here
+                            {
+                                List<string> row = new List<string>();
+                                for (int colNum = 1; colNum <= totalColumns; ++colNum)
+                                {
+                                    var cell = myWorksheet.Cells[rowNum, colNum];
+                                    row.Add(cell.Value == null ? string.Empty : cell.Value.ToString());
+                                }
+                                if (cardSet.AddRow(row, dirPath))
+                                {
+                                    appendTextBlockResultMessage($"Wczytano kartę {cardSet.LastOrDefault().Name}.");
+                                }
+                                updateProgressBar(minProgressBar + (double)(rowNum - 1) * (maxProgressBar - minProgressBar) / (totalRows - 1));
+                            }
+                        }
+                        return $"Pomyślnie wczytano plik {filePath}.";
+                    }
+                    catch (IOException ex)
+                    {
+                        return ex.Message;
+                    }
+                }
+                else
+                {
+                    return $"Nie znaleziono pliku {filePath}.";
+                }
+            }
+            else
+            {
+                return $"Nie znaleziono katalogu {dirPath}!";
+            }
+        }
+
+        private string generateCards(string dirPath, string filePath, CardSet cardSet, int minProgressBar, int maxProgressBar)
+        {
+            try
+            {
+                int n = cardSet.Count;
+                string result;
+                Dictionary<string, int> cardsNames = new Dictionary<string, int>();
+                for (int i = 0; i < n; ++i)
+                {
+                    Card card = cardSet[i];
+                    if (cardsNames.ContainsKey(card.Name))
+                    {
+                        result = card.GenerateFile("", " " + (++cardsNames[card.Name]).ToString());
+                    }
+                    else
+                    {
+                        result = card.GenerateFile();
+                        cardsNames.Add(card.Name, 1);
+                    }
+                    updateProgressBar(minProgressBar + (double)(i + 1) * (maxProgressBar - minProgressBar) / n);
+                    appendTextBlockResultMessage(result);
+                }
+                string cardForm = "";
+                if (n == 1) cardForm = "ę";
+                if (n % 10 >= 2 && n % 10 < 5) cardForm = "y";
+                return $"Pomyślnie stworzono {n} kart{cardForm} ekwipunku.";
+            }
+            catch (Exception ex)
+            {
+                return "W czasie generowania kart ekwipunktu wystąpił błąd: " + ex.Message;
+            }
+        }
+
         private void buttonGeneratePdf_Click(object sender, RoutedEventArgs e)
         {
             // Equipment
@@ -213,17 +222,27 @@ namespace MyWarCreator
                     XRect xrect;
                     string[] filesPath = Directory.GetFiles(dirPath, "*.png");
                     int n = filesPath.Length;
+                    int nCard = 0;
+                    int nToPrint = 1;
                     for (int i = 0; i < n; ++i)
                     {
                         string filePath = Path.GetFullPath(filesPath[i]);
-                        if (i % 9 == 0)
-                            pdfPage = pdf.AddPage();
-                        xrect = new XRect((i % 3) * 185 + 20, ((i % 9) / 3) * 258 + 20, 184, 257); // (2.5 x 3.5 inches) * 72 pt/inch
-                        using (XGraphics xgraphics = XGraphics.FromPdfPage(pdfPage))
+                        if (filePath.ToLower().Contains("podstawowa"))
+                            nToPrint = 18;
+                        else
+                            nToPrint = 1;
+                        for (int j = 0; j < nToPrint; ++j)
                         {
-                            using (XImage ximage = XImage.FromFile(filePath))
+                            if (nCard % 9 == 0)
+                                pdfPage = pdf.AddPage();
+                            xrect = new XRect((nCard % 3) * 185 + 20, ((nCard % 9) / 3) * 258 + 20, 184, 257); // (2.5 x 3.5 inches) * 72 pt/inch
+                            using (XGraphics xgraphics = XGraphics.FromPdfPage(pdfPage))
                             {
-                                xgraphics.DrawImage(ximage, xrect);
+                                using (XImage ximage = XImage.FromFile(filePath))
+                                {
+                                    xgraphics.DrawImage(ximage, xrect);
+                                    ++nCard;
+                                }
                             }
                         }
                         updateProgressBar(minProgressBar + (double)(i + 1) * (maxProgressBar - minProgressBar) / n);

@@ -41,7 +41,6 @@ D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\de\MigraDoc.Renderin
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\de\MigraDoc.RtfRendering-WPF.resources.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\de\PdfSharp-WPF.resources.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\de\PdfSharp.Charting-WPF.resources.dll
-D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.csprojResolveAssemblyReference.cache
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MainWindow.g.cs
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\App.g.cs
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator_MarkupCompile.cache

@@ -9,6 +9,6 @@ namespace MyWarCreator.DataSet
 {
     abstract class CardSet : List<Card>
     {
-        public abstract void AddRow(IList<string> row, string dirPath);
+        public abstract bool AddRow(IList<string> row, string dirPath);
     }
 }
