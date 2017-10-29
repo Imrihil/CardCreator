@@ -18,7 +18,7 @@ namespace MyWarCreator.Models
         protected const string dicesDirPath = @"./dices";
 #endif
         public virtual string Type { get; set; }
-        public Rectangle TypeArea { get; set; } = new Rectangle(29, 450, 303, 20);
+        public Rectangle TypeArea { get; set; } = new Rectangle(29, 452, 303, 18);
         public string Name { get; set; }
         public Rectangle NameArea { get; set; } = new Rectangle(72, 268, 217, 32);
         public string Dmg { get; set; }
@@ -31,6 +31,7 @@ namespace MyWarCreator.Models
         public string Description { get; set; }
         public Rectangle DescriptionArea { get; set; } = new Rectangle(29, 317, 303, 133);
         public Image MainImage { get; set; }
+        public Image MainImageFrame { get; set; }
         public Rectangle MainImageArea { get; set; } = new Rectangle(65, 35, 230, 230);
         public Image BackgroundImage { get; set; }
         public string ResultsDirPath { get; set; }
@@ -47,10 +48,13 @@ namespace MyWarCreator.Models
         {
             ResultsDirPath = dirPath + "/results";
         }
+
         public virtual void DrawCard(Graphics graphics)
         {
             if (MainImage != null)
                 DrawingHelper.MapDrawing(graphics, MainImage, MainImageArea);
+            if (MainImageFrame != null)
+                DrawingHelper.MapDrawing(graphics, MainImageFrame, MainImageArea);
             if (DiceImage != null)
                 DrawingHelper.MapDrawing(graphics, DiceImage, DiceArea);
             if (Name != null)
