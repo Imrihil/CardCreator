@@ -12,7 +12,7 @@ namespace MyWarCreator.Models
 {
     class Skill : Card
     {
-        public List<int> PTs { get; set; } = new List<int>();
+        public List<string> PTs { get; set; } = new List<string>();
         public string PTMain { get { return PTs.Any() ? ("PT: " + PTs.FirstOrDefault().ToString()) : ""; } }
         public Rectangle PTMainArea { get; set; } = new Rectangle(29, 331, 53, 20);
         public string PTRune { get { return PTs.Count > 1 ? ("/" + string.Join("/", PTs.Skip(1).Take(3).Select(x => x.ToString()))) : ""; } }
@@ -30,15 +30,13 @@ namespace MyWarCreator.Models
 
             if (row.Count < 5)
                 throw new ArgumentException("W wierszu znajduje się za mało kolumn by utworzyć kartę!");
-            int value;
 
             Rune = row[0];
             Type = row[1];
             Attribute = row[2];
             Name = row[3];
             Dmg = row[4];
-            int.TryParse(row[6], out value);
-            if (value != 0) PTs.Add(value);
+            if (!string.IsNullOrEmpty(row[6])) PTs.Add(row[6]);
             if (Rune == "NULL") Rune = null;
             Description = row[8];
             Critical = string.IsNullOrEmpty(row[9]) ? "" : $"[{row[9]}]";
@@ -46,13 +44,13 @@ namespace MyWarCreator.Models
             {
                 for (int i = 10; i < 14; ++i)
                 {
-                    int.TryParse(row[i], out value);
-                    if (value != 0 && value != PTs.Last()) PTs.Add(value);
+                    if (!string.IsNullOrEmpty(row[i]) && row[i] != PTs.Last()) PTs.Add(row[i]);
                 }
             }
 
             string defaultBackgroudPath = dirPath + "/background.png";
             string backgroundPath = dirPath + $"/background" + (Description.Any() ? "_" + new string(Description.Split().FirstOrDefault().Where(Char.IsLetter).ToArray()).ToLower() : "") + ".png";
+            string defaultFramePath = dirPath + "/frame.png";
             string mainImageFramePath = dirPath + $"/frame" + (Description.Any() ? "_" + new string(Description.Split().FirstOrDefault().Where(Char.IsLetter).ToArray()).ToLower() : "") + ".png";
             if (File.Exists(backgroundPath))
                 BackgroundImage = Image.FromFile(backgroundPath);
@@ -60,6 +58,8 @@ namespace MyWarCreator.Models
                 BackgroundImage = Image.FromFile(defaultBackgroudPath);
             if (File.Exists(mainImageFramePath))
                 MainImageFrame = Image.FromFile(mainImageFramePath);
+            else if (File.Exists(defaultFramePath))
+                MainImageFrame = Image.FromFile(defaultFramePath);
             string mainImagePath = dirPath + "/" + Name + ".png";
             if (File.Exists(mainImagePath))
                 MainImage = Image.FromFile(mainImagePath);
