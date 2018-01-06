@@ -44,7 +44,7 @@ namespace MyWarCreator.Models
             }
         }
 
-        public Card(IList<string> row, string dirPath)
+        public Card(string dirPath)
         {
             ResultsDirPath = dirPath + "/results";
         }

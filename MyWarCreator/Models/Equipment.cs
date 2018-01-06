@@ -13,7 +13,7 @@ namespace MyWarCreator.Models
     {
         public Image UpgradesImage { get; set; }
         public Rectangle UpgradesArea { get; set; } = new Rectangle(295, 110, 40, 160);
-        public Equipment(IList<string> row, string dirPath) : base(row, dirPath)
+        public Equipment(IList<string> row, string dirPath) : base(dirPath)
         {
             if (row.Count < 5)
                 throw new ArgumentException("W wierszu znajduje się za mało kolumn by utworzyć kartę!");

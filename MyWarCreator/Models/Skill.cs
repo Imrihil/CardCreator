@@ -22,7 +22,7 @@ namespace MyWarCreator.Models
         public string Critical { get; set; }
         public Rectangle CriticalArea { get; set; } = new Rectangle(122, 331, 207, 20);
         public override string FileName { get { return $"{Type} - {Attribute} {Rune} - {Name}"; } }
-        public Skill(IList<string> row, string dirPath) : base(row, dirPath)
+        public Skill(IList<string> row, string dirPath) : base(dirPath)
         {
             RunesArea = new Rectangle(25, 35, 45, 70);
             DescriptionArea = new Rectangle(29, 353, 303, 97);

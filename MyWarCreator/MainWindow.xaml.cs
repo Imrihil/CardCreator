@@ -2,6 +2,7 @@
 using MyWarCreator.Extensions;
 using MyWarCreator.Helpers;
 using MyWarCreator.Models;
+using MyWarCreator.Crawler;
 using OfficeOpenXml;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
@@ -112,6 +113,63 @@ namespace MyWarCreator
             }
         }
 
+        private void buttonGenerateMonsters_Click(object sender, RoutedEventArgs e)
+        {
+            string dirPath = @"./monsters";
+#if DEBUG
+            dirPath = @"../../AppData/monsters";
+#endif
+            try
+            {
+                CrawlerCore crawler = new CrawlerCore("http://www.d20srd.org", "/indexes/monsters.htm", dirPath);
+                int i = 0;
+                int n = crawler.Count;
+                while (crawler.HasNext())
+                {
+                    try
+                    {
+                        var monsters = crawler.GetNextMonsters();
+                        foreach (var monster in monsters)
+                        {
+                            var newMonster = new Monster(monster, dirPath);
+                            var result = newMonster.GenerateFile();
+
+                            updateProgressBar((double)(++i) / n);
+                            appendTextBlockResultMessage(result);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        appendTextBlockResultMessage(string.Format("Przy przetwarzaniu strony {0} wystąpił błąd: {1}", crawler.GetLastUrl(), ex.Message));
+                    }
+                }
+                appendTextBlockResultMessage($"Pomyślnie stworzono {n} kart{GetPolishEnding(n)}.");
+            }
+            catch (Exception ex)
+            {
+                appendTextBlockResultMessage("W czasie generowania kart potworów wystąpił błąd: " + ex.Message);
+            }
+        }
+
+        private void buttonGeneratePdf_Click(object sender, RoutedEventArgs e)
+        {
+            // Equipment
+            string dirPath = @"./equipment";
+#if DEBUG
+            dirPath = @"../../AppData/equipment";
+#endif
+            updateProgressBar(0);
+            updateTextBlockResultMessage("");
+            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 0, 50));
+
+            // Skills
+            dirPath = @"./skills";
+#if DEBUG
+            dirPath = @"../../AppData/skills";
+#endif
+            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 50, 100));
+        }
+
         private string loadCards(string dirPath, string filePath, CardSet cardSet, int minProgressBar, int maxProgressBar)
         {
             if (Directory.Exists(dirPath))
@@ -181,34 +239,12 @@ namespace MyWarCreator
                     updateProgressBar(minProgressBar + (double)(i + 1) * (maxProgressBar - minProgressBar) / n);
                     appendTextBlockResultMessage(result);
                 }
-                string cardForm = "";
-                if (n == 1) cardForm = "ę";
-                if (n % 10 >= 2 && n % 10 < 5) cardForm = "y";
-                return $"Pomyślnie stworzono {n} kart{cardForm} ekwipunku.";
+                return $"Pomyślnie stworzono {n} kart{GetPolishEnding(n)}.";
             }
             catch (Exception ex)
             {
-                return "W czasie generowania kart ekwipunktu wystąpił błąd: " + ex.Message;
+                return "W czasie generowania kart wystąpił błąd: " + ex.Message;
             }
-        }
-
-        private void buttonGeneratePdf_Click(object sender, RoutedEventArgs e)
-        {
-            // Equipment
-            string dirPath = @"./equipment";
-#if DEBUG
-            dirPath = @"../../AppData/equipment";
-#endif
-            updateProgressBar(0);
-            updateTextBlockResultMessage("");
-            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 0, 50));
-
-            // Skills
-            dirPath = @"./skills";
-#if DEBUG
-            dirPath = @"../../AppData/skills";
-#endif
-            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 50, 100));
         }
 
         private string preparePdf(string dirPath, int minProgressBar, int maxProgressBar)
@@ -298,6 +334,13 @@ namespace MyWarCreator
                     textBoxResultMessageLastRefresh = time;
                 }
             }
+        }
+
+        private string GetPolishEnding(int n)
+        {
+            if (n == 1) return "ę";
+            if (n % 10 >= 2 && n % 10 < 5) return "y";
+            return "";
         }
     }
 }

@@ -42,6 +42,10 @@
       <HintPath>..\packages\EPPlus.4.1.1\lib\net40\EPPlus.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.6.11.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.6.11\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MigraDoc.DocumentObjectModel-WPF, Version=1.32.3885.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <HintPath>..\packages\PDFsharp-MigraDoc-WPF.1.32.2608.0\lib\net20\MigraDoc.DocumentObjectModel-WPF.dll</HintPath>
       <Private>True</Private>
@@ -91,6 +95,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Crawler\CrawlerCore.cs" />
+    <Compile Include="Helpers\DiceHelper.cs" />
+    <Compile Include="Helpers\MonsterData.cs" />
     <Compile Include="DataSet\CardSet.cs" />
     <Compile Include="DataSet\SkillsSet.cs" />
     <Compile Include="DataSet\WeaponsSet.cs" />
@@ -107,6 +114,7 @@
     <Compile Include="Models\Armour.cs" />
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Equipment.cs" />
+    <Compile Include="Models\Monster.cs" />
     <Compile Include="Models\Skill.cs" />
     <Compile Include="Models\Weapons.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
