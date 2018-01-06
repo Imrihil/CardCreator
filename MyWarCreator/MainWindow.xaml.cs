@@ -134,7 +134,7 @@ namespace MyWarCreator
                             var newMonster = new Monster(monster, dirPath);
                             var result = newMonster.GenerateFile();
 
-                            updateProgressBar((double)(++i) / n);
+                            updateProgressBar((double)(++i) * 100 / n);
                             appendTextBlockResultMessage(result);
                         }
                     }
