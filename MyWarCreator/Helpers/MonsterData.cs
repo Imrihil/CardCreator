@@ -195,7 +195,7 @@ namespace MyWarCreator.Helpers
                     {
                         idxEnd = fullAttack.IndexOf(")", idxStart);
                         if (idxEnd > -1)
-                            FirstAttack = fullAttack.Substring(idxStart + 1, idxEnd - idxStart - 1);
+                            SecondAttack = fullAttack.Substring(idxStart + 1, idxEnd - idxStart - 1);
                     }
                 }
             }

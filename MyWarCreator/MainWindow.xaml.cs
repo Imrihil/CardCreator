@@ -53,23 +53,20 @@ namespace MyWarCreator
 
         private void buttonGenerateWeapons_Click(object sender, RoutedEventArgs e)
         {
+            string dirPath = @"./equipment";
+#if DEBUG
+            dirPath = @"../../AppData/equipment";
+#endif
             try
             {
-                string dirPath = @"./equipment";
-#if DEBUG
-                dirPath = @"../../AppData/equipment";
-#endif
                 string filePath = dirPath + "/equipment.xlsx";
                 if (Directory.Exists(dirPath))
                 {
                     EquipmentSet equipmentSet = new EquipmentSet();
-                    StringBuilder sbResultMessage = new StringBuilder();
-
                     updateProgressBar(0);
                     updateTextBlockResultMessage("");
-
                     appendTextBlockResultMessage(loadCards(dirPath, filePath, equipmentSet, 0, 50));
-                    appendTextBlockResultMessage(generateCards(dirPath, filePath, equipmentSet, 50, 100));
+                    appendTextBlockResultMessage(generateCards(dirPath, equipmentSet, 50, 100));
                 }
                 else
                 {
@@ -84,23 +81,20 @@ namespace MyWarCreator
 
         private void buttonGenerateSkills_Click(object sender, RoutedEventArgs e)
         {
+            string dirPath = @"./skills";
+#if DEBUG
+            dirPath = @"../../AppData/skills";
+#endif
             try
             {
-                string dirPath = @"./skills";
-#if DEBUG
-                dirPath = @"../../AppData/skills";
-#endif
                 string filePath = dirPath + "/skills.xlsx";
                 if (Directory.Exists(dirPath))
                 {
                     SkillsSet skillsSet = new SkillsSet();
-                    StringBuilder sbResultMessage = new StringBuilder();
-
                     updateProgressBar(0);
                     updateTextBlockResultMessage("");
-
                     appendTextBlockResultMessage(loadCards(dirPath, filePath, skillsSet, 0, 50));
-                    appendTextBlockResultMessage(generateCards(dirPath, filePath, skillsSet, 50, 100));
+                    appendTextBlockResultMessage(generateCards(dirPath, skillsSet, 50, 100));
                 }
                 else
                 {
@@ -182,32 +176,25 @@ namespace MyWarCreator
 #endif
             try
             {
-                CrawlerCore crawler = new CrawlerCore("http://www.d20srd.org", "/indexes/monsters.htm", dirPath);
-                int i = 0;
-                int n = crawler.Count;
-                while (crawler.HasNext())
+                string filePathDD = dirPath + "/monsters_dd.xlsx";
+                string filePath = dirPath + "/monsters.xlsx";
+                if (Directory.Exists(dirPath))
                 {
-                    try
-                    {
-                        var monsters = crawler.GetNextMonsters();
-                        foreach (var monster in monsters)
-                        {
-                            var newMonster = new Monster(monster, dirPath);
-                            var result = newMonster.GenerateFile();
-                            appendTextBlockResultMessage(result);
-                        }
-                        updateProgressBar((double)(++i) * 100 / n);
-                    }
-                    catch (Exception ex)
-                    {
-                        appendTextBlockResultMessage(string.Format("Przy przetwarzaniu strony {0} wystąpił błąd: {1}", crawler.GetLastUrl(), ex.Message));
-                    }
+                    MonstersSet monstersSet = new MonstersSet();
+                    updateProgressBar(0);
+                    updateTextBlockResultMessage("");
+                    appendTextBlockResultMessage(loadCards(dirPath, filePathDD, monstersSet, 0, 33));
+                    //appendTextBlockResultMessage(loadCards(dirPath, filePath, monstersSet, 33, 66));
+                    appendTextBlockResultMessage(generateCards(dirPath, monstersSet, 66, 100));
                 }
-                appendTextBlockResultMessage($"Pomyślnie stworzono {n} kart{GetPolishEnding(n)}.");
+                else
+                {
+                    appendTextBlockResultMessage("Nie znaleziono katalogu o nazwie skills!");
+                }
             }
             catch (Exception ex)
             {
-                appendTextBlockResultMessage("W czasie generowania kart potworów wystąpił błąd: " + ex.Message);
+                appendTextBlockResultMessage("Podczas generowania kart potworów wystąpił błąd: " + ex.Message);
             }
         }
 
@@ -290,7 +277,12 @@ namespace MyWarCreator
             }
         }
 
-        private string generateCards(string dirPath, string filePath, CardSet cardSet, int minProgressBar, int maxProgressBar)
+        private string generateCards(string dirPath, CardSet cardSet, int minProgressBar, int maxProgressBar)
+        {
+            return generateCards(dirPath, cardSet, minProgressBar, maxProgressBar, true);
+        }
+
+        private string generateCards(string dirPath, CardSet cardSet, int minProgressBar, int maxProgressBar, bool createDuplicates)
         {
             try
             {
@@ -302,7 +294,10 @@ namespace MyWarCreator
                     Card card = cardSet[i];
                     if (cardsNames.ContainsKey(card.Name))
                     {
-                        result = card.GenerateFile("", " " + (++cardsNames[card.Name]).ToString());
+                        if (createDuplicates)
+                            result = card.GenerateFile("", " " + (++cardsNames[card.Name]).ToString());
+                        else
+                            result = $"Nie stworzono duplikatu karty {card.Name}.";
                     }
                     else
                     {

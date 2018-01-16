@@ -100,6 +100,9 @@ namespace MyWarCreator.Helpers
             idx = dices.IndexOf("/");
             if (idx >= 0)
                 dices = dices.Substring(0, idx);
+            idx = dices.IndexOf("*");
+            if (idx >= 0)
+                dices = dices.Substring(0, idx);
             dices = dices.Replace("d", "k");
             bool minus = dices.Contains("-");
             string[] dicesStrings = Regex.Split(dices, @"[+-]");

@@ -96,6 +96,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Crawler\CrawlerCore.cs" />
+    <Compile Include="DataSet\MonstersSet.cs" />
     <Compile Include="Helpers\DiceHelper.cs" />
     <Compile Include="Helpers\MonsterData.cs" />
     <Compile Include="DataSet\CardSet.cs" />
