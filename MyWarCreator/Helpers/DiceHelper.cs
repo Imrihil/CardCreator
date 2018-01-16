@@ -91,6 +91,16 @@ namespace MyWarCreator.Helpers
             }
         }
 
+        public static bool HasDice(string dice)
+        {
+            return Regex.IsMatch(dice, @"\d*[kd]\d+");
+        }
+
+        public static bool IsDice(string dice)
+        {
+            return Regex.IsMatch(dice, @"^\d*[kd]\d+$");
+        }
+
         public static double GetAverage(string dices)
         {
             double result = 0;
@@ -108,25 +118,28 @@ namespace MyWarCreator.Helpers
             string[] dicesStrings = Regex.Split(dices, @"[+-]");
             for (int i = 0; i < dicesStrings.Length; ++i)
             {
-                int number;
-                int dIdx = dicesStrings[i].IndexOf("k");
-                string numberString;
-                string diceName;
-                if (dIdx >= 0)
+                if (IsDice(dicesStrings[i]))
                 {
-                    numberString = dicesStrings[i].Substring(0, dIdx);
-                    diceName = dicesStrings[i].Substring(dIdx);
+                    int number;
+                    int dIdx = dicesStrings[i].IndexOf("k");
+                    string numberString;
+                    string diceName;
+                    if (dIdx >= 0)
+                    {
+                        numberString = dicesStrings[i].Substring(0, dIdx);
+                        diceName = dicesStrings[i].Substring(dIdx);
+                    }
+                    else
+                    {
+                        numberString = dicesStrings[i];
+                        diceName = "1";
+                    }
+                    int.TryParse(numberString, out number);
+                    if (minus && i == dicesStrings.Length - 1)
+                        result -= number * Dices.FirstOrDefault(x => x.Name == diceName).Average;
+                    else
+                        result += number * Dices.FirstOrDefault(x => x.Name == diceName).Average;
                 }
-                else
-                {
-                    numberString = dicesStrings[i];
-                    diceName = "1";
-                }
-                int.TryParse(numberString, out number);
-                if (minus && i == dicesStrings.Length - 1)
-                    result -= number * Dices.FirstOrDefault(x => x.Name == diceName).Average;
-                else
-                    result += number * Dices.FirstOrDefault(x => x.Name == diceName).Average;
             }
             return result;
         }

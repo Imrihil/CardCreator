@@ -134,8 +134,12 @@ namespace MyWarCreator.Crawler
             ISet<string> newLinks = new HashSet<string>();
             foreach (var match in regexLink.Matches(content))
             {
-                if (match.ToString().Contains(filterRegex) && !newLinks.Contains(match.ToString()))
-                    newLinks.Add(match.ToString());
+                string link = match.ToString();
+                int idx = link.LastIndexOf('#');
+                if (idx > 0)
+                    link = link.Substring(0, idx);
+                if (link.Contains(filterRegex) && !newLinks.Contains(link))
+                    newLinks.Add(link);
             }
 
             return newLinks;

@@ -113,18 +113,41 @@ namespace MyWarCreator
 #if DEBUG
             dirPath = @"../../AppData/monsters";
 #endif
+            if (File.Exists(Path.Combine(dirPath, "monsters_dd.xlsx")))
+            {
+                MessageBoxResult messageBoxResult = MessageBox.Show("Czy na pewno chcesz ponownie pobrać statystyki przeciwników ze strony http://www.d20srd.org? \n\nSpowoduje to usunięcie obecnego pliku monsters_dd.xlsx i stworzenie nowego.", "Potwierdzenie pobierania", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (messageBoxResult == MessageBoxResult.Yes)
+                {
+                    File.Delete(Path.Combine(dirPath, "monsters_dd.xlsx"));
+                    downloadMonsters(dirPath);
+                }
+                else
+                {
+                    appendTextBlockResultMessage("Anulowano pobieranie przeciwników.");
+                }
+            }
+            else
+            {
+                downloadMonsters(dirPath);
+            }
+        }
+
+        private void downloadMonsters(string dirPath)
+        {
             try
             {
                 CrawlerCore crawler = new CrawlerCore("http://www.d20srd.org", "/indexes/monsters.htm", dirPath);
                 int i = 0;
+                int extraI = 0;
                 int n = crawler.Count;
                 using (var package = new ExcelPackage(new FileInfo(Path.Combine(dirPath, "monsters_dd.xlsx"))))
                 {
+                    HashSet<string> monsterNames = new HashSet<string>();
                     ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Monsters");
                     var font = worksheet.Cells[1, 1].Style.Font;
                     font.Bold = true;
                     worksheet.Row(1).Style.Font = font;
-                    for (int j = 0; j < MonsterData.Headers.Length; ++j)
+                    for (int j = 0; j < MonsterData.Headers.Count; ++j)
                     {
                         worksheet.Cells[1, j + 1].Value = MonsterData.Headers[j];
                     }
@@ -135,21 +158,27 @@ namespace MyWarCreator
                             var monsters = crawler.GetNextMonsters();
                             foreach (var monster in monsters)
                             {
-                                string[] row = monster.Row;
-                                for (int j = 0; j < row.Length; ++j)
+                                IList<string> row = monster.Row;
+                                for (int j = 0; j < row.Count; ++j)
                                 {
-                                    worksheet.Cells[i + 2, j + 1].Value = row[j];
-                                    appendTextBlockResultMessage($"{monster.Name} downloaded.");
+                                    worksheet.Cells[i + extraI + 2, j + 1].Value = row[j];
                                 }
+                                monsterNames.Add(monster.Name);
+                                ++extraI;
+                                appendTextBlockResultMessage($"{monster.Name} downloaded.");
                             }
-                            updateProgressBar((double)(++i) * 100 / n);
+                            --extraI;
                         }
                         catch (Exception ex)
                         {
                             appendTextBlockResultMessage(string.Format("Przy przetwarzaniu strony {0} wystąpił błąd: {1}", crawler.GetLastUrl(), ex.Message));
                         }
+                        finally
+                        {
+                            updateProgressBar((double)(++i) * 100 / n);
+                        }
                     }
-                    for (int j = 0; j < MonsterData.Headers.Length; ++j)
+                    for (int j = 0; j < MonsterData.Headers.Count; ++j)
                     {
                         worksheet.Column(j + 1).AutoFit();
                         if (worksheet.Column(j + 1).Width > 100)

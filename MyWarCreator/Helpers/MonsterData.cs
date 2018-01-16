@@ -24,7 +24,7 @@ namespace MyWarCreator.Helpers
         public string ChallengeRating { get; private set; }
         public string SpecialQualities { get; private set; }
         public string ImagePath { get; }
-        public static string[] Headers
+        public static IList<string> Headers
         {
             get
             {
@@ -46,7 +46,7 @@ namespace MyWarCreator.Helpers
                 };
             }
         }
-        public string[] Row
+        public IList<string> Row
         {
             get
             {
@@ -90,7 +90,7 @@ namespace MyWarCreator.Helpers
             InitStats();
         }
 
-        public MonsterData(string[] row)
+        public MonsterData(IList<string> row)
         {
             Name = row[0];
             if (!string.IsNullOrEmpty(row[1]))

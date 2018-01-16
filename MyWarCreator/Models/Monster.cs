@@ -26,15 +26,25 @@ namespace MyWarCreator.Models
             Type = "Poziom wyzwania: " + monster.ChallengeRating;
             if (monster.Str.HasValue)
                 Attack = (double)(monster.Str - 6) / 2;
-            if (Attack != null && !string.IsNullOrEmpty(monster.FirstAttack))
-                Attack += DiceHelper.GetAverage(monster.FirstAttack);
+            if (!string.IsNullOrEmpty(monster.FirstAttack))
+                if (Attack == null)
+                    Attack = DiceHelper.GetAverage(monster.FirstAttack);
+                else
+                    Attack += DiceHelper.GetAverage(monster.FirstAttack);
             if (Attack != null && Attack < 0.5)
                 Attack = 0.5;
             if (!string.IsNullOrEmpty(monster.FirstAttack))
             {
-                int attackIdx = monster.FirstAttack.IndexOf(" ");
-                if (attackIdx >= 0)
-                    SpecialAttack = monster.FirstAttack.Substring(attackIdx + 1);
+                if (DiceHelper.HasDice(monster.FirstAttack))
+                {
+                    int attackIdx = monster.FirstAttack.IndexOf(" ");
+                    if (attackIdx >= 0)
+                        SpecialAttack = monster.FirstAttack.Substring(attackIdx + 1);
+                }
+                else
+                {
+                    SpecialAttack = monster.FirstAttack;
+                }
             }
             Armour = Convert.ToInt32(monster.ArmourClass * 0.5) - 5;
             if (Armour < 0) Armour = 0;
@@ -96,10 +106,7 @@ namespace MyWarCreator.Models
             {
                 throw new ArgumentException($"Błędnie podane statystyki przeciwnika {Name}!");
             }
-            Description = string.Format("Atak: {0}{1}\n\nPancerz: {2}\nWytrzymałość: {3}\n\n{4}",
-                Attack.HasValue ? DiceHelper.GetDices(Attack.Value) : "-",
-                string.IsNullOrEmpty(SpecialAttack) ? "" : " " + SpecialAttack,
-                Armour, HitPoints, SpecialQualities);
+            InitDescription();
 
             string backgroundPath = dirPath + "/background.png";
             string mainImageFramePath = dirPath + "/frame.png";
@@ -128,6 +135,7 @@ namespace MyWarCreator.Models
                 SpecialQualities = row[7];
 
             InitMainImage(row[0], row[1], dirPath);
+            InitDescription();
         }
 
         private void InitMainImage(string nameAng, string namePl, string dirPath)
@@ -141,6 +149,14 @@ namespace MyWarCreator.Models
                 mainImagePath = dirPath + "/" + nameAng + ".jpg";
             if (File.Exists(mainImagePath))
                 MainImage = Image.FromFile(mainImagePath);
+        }
+
+        private void InitDescription()
+        {
+            Description = string.Format("Atak: {0}{1}\n\nPancerz: {2}\nWytrzymałość: {3}\n\n{4}",
+                Attack.HasValue ? DiceHelper.GetDices(Attack.Value) : "-",
+                string.IsNullOrEmpty(SpecialAttack) ? "" : " " + SpecialAttack,
+                Armour, HitPoints, SpecialQualities);
         }
     }
 }

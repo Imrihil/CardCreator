@@ -12,7 +12,7 @@ namespace MyWarCreator.DataSet
     {
         public override bool AddRow(IList<string> row, string dirPath)
         {
-            if (row.Count == MonsterData.Headers.Length)
+            if (row.Count == MonsterData.Headers.Count)
             {
                 if (!this.Any(x => x.Name == row[0]))
                 {
