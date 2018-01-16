@@ -49,7 +49,6 @@ D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MainWindow.baml
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.g.resources
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.Properties.Resources.resources
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.csproj.GenerateResource.Cache
-D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.csprojResolveAssemblyReference.cache
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\HtmlAgilityPack.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\HtmlAgilityPack.pdb
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\HtmlAgilityPack.xml
