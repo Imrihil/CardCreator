@@ -113,6 +113,67 @@ namespace MyWarCreator
             }
         }
 
+        private void buttonDownloadMonsters_Click(object sender, RoutedEventArgs e)
+        {
+            string dirPath = @"./monsters";
+#if DEBUG
+            dirPath = @"../../AppData/monsters";
+#endif
+            try
+            {
+                CrawlerCore crawler = new CrawlerCore("http://www.d20srd.org", "/indexes/monsters.htm", dirPath);
+                int i = 0;
+                int n = crawler.Count;
+                using (var package = new ExcelPackage(new FileInfo(Path.Combine(dirPath, "monsters_dd.xlsx"))))
+                {
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Monsters");
+                    var font = worksheet.Cells[1, 1].Style.Font;
+                    font.Bold = true;
+                    worksheet.Row(1).Style.Font = font;
+                    for (int j = 0; j < MonsterData.Headers.Length; ++j)
+                    {
+                        worksheet.Cells[1, j + 1].Value = MonsterData.Headers[j];
+                    }
+                    while (crawler.HasNext())
+                    {
+                        try
+                        {
+                            var monsters = crawler.GetNextMonsters();
+                            foreach (var monster in monsters)
+                            {
+                                string[] row = monster.Row;
+                                for (int j = 0; j < row.Length; ++j)
+                                {
+                                    worksheet.Cells[i + 2, j + 1].Value = row[j];
+                                    appendTextBlockResultMessage($"{monster.Name} downloaded.");
+                                }
+                            }
+                            updateProgressBar((double)(++i) * 100 / n);
+                        }
+                        catch (Exception ex)
+                        {
+                            appendTextBlockResultMessage(string.Format("Przy przetwarzaniu strony {0} wystąpił błąd: {1}", crawler.GetLastUrl(), ex.Message));
+                        }
+                    }
+                    for (int j = 0; j < MonsterData.Headers.Length; ++j)
+                    {
+                        worksheet.Column(j + 1).AutoFit();
+                        if (worksheet.Column(j + 1).Width > 100)
+                            worksheet.Column(j + 1).Width = 100;
+                    }
+                    package.Workbook.Properties.Title = "Monsters DD";
+                    package.Workbook.Properties.Author = "Mateusz Ledzianowski";
+                    package.Workbook.Properties.Company = "MyWar";
+                    package.Save();
+                }
+                appendTextBlockResultMessage($"Pomyślnie pobrano potwory ze strony d&d ({n}).");
+            }
+            catch (Exception ex)
+            {
+                appendTextBlockResultMessage("W czasie generowania kart potworów wystąpił błąd: " + ex.Message);
+            }
+        }
+
         private void buttonGenerateMonsters_Click(object sender, RoutedEventArgs e)
         {
             string dirPath = @"./monsters";
@@ -133,10 +194,9 @@ namespace MyWarCreator
                         {
                             var newMonster = new Monster(monster, dirPath);
                             var result = newMonster.GenerateFile();
-
-                            updateProgressBar((double)(++i) * 100 / n);
                             appendTextBlockResultMessage(result);
                         }
+                        updateProgressBar((double)(++i) * 100 / n);
                     }
                     catch (Exception ex)
                     {
@@ -160,17 +220,29 @@ namespace MyWarCreator
 #endif
             updateProgressBar(0);
             updateTextBlockResultMessage("");
-            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 0, 50));
+            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 0, 33));
 
             // Skills
             dirPath = @"./skills";
 #if DEBUG
             dirPath = @"../../AppData/skills";
 #endif
-            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 50, 100));
+            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 33, 66));
+
+            // Monsters
+            dirPath = @"./monsters";
+#if DEBUG
+            dirPath = @"../../AppData/monsters";
+#endif
+            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 66, 100));
         }
 
         private string loadCards(string dirPath, string filePath, CardSet cardSet, int minProgressBar, int maxProgressBar)
+        {
+            return loadCards(dirPath, filePath, cardSet, minProgressBar, maxProgressBar, false);
+        }
+
+        private string loadCards(string dirPath, string filePath, CardSet cardSet, int minProgressBar, int maxProgressBar, bool quiet)
         {
             if (Directory.Exists(dirPath))
             {
@@ -194,7 +266,8 @@ namespace MyWarCreator
                                 }
                                 if (cardSet.AddRow(row, dirPath))
                                 {
-                                    appendTextBlockResultMessage($"Wczytano kartę {cardSet.LastOrDefault().Name}.");
+                                    if (!quiet)
+                                        appendTextBlockResultMessage($"Wczytano kartę {cardSet.LastOrDefault().Name}.");
                                 }
                                 updateProgressBar(minProgressBar + (double)(rowNum - 1) * (maxProgressBar - minProgressBar) / (totalRows - 1));
                             }
@@ -287,7 +360,7 @@ namespace MyWarCreator
                 }
                 return "Przygotowano dokumenty do druku.";
             }
-            catch (DirectoryNotFoundException ex)
+            catch (DirectoryNotFoundException)
             {
                 return $"Nie znaleziono katalogu {dirPath}.";
             }

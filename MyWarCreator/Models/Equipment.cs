@@ -27,6 +27,8 @@ namespace MyWarCreator.Models
             if (File.Exists(backgroundPath))
                 BackgroundImage = Image.FromFile(backgroundPath);
             string mainImagePath = dirPath + "/" + Name + ".png";
+            if (!File.Exists(mainImagePath))
+                mainImagePath = dirPath + "/" + Name + ".jpg";
             if (File.Exists(mainImagePath))
                 MainImage = Image.FromFile(mainImagePath);
         }

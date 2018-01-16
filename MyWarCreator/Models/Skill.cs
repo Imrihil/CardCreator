@@ -61,6 +61,8 @@ namespace MyWarCreator.Models
             else if (File.Exists(defaultFramePath))
                 MainImageFrame = Image.FromFile(defaultFramePath);
             string mainImagePath = dirPath + "/" + Name + ".png";
+            if (!File.Exists(mainImagePath))
+                mainImagePath = dirPath + "/" + Name + ".jpg";
             if (File.Exists(mainImagePath))
                 MainImage = Image.FromFile(mainImagePath);
             if (!string.IsNullOrEmpty(Dmg))
