@@ -184,7 +184,7 @@ namespace MyWarCreator
                     updateProgressBar(0);
                     updateTextBlockResultMessage("");
                     appendTextBlockResultMessage(loadCards(dirPath, filePathDD, monstersSet, 0, 33));
-                    //appendTextBlockResultMessage(loadCards(dirPath, filePath, monstersSet, 33, 66));
+                    appendTextBlockResultMessage(loadCards(dirPath, filePath, monstersSet, 33, 66, true));
                     appendTextBlockResultMessage(generateCards(dirPath, monstersSet, 66, 100));
                 }
                 else
@@ -255,6 +255,10 @@ namespace MyWarCreator
                                 {
                                     if (!quiet)
                                         appendTextBlockResultMessage($"Wczytano kartę {cardSet.LastOrDefault().Name}.");
+                                }
+                                else
+                                {
+                                    appendTextBlockResultMessage($"Błąd przy wczytywaniu karty {rowNum}.");
                                 }
                                 updateProgressBar(minProgressBar + (double)(rowNum - 1) * (maxProgressBar - minProgressBar) / (totalRows - 1));
                             }

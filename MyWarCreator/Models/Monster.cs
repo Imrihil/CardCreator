@@ -48,7 +48,9 @@ namespace MyWarCreator.Models
                 BackgroundImage = Image.FromFile(backgroundPath);
             if (File.Exists(mainImageFramePath))
                 MainImageFrame = Image.FromFile(mainImageFramePath);
-            string mainImagePath = dirPath + "/" + Name + ".jpg";
+            string mainImagePath = dirPath + "/" + Name + ".png";
+            if (!File.Exists(mainImagePath))
+                mainImagePath = dirPath + "/" + Name + ".jpg";
             if (!File.Exists(mainImagePath))
                 mainImagePath = monster.ImagePath;
             if (File.Exists(mainImagePath))
@@ -58,6 +60,87 @@ namespace MyWarCreator.Models
                 Attack.HasValue ? DiceHelper.GetDices(Attack.Value) : "-",
                 string.IsNullOrEmpty(SpecialAttack) ? "" : " " + SpecialAttack,
                 Armour, HitPoints, SpecialQualities);
+        }
+
+        public Monster(IList<string> row, string dirPath) : base(dirPath)
+        {
+            MainImageArea = new Rectangle(65, 20, 230, 230);
+
+            try
+            {
+                int value;
+                if (!string.IsNullOrEmpty(row[1]))
+                    Name = row[1];
+                else
+                    Name = row[0];
+                if ((string.IsNullOrEmpty(row[0]) && string.IsNullOrEmpty(row[1])) || string.IsNullOrEmpty(row[3]) || string.IsNullOrEmpty(row[5]) || string.IsNullOrEmpty(row[6]))
+                    throw new ArgumentException($"Błędnie podane statystyki przeciwnika {Name}!");
+                Type = "Poziom wyzwania: " + row[2];
+                if (row[3].Contains("d") || row[3].Contains("k"))
+                {
+                    Attack = DiceHelper.GetAverage(row[3]);
+                }
+                else
+                {
+                    int.TryParse(row[3], out value);
+                    Attack = Math.Max(value, 1);
+                }
+                SpecialAttack = row[4];
+                int.TryParse(row[5], out value);
+                Armour = value;
+                int.TryParse(row[6], out value);
+                HitPoints = Math.Max(value, 1);
+                SpecialQualities = row[7];
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException($"Błędnie podane statystyki przeciwnika {Name}!");
+            }
+            Description = string.Format("Atak: {0}{1}\n\nPancerz: {2}\nWytrzymałość: {3}\n\n{4}",
+                Attack.HasValue ? DiceHelper.GetDices(Attack.Value) : "-",
+                string.IsNullOrEmpty(SpecialAttack) ? "" : " " + SpecialAttack,
+                Armour, HitPoints, SpecialQualities);
+
+            string backgroundPath = dirPath + "/background.png";
+            string mainImageFramePath = dirPath + "/frame.png";
+            if (File.Exists(backgroundPath))
+                BackgroundImage = Image.FromFile(backgroundPath);
+            if (File.Exists(mainImageFramePath))
+                MainImageFrame = Image.FromFile(mainImageFramePath);
+            InitMainImage(row[0], row[1], dirPath);
+        }
+
+        internal void Update(IList<string> row, string dirPath)
+        {
+            if (!string.IsNullOrEmpty(row[1]))
+                Name = row[1];
+            if (!string.IsNullOrEmpty(row[2]))
+                Type = "Poziom wyzwania: " + row[2];
+            if (!string.IsNullOrEmpty(row[3]))
+                Attack = int.Parse(row[3]);
+            if (!string.IsNullOrEmpty(row[4]))
+                SpecialAttack = row[4];
+            if (!string.IsNullOrEmpty(row[5]))
+                Armour = int.Parse(row[5]);
+            if (!string.IsNullOrEmpty(row[6]))
+                HitPoints = int.Parse(row[6]);
+            if (!string.IsNullOrEmpty(row[7]))
+                SpecialQualities = row[7];
+
+            InitMainImage(row[0], row[1], dirPath);
+        }
+
+        private void InitMainImage(string nameAng, string namePl, string dirPath)
+        {
+            string mainImagePath = dirPath + "/" + namePl + ".png";
+            if (!File.Exists(mainImagePath))
+                mainImagePath = dirPath + "/" + namePl + ".jpg";
+            if (!File.Exists(mainImagePath))
+                mainImagePath = dirPath + "/" + nameAng + ".png";
+            if (!File.Exists(mainImagePath))
+                mainImagePath = dirPath + "/" + nameAng + ".jpg";
+            if (File.Exists(mainImagePath))
+                MainImage = Image.FromFile(mainImagePath);
         }
     }
 }
