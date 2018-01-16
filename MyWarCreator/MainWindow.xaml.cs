@@ -158,16 +158,15 @@ namespace MyWarCreator
                             var monsters = crawler.GetNextMonsters();
                             foreach (var monster in monsters)
                             {
+                                ++extraI;
                                 IList<string> row = monster.Row;
                                 for (int j = 0; j < row.Count; ++j)
                                 {
-                                    worksheet.Cells[i + extraI + 2, j + 1].Value = row[j];
+                                    worksheet.Cells[i + extraI + 1, j + 1].Value = row[j];
                                 }
                                 monsterNames.Add(monster.Name);
-                                ++extraI;
                                 appendTextBlockResultMessage($"{monster.Name} downloaded.");
                             }
-                            --extraI;
                         }
                         catch (Exception ex)
                         {
@@ -175,6 +174,7 @@ namespace MyWarCreator
                         }
                         finally
                         {
+                            --extraI;
                             updateProgressBar((double)(++i) * 100 / n);
                         }
                     }
