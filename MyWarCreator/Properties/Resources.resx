@@ -157,4 +157,27 @@
   <data name="trebucit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\trebucit.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Description" xml:space="preserve">
+    <value>Aby kreator zadziałał prawidłowo - w folderze z plikiem wykonywalnym .exe muszą znajdować się foldery o nazwach "equipment", "skills" i "monsters", a w nim arkusze kalkulacyjne o takich samych nazwach.
+Dodatkowo, jeśli w katalogu znajdują się jakieś obrazki, zostaną wykorzystane do utworzenia kart, gdy nazwa obrazka będzie odpowiadać nazwie karty w arkuszu. Jeśli w folderze istnieje obrazek o nazwie "background.png", zostanie on użyty jako tło do wszystkich kart.
+Wygenerowane karty zostaną umieszczone w folderach "results" w podkatalogach.</value>
+  </data>
+  <data name="DownloadMonsters" xml:space="preserve">
+    <value>Pobierz statystyki potworów</value>
+  </data>
+  <data name="GenerateMonsters" xml:space="preserve">
+    <value>Generuj karty potworów</value>
+  </data>
+  <data name="Hello" xml:space="preserve">
+    <value>Witaj w kreatorze kart do systemu RPG - MyWar!</value>
+  </data>
+  <data name="PreparePdf" xml:space="preserve">
+    <value>Przygotuj pdf do druku</value>
+  </data>
+  <data name="Skills" xml:space="preserve">
+    <value>Generuj karty umiejętności</value>
+  </data>
+  <data name="Weapons" xml:space="preserve">
+    <value>Generuj karty broni</value>
+  </data>
 </root>

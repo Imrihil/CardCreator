@@ -18,6 +18,7 @@ using System.Windows;
 
 namespace MyWarCreator
 {
+    // https://www.codeproject.com/Articles/299436/WPF-Localization-for-Dummies
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>

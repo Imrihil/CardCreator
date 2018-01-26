@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyWarCreator"
+        xmlns:p="clr-namespace:MyWarCreator.Properties"
         mc:Ignorable="d"
         Title="MyWarCreator v.1.5" Height="600" Width="600">
     <Grid x:Name="mainGrid">
@@ -20,15 +21,15 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="textBlockHello" Margin="10,10,10,10" TextWrapping="Wrap" Grid.ColumnSpan="2"><Run Text="Witaj w kreatorze kart do systemu RPG - MyWar!"/></TextBlock>
-        <TextBlock x:Name="textBlockDescription" Margin="10,10,10,10" TextWrapping="Wrap" FontStyle="Italic" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="2"><Run Text="Aby kreator zadziałał prawidłowo - w folderze z plikiem wykonywalnym (exe) musi znajdować się"/><Run Text=" folder o nazwie &quot;"/><Run Text="equipment"/><Run Text="&quot;, a w nim"/><Run Text=" arkusz kalkulacyjny o nazwie "/><Run Text="&quot;"/><Run Text="equipment"/><Run Text=".xlsx"/><Run Text="&quot;"/><Run Text=" z opisanymi kolumnami:"/><Run Text=" t"/><Run Text="yp"/><Run Text=", n"/><Run Text="azwa"/><Run Text=", o"/><Run Text="brażenia"/><Run Text=", r"/><Run Text="una"/><Run Text=", o"/><Run Text="pis"/><Run Text=", p"/><Run Text="udło"/><Run Text=", z"/><Run Text="męczenie"/><Run Text=", c"/><Run Text="ios"/><Run Text=", k"/><Run Text="rytyk"/><Run Text=", p"/><Run Text="owalenie"/><Run Text=", o"/><Run Text="głuszenie"/><Run Text=", "/><Run Text="rozpłatanie"/><Run Text=", pancerz"/><Run Text="."/><LineBreak/><Run Text="Dodatkowo, jeśli w katalogu "/><Run Text="&quot;"/><Run Text="equipment"/><Run Text="&quot; znajdują się jakieś"/><Run Text=" obrazki"/><Run Text=","/><Run Text=" "/><Run Text="z"/><Run Text="ostaną wykorzystane do utworzenia kart"/><Run Text=", gdy "/><Run Text="nazwa obrazka "/><Run Text="będzie "/><Run Text="odpowiadać nazwie karty w arkuszu &quot;"/><Run Text="equipment"/><Run Text=".xlsx&quot;."/><Run Text=" Jeśli w folderze &quot;"/><Run Text="equipment"/><Run Text="&quot; istnieje obrazek o nazwie &quot;background.png&quot;, zostanie on użyty jako tło do wszystkich kart."/><LineBreak/><Run Text="Wygenerowane karty "/><Run Text="zostaną umieszczone w folderze &quot;results&quot;"/><Run Text="."/></TextBlock>
-        <Button x:Name="buttonGenerateWeapons" Content="Generuj karty broni" Margin="10,5,5,5" Click="buttonGenerateWeapons_Click" Grid.Row="2"/>
-        <Button x:Name="buttonGenerateSkills" Content="Generuj karty umiejętności" Margin="5,5,10,5" Click="buttonGenerateSkills_Click" Grid.Row="2" Grid.Column="2"/>
-        <Button x:Name="buttonDownloadMonsters" Content="Pobierz statystyki potworów" Margin="10,5,5,5" Click="buttonDownloadMonsters_Click" Grid.Row="3"/>
-        <Button x:Name="buttonGenerateMonsters" Content="Generuj karty potworów" Margin="5,5,10,5" Click="buttonGenerateMonsters_Click" Grid.Row="3" Grid.Column="2"/>
-        <Button x:Name="buttonPreparePdf" Content="Przygotuj pdf do druku" Margin="10,5,10,5" Click="buttonGeneratePdf_Click" Grid.Row="4" Grid.ColumnSpan="2"/>
+        <TextBlock x:Name="textBlockHello" Margin="10,10,10,10" TextWrapping="Wrap" Grid.ColumnSpan="2"><Run Text="{x:Static p:Resources.Hello}"/></TextBlock>
+        <TextBlock x:Name="textBlockDescription" Margin="10,10,10,10" TextWrapping="Wrap" FontStyle="Italic" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="2"><Run Text="{x:Static p:Resources.Description}"/></TextBlock>
+        <Button x:Name="buttonGenerateWeapons" Content="{x:Static p:Resources.Weapons}" Margin="10,5,5,5" Click="buttonGenerateWeapons_Click" Grid.Row="2"/>
+        <Button x:Name="buttonGenerateSkills" Content="{x:Static p:Resources.Skills}" Margin="5,5,10,5" Click="buttonGenerateSkills_Click" Grid.Row="2" Grid.Column="2"/>
+        <Button x:Name="buttonDownloadMonsters" Content="{x:Static p:Resources.DownloadMonsters}" Margin="10,5,5,5" Click="buttonDownloadMonsters_Click" Grid.Row="3"/>
+        <Button x:Name="buttonGenerateMonsters" Content="{x:Static p:Resources.GenerateMonsters}" Margin="5,5,10,5" Click="buttonGenerateMonsters_Click" Grid.Row="3" Grid.Column="2"/>
+        <Button x:Name="buttonPreparePdf" Content="{x:Static p:Resources.PreparePdf}" Margin="10,5,10,5" Click="buttonGeneratePdf_Click" Grid.Row="4" Grid.ColumnSpan="2"/>
         <ProgressBar x:Name="progressBar" Margin="10,10,10,10" IsHitTestVisible="True" Grid.Row="5" Grid.ColumnSpan="2"/>
         <TextBlock x:Name="progressBarText" Margin="10,10,10,10" Text="{Binding ElementName=progressBar, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="5" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="textBoxResultMessage" Margin="10,10,10,10" Grid.Row="6" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="Result message." Grid.ColumnSpan="2"/>
+        <TextBox x:Name="textBoxResultMessage" Margin="10,10,10,10" Grid.Row="6" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="Logi." Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

@@ -22,7 +22,7 @@ namespace MyWarCreator.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace MyWarCreator.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MyWarCreator.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace MyWarCreator.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace MyWarCreator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] Akvaléir_Normal_v2007 {
+        public static byte[] Akvaléir_Normal_v2007 {
             get {
                 object obj = ResourceManager.GetObject("Akvaléir_Normal_v2007", resourceCulture);
                 return ((byte[])(obj));
@@ -73,7 +73,7 @@ namespace MyWarCreator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] colonna_mt {
+        public static byte[] colonna_mt {
             get {
                 object obj = ResourceManager.GetObject("colonna_mt", resourceCulture);
                 return ((byte[])(obj));
@@ -81,9 +81,29 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aby kreator zadziałał prawidłowo - w folderze z plikiem wykonywalnym .exe muszą znajdować się foldery o nazwach &quot;equipment&quot;, &quot;skills&quot; i &quot;monsters&quot;, a w nim arkusze kalkulacyjne o takich samych nazwach.
+        ///Dodatkowo, jeśli w katalogu znajdują się jakieś obrazki, zostaną wykorzystane do utworzenia kart, gdy nazwa obrazka będzie odpowiadać nazwie karty w arkuszu. Jeśli w folderze istnieje obrazek o nazwie &quot;background.png&quot;, zostanie on użyty jako tło do wszystkich kart.
+        ///Wygenerowane karty zostaną umieszczone w f [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pobierz statystyki potworów.
+        /// </summary>
+        public static string DownloadMonsters {
+            get {
+                return ResourceManager.GetString("DownloadMonsters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] Exocet1 {
+        public static byte[] Exocet1 {
             get {
                 object obj = ResourceManager.GetObject("Exocet1", resourceCulture);
                 return ((byte[])(obj));
@@ -93,7 +113,7 @@ namespace MyWarCreator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] Gargoyles_Normal {
+        public static byte[] Gargoyles_Normal {
             get {
                 object obj = ResourceManager.GetObject("Gargoyles_Normal", resourceCulture);
                 return ((byte[])(obj));
@@ -101,9 +121,18 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generuj karty potworów.
+        /// </summary>
+        public static string GenerateMonsters {
+            get {
+                return ResourceManager.GetString("GenerateMonsters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] Got_Heroin {
+        public static byte[] Got_Heroin {
             get {
                 object obj = ResourceManager.GetObject("Got_Heroin", resourceCulture);
                 return ((byte[])(obj));
@@ -111,9 +140,18 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Witaj w kreatorze kart do systemu RPG - MyWar!.
+        /// </summary>
+        public static string Hello {
+            get {
+                return ResourceManager.GetString("Hello", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon icon {
+        public static System.Drawing.Icon icon {
             get {
                 object obj = ResourceManager.GetObject("icon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
@@ -123,7 +161,7 @@ namespace MyWarCreator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] Neverwinter {
+        public static byte[] Neverwinter {
             get {
                 object obj = ResourceManager.GetObject("Neverwinter", resourceCulture);
                 return ((byte[])(obj));
@@ -131,9 +169,18 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Przygotuj pdf do druku.
+        /// </summary>
+        public static string PreparePdf {
+            get {
+                return ResourceManager.GetString("PreparePdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] runic {
+        public static byte[] runic {
             get {
                 object obj = ResourceManager.GetObject("runic", resourceCulture);
                 return ((byte[])(obj));
@@ -143,7 +190,7 @@ namespace MyWarCreator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] runic_altno {
+        public static byte[] runic_altno {
             get {
                 object obj = ResourceManager.GetObject("runic_altno", resourceCulture);
                 return ((byte[])(obj));
@@ -151,9 +198,18 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generuj karty umiejętności.
+        /// </summary>
+        public static string Skills {
+            get {
+                return ResourceManager.GetString("Skills", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] trebuc {
+        public static byte[] trebuc {
             get {
                 object obj = ResourceManager.GetObject("trebuc", resourceCulture);
                 return ((byte[])(obj));
@@ -163,7 +219,7 @@ namespace MyWarCreator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] trebucbd {
+        public static byte[] trebucbd {
             get {
                 object obj = ResourceManager.GetObject("trebucbd", resourceCulture);
                 return ((byte[])(obj));
@@ -173,7 +229,7 @@ namespace MyWarCreator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] trebucbi {
+        public static byte[] trebucbi {
             get {
                 object obj = ResourceManager.GetObject("trebucbi", resourceCulture);
                 return ((byte[])(obj));
@@ -183,10 +239,19 @@ namespace MyWarCreator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] trebucit {
+        public static byte[] trebucit {
             get {
                 object obj = ResourceManager.GetObject("trebucit", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generuj karty broni.
+        /// </summary>
+        public static string Weapons {
+            get {
+                return ResourceManager.GetString("Weapons", resourceCulture);
             }
         }
     }
