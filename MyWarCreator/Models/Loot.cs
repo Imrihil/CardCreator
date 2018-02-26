@@ -22,6 +22,9 @@ namespace MyWarCreator.Models
 
         private void InitLoot(string dirPath, string id)
         {
+            string backgroundPath = dirPath + "/background_loot.png";
+            if (File.Exists(backgroundPath))
+                BackgroundImage = Image.FromFile(backgroundPath);
             string framePath = dirPath + "/frame.png";
             if (File.Exists(framePath))
                 MainImageFrame = Image.FromFile(framePath);
