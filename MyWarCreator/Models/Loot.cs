@@ -22,6 +22,8 @@ namespace MyWarCreator.Models
 
         private void InitLoot(string dirPath, string id)
         {
+            DescriptionFont = 64;
+
             string backgroundPath = dirPath + "/background_loot.png";
             if (File.Exists(backgroundPath))
                 BackgroundImage = Image.FromFile(backgroundPath);

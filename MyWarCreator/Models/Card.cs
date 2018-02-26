@@ -30,6 +30,7 @@ namespace MyWarCreator.Models
         public Rectangle RunesArea { get; set; } = new Rectangle(29, 35, 43, 232);
         public string Description { get; set; }
         public Rectangle DescriptionArea { get; set; } = new Rectangle(29, 317, 303, 133);
+        public float DescriptionFont { get; set; } = 10;
         public Image MainImage { get; set; }
         public Image MainImageFrame { get; set; }
         public Rectangle MainImageArea { get; set; } = new Rectangle(65, 35, 230, 230);
@@ -64,7 +65,7 @@ namespace MyWarCreator.Models
             }
             if (DescriptionFull != null)
             {
-                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 10, FontStyle.Regular, GraphicsUnit.Pixel))
+                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), DescriptionFont, FontStyle.Regular, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(DescriptionFull, font, Brushes.Black, DescriptionArea, FontsHelper.StringFormatCentered);
             }
             if (Type != null)
