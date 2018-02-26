@@ -25,8 +25,9 @@ namespace MyWarCreator.DataSet
             else if (row[0].ToLower().Equals("łup"))
             {
                 Add(new Loot(row, dirPath));
-                int id = 0;
-                while (File.Exists(dirPath + Path.PathSeparator + id.ToString()))
+                int id = 1;
+                while (File.Exists(dirPath + "/" + row[1] + " " + row[3] + id.ToString() + ".png")
+                    || File.Exists(dirPath + "/" + row[1] + " " + row[3] + id.ToString() + ".jpg"))
                 {
                     Add(new Loot(row, dirPath, id.ToString()));
                     ++id;
