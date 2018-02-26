@@ -213,8 +213,8 @@ namespace MyWarCreator
                     MonstersSet monstersSet = new MonstersSet();
                     updateProgressBar(0);
                     updateTextBlockResultMessage("");
-                    appendTextBlockResultMessage(loadCards(dirPath, filePathDD, monstersSet, 0, 33));
-                    appendTextBlockResultMessage(loadCards(dirPath, filePath, monstersSet, 33, 66, true));
+                    appendTextBlockResultMessage(loadCards(dirPath, filePathDD, monstersSet, 0, 33, true));
+                    appendTextBlockResultMessage(loadCards(dirPath, filePath, monstersSet, 33, 66));
                     appendTextBlockResultMessage(generateCards(dirPath, monstersSet, 66, 100));
                 }
                 else
@@ -365,8 +365,15 @@ namespace MyWarCreator
                     for (int i = 0; i < n; ++i)
                     {
                         string filePath = Path.GetFullPath(filesPath[i]);
-                        if (filePath.ToLower().Contains("podstawowa"))
-                            nToPrint = 18;
+                        if (filePath.ToLower().Contains("podstawow"))
+                            if (filePath.ToLower().Contains("skills"))
+                                nToPrint = 20;
+                            else if (filePath.ToLower().Contains("equipment"))
+                                nToPrint = 4;
+                            else
+                                nToPrint = 1;
+                        else if (filePath.ToLower().Contains("equipment") && filePath.ToLower().Contains("łup"))
+                            nToPrint = 3;
                         else
                             nToPrint = 1;
                         for (int j = 0; j < nToPrint; ++j)

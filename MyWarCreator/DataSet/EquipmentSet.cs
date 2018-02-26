@@ -1,6 +1,7 @@
 ﻿using MyWarCreator.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,22 @@ namespace MyWarCreator.DataSet
             else if (row.Skip(12).Take(1).Any(x => !string.IsNullOrEmpty(x)))
             {
                 Add(new Armour(row, dirPath));
+                return true;
+            }
+            else if (row[0].ToLower().Equals("łup"))
+            {
+                Add(new Loot(row, dirPath));
+                int id = 0;
+                while (File.Exists(dirPath + Path.PathSeparator + id.ToString()))
+                {
+                    Add(new Loot(row, dirPath, id.ToString()));
+                    ++id;
+                }
+                return true;
+            }
+            else
+            {
+                Add(new Equipment(row, dirPath));
                 return true;
             }
             return false;

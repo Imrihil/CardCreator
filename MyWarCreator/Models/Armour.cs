@@ -21,6 +21,7 @@ namespace MyWarCreator.Models
         }
         public Armour(IList<string> row, string dirPath) : base(row, dirPath)
         {
+            if (row[3] != "NULL") RunePlaces = "A\nB\nC\nD\nE";
             if (row.Count < 13)
                 throw new ArgumentException("W wierszu znajduje się za mało kolumn by utworzyć kartę pancerza!");
             int value;

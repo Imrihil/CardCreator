@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MyWarCreator"
         xmlns:p="clr-namespace:MyWarCreator.Properties"
         mc:Ignorable="d"
-        Title="MyWarCreator v.1.5" Height="600" Width="600">
+        Title="MyWarCreator v.1.6" Height="600" Width="600">
     <Grid x:Name="mainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
         <TextBlock x:Name="textBlockHello" Margin="10,10,10,10" TextWrapping="Wrap" Grid.ColumnSpan="2"><Run Text="{x:Static p:Resources.Hello}"/></TextBlock>
         <TextBlock x:Name="textBlockDescription" Margin="10,10,10,10" TextWrapping="Wrap" FontStyle="Italic" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="2"><Run Text="{x:Static p:Resources.Description}"/></TextBlock>
-        <Button x:Name="buttonGenerateWeapons" Content="{x:Static p:Resources.Weapons}" Margin="10,5,5,5" Click="buttonGenerateWeapons_Click" Grid.Row="2"/>
+        <Button x:Name="buttonGenerateWeapons" Content="Generuj karty ekwipunku" Margin="10,5,5,5" Click="buttonGenerateWeapons_Click" Grid.Row="2"/>
         <Button x:Name="buttonGenerateSkills" Content="{x:Static p:Resources.Skills}" Margin="5,5,10,5" Click="buttonGenerateSkills_Click" Grid.Row="2" Grid.Column="2"/>
         <Button x:Name="buttonDownloadMonsters" Content="{x:Static p:Resources.DownloadMonsters}" Margin="10,5,5,5" Click="buttonDownloadMonsters_Click" Grid.Row="3"/>
         <Button x:Name="buttonGenerateMonsters" Content="{x:Static p:Resources.GenerateMonsters}" Margin="5,5,10,5" Click="buttonGenerateMonsters_Click" Grid.Row="3" Grid.Column="2"/>
