@@ -365,13 +365,10 @@ namespace MyWarCreator
                     for (int i = 0; i < n; ++i)
                     {
                         string filePath = Path.GetFullPath(filesPath[i]);
-                        if (filePath.ToLower().Contains("podstawow"))
-                            if (filePath.ToLower().Contains("skills"))
-                                nToPrint = 20;
-                            else if (filePath.ToLower().Contains("equipment"))
-                                nToPrint = 4;
-                            else
-                                nToPrint = 1;
+                        if (filePath.ToLower().Contains("skills") && filePath.ToLower().Contains("podstawow"))
+                            nToPrint = 20;
+                        else if (filePath.ToLower().Contains("equipment") && filePath.ToLower().Contains("początkow"))
+                            nToPrint = 3;
                         else if (filePath.ToLower().Contains("equipment") && filePath.ToLower().Contains("łup"))
                             nToPrint = 3;
                         else
