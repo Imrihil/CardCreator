@@ -23,9 +23,10 @@ namespace MyWarCreator.Models
             MainImageArea = new Rectangle(65, 20, 230, 230);
 
             Name = monster.Name;
-            Type = "Poziom wyzwania: " + monster.ChallengeRating;
-            if (monster.Str.HasValue)
-                Attack = (double)(monster.Str - 6) / 2;
+            Type = monster.ChallengeRating;
+            int str = monster.Str.HasValue ? monster.Str.Value : 0;
+            int inte = monster.Int.HasValue ? monster.Int.Value : 0;
+            Attack = (double)(Math.Max(str, inte)) / 3;
             if (!string.IsNullOrEmpty(monster.FirstAttack))
                 if (Attack == null)
                     Attack = DiceHelper.GetAverage(monster.FirstAttack);
@@ -78,6 +79,7 @@ namespace MyWarCreator.Models
 
             try
             {
+                double dvalue;
                 int value;
                 if (!string.IsNullOrEmpty(row[1]))
                     Name = row[1];
@@ -85,15 +87,15 @@ namespace MyWarCreator.Models
                     Name = row[0];
                 if ((string.IsNullOrEmpty(row[0]) && string.IsNullOrEmpty(row[1])) || string.IsNullOrEmpty(row[3]) || string.IsNullOrEmpty(row[5]) || string.IsNullOrEmpty(row[6]))
                     throw new ArgumentException($"Błędnie podane statystyki przeciwnika {Name}!");
-                Type = "Poziom wyzwania: " + row[2];
+                Type = row[2];
                 if (row[3].Contains("d") || row[3].Contains("k"))
                 {
                     Attack = DiceHelper.GetAverage(row[3]);
                 }
                 else
                 {
-                    int.TryParse(row[3], out value);
-                    Attack = Math.Max(value, 1);
+                    double.TryParse(row[3], out dvalue);
+                    Attack = Math.Max(dvalue, 1);
                 }
                 SpecialAttack = row[4];
                 int.TryParse(row[5], out value);
@@ -122,9 +124,9 @@ namespace MyWarCreator.Models
             if (!string.IsNullOrEmpty(row[1]))
                 Name = row[1];
             if (!string.IsNullOrEmpty(row[2]))
-                Type = "Poziom wyzwania: " + row[2];
+                Type = row[2];
             if (!string.IsNullOrEmpty(row[3]))
-                Attack = int.Parse(row[3]);
+                Attack = double.Parse(row[3]);
             if (!string.IsNullOrEmpty(row[4]))
                 SpecialAttack = row[4];
             if (!string.IsNullOrEmpty(row[5]))

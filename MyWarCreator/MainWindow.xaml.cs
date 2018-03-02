@@ -369,8 +369,6 @@ namespace MyWarCreator
                             nToPrint = 20;
                         else if (filePath.ToLower().Contains("equipment") && filePath.ToLower().Contains("początkow"))
                             nToPrint = 3;
-                        else if (filePath.ToLower().Contains("equipment") && filePath.ToLower().Contains("łup"))
-                            nToPrint = 3;
                         else
                             nToPrint = 1;
                         for (int j = 0; j < nToPrint; ++j)

@@ -22,7 +22,10 @@ namespace MyWarCreator.Models
 
         private void InitLoot(string dirPath, string id)
         {
-            DescriptionFont = 64;
+            if (DescriptionFull.Length < 3)
+            {
+                DescriptionFont = 64;
+            }
 
             string backgroundPath = dirPath + "/background_loot.png";
             if (File.Exists(backgroundPath))
