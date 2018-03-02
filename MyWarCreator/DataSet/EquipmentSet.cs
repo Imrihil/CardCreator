@@ -39,7 +39,6 @@ namespace MyWarCreator.DataSet
                 Add(new Equipment(row, dirPath));
                 return true;
             }
-            return false;
         }
     }
 }

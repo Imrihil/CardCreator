@@ -101,7 +101,24 @@ namespace MyWarCreator.Helpers
             return Regex.IsMatch(dice, @"^\d*[kd]\d+$");
         }
 
+        public static bool IsDiceOrNumber(string dice)
+        {
+            double val;
+            return Regex.IsMatch(dice, @"^\d*[kd]\d+$") || double.TryParse(dice, out val);
+        }
+
         public static double GetAverage(string dices)
+        {
+            int idx = dices.ToLower().IndexOf(" plus ");
+            double result = 0;
+            if (idx >= 0)
+            {
+                return GetAverageDices(dices.Substring(0, idx)) + GetAverageDices(dices.Substring(idx + 6));
+            }
+            return GetAverageDices(dices);
+        }
+
+        private static double GetAverageDices(string dices)
         {
             double result = 0;
             int idx = dices.IndexOf(" ");
@@ -118,7 +135,7 @@ namespace MyWarCreator.Helpers
             string[] dicesStrings = Regex.Split(dices, @"[+-]");
             for (int i = 0; i < dicesStrings.Length; ++i)
             {
-                if (IsDice(dicesStrings[i]))
+                if (IsDiceOrNumber(dicesStrings[i]))
                 {
                     int number;
                     int dIdx = dicesStrings[i].IndexOf("k");

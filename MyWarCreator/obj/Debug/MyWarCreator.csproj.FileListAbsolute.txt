@@ -25,22 +25,24 @@ D:\Dokumenty\Dysk Google\RPG\My War\Ekwipunek\MyWarCreator\MyWarCreator\obj\Debu
 D:\Dokumenty\Dysk Google\RPG\My War\Ekwipunek\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.exe
 D:\Dokumenty\Dysk Google\RPG\My War\Ekwipunek\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.pdb
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\MyWarCreator.exe.config
-D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.exe
-D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.pdb
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\MyWarCreator.exe
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\MyWarCreator.pdb
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\EPPlus.dll
+D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\HtmlAgilityPack.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\MigraDoc.DocumentObjectModel-WPF.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\MigraDoc.Rendering-WPF.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\MigraDoc.RtfRendering-WPF.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\PdfSharp-WPF.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\PdfSharp.Charting-WPF.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\EPPlus.xml
+D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\HtmlAgilityPack.pdb
+D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\HtmlAgilityPack.xml
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\de\MigraDoc.DocumentObjectModel-WPF.resources.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\de\MigraDoc.Rendering-WPF.resources.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\de\MigraDoc.RtfRendering-WPF.resources.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\de\PdfSharp-WPF.resources.dll
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\de\PdfSharp.Charting-WPF.resources.dll
+D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.csprojResolveAssemblyReference.cache
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MainWindow.g.cs
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\App.g.cs
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator_MarkupCompile.cache
@@ -49,6 +51,5 @@ D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MainWindow.baml
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.g.resources
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.Properties.Resources.resources
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.csproj.GenerateResource.Cache
-D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\HtmlAgilityPack.dll
-D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\HtmlAgilityPack.pdb
-D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\bin\Debug\HtmlAgilityPack.xml
+D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.exe
+D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.pdb
