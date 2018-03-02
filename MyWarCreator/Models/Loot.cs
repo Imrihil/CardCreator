@@ -22,7 +22,7 @@ namespace MyWarCreator.Models
 
         private void InitLoot(string dirPath, string id)
         {
-            if (DescriptionFull.Length < 3)
+            if (DescriptionFull.Length < 4)
             {
                 DescriptionFont = 64;
             }
