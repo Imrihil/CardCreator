@@ -172,12 +172,27 @@ Wygenerowane karty zostaną umieszczone w folderach "results" w podkatalogach.</
     <value>Witaj w kreatorze kart do systemu RPG - MyWar!</value>
   </data>
   <data name="PreparePdf" xml:space="preserve">
-    <value>Przygotuj pdf do druku</value>
+    <value>Przygotuj pdfy do druku</value>
   </data>
   <data name="Skills" xml:space="preserve">
     <value>Generuj karty umiejętności</value>
   </data>
   <data name="Weapons" xml:space="preserve">
-    <value>Generuj karty broni</value>
+    <value>Generuj karty ekwipunku</value>
+  </data>
+  <data name="CustomPdf" xml:space="preserve">
+    <value>Przygotuj pdf z wybranych plików</value>
+  </data>
+  <data name="GenerateAll" xml:space="preserve">
+    <value>Generuj wszystko</value>
+  </data>
+  <data name="MonstersPdf" xml:space="preserve">
+    <value>Przygotuj pdf z potworami</value>
+  </data>
+  <data name="SkillsPdf" xml:space="preserve">
+    <value>Przygotuj pdf z umiejętnościami</value>
+  </data>
+  <data name="WeaponsPdf" xml:space="preserve">
+    <value>Przygotuj pdf z ekwipunkiem</value>
   </data>
 </root>

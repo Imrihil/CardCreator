@@ -81,6 +81,15 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Przygotuj pdf z wybranych plików.
+        /// </summary>
+        public static string CustomPdf {
+            get {
+                return ResourceManager.GetString("CustomPdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aby kreator zadziałał prawidłowo - w folderze z plikiem wykonywalnym .exe muszą znajdować się foldery o nazwach &quot;equipment&quot;, &quot;skills&quot; i &quot;monsters&quot;, a w nim arkusze kalkulacyjne o takich samych nazwach.
         ///Dodatkowo, jeśli w katalogu znajdują się jakieś obrazki, zostaną wykorzystane do utworzenia kart, gdy nazwa obrazka będzie odpowiadać nazwie karty w arkuszu. Jeśli w folderze istnieje obrazek o nazwie &quot;background.png&quot;, zostanie on użyty jako tło do wszystkich kart.
         ///Wygenerowane karty zostaną umieszczone w f [rest of string was truncated]&quot;;.
@@ -117,6 +126,15 @@ namespace MyWarCreator.Properties {
             get {
                 object obj = ResourceManager.GetObject("Gargoyles_Normal", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generuj wszystko.
+        /// </summary>
+        public static string GenerateAll {
+            get {
+                return ResourceManager.GetString("GenerateAll", resourceCulture);
             }
         }
         
@@ -159,6 +177,15 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Przygotuj pdf z potworami.
+        /// </summary>
+        public static string MonstersPdf {
+            get {
+                return ResourceManager.GetString("MonstersPdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         public static byte[] Neverwinter {
@@ -169,7 +196,7 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Przygotuj pdf do druku.
+        ///   Looks up a localized string similar to Przygotuj pdfy do druku.
         /// </summary>
         public static string PreparePdf {
             get {
@@ -203,6 +230,15 @@ namespace MyWarCreator.Properties {
         public static string Skills {
             get {
                 return ResourceManager.GetString("Skills", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Przygotuj pdf z umiejętnościami.
+        /// </summary>
+        public static string SkillsPdf {
+            get {
+                return ResourceManager.GetString("SkillsPdf", resourceCulture);
             }
         }
         
@@ -247,11 +283,20 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generuj karty broni.
+        ///   Looks up a localized string similar to Generuj karty ekwipunku.
         /// </summary>
         public static string Weapons {
             get {
                 return ResourceManager.GetString("Weapons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Przygotuj pdf z ekwipunkiem.
+        /// </summary>
+        public static string WeaponsPdf {
+            get {
+                return ResourceManager.GetString("WeaponsPdf", resourceCulture);
             }
         }
     }

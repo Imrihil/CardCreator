@@ -133,6 +133,82 @@ namespace MyWarCreator
             }
         }
 
+        private void buttonGenerateAll_Click(object sender, RoutedEventArgs e)
+        {
+            string dirPath = @"./equipment";
+#if DEBUG
+            dirPath = @"../../AppData/equipment";
+#endif
+            try
+            {
+                string filePath = dirPath + "/equipment.xlsx";
+                if (Directory.Exists(dirPath))
+                {
+                    EquipmentSet equipmentSet = new EquipmentSet();
+                    updateProgressBar(0);
+                    updateTextBlockResultMessage("");
+                    appendTextBlockResultMessage(loadCards(dirPath, filePath, equipmentSet, 0, 17));
+                    appendTextBlockResultMessage(generateCards(dirPath, equipmentSet, 17, 33));
+                }
+                else
+                {
+                    appendTextBlockResultMessage("Nie znaleziono katalogu o nazwie equipments!");
+                }
+            }
+            catch (Exception ex)
+            {
+                appendTextBlockResultMessage("Podczas generowania ekwipunku wystąpił błąd: " + ex.Message);
+            }
+
+            dirPath = @"./skills";
+#if DEBUG
+            dirPath = @"../../AppData/skills";
+#endif
+            try
+            {
+                string filePath = dirPath + "/skills.xlsx";
+                if (Directory.Exists(dirPath))
+                {
+                    SkillsSet skillsSet = new SkillsSet();
+                    appendTextBlockResultMessage(loadCards(dirPath, filePath, skillsSet, 33, 50));
+                    appendTextBlockResultMessage(generateCards(dirPath, skillsSet, 50, 67));
+                }
+                else
+                {
+                    appendTextBlockResultMessage("Nie znaleziono katalogu o nazwie skills!");
+                }
+            }
+            catch (Exception ex)
+            {
+                appendTextBlockResultMessage("Podczas generowania umiejętności wystąpił błąd: " + ex.Message);
+            }
+
+            dirPath = @"./monsters";
+#if DEBUG
+            dirPath = @"../../AppData/monsters";
+#endif
+            try
+            {
+                string filePathDD = dirPath + "/monsters_dd.xlsx";
+                string filePath = dirPath + "/monsters.xlsx";
+                if (Directory.Exists(dirPath))
+                {
+                    MonstersSet monstersSet = new MonstersSet();
+                    appendTextBlockResultMessage(loadCards(dirPath, filePathDD, monstersSet, 67, 78, true));
+                    appendTextBlockResultMessage(loadCards(dirPath, filePath, monstersSet, 78, 89));
+                    appendTextBlockResultMessage(generateCards(dirPath, monstersSet, 89, 100));
+                }
+                else
+                {
+                    appendTextBlockResultMessage("Nie znaleziono katalogu o nazwie skills!");
+                }
+            }
+            catch (Exception ex)
+            {
+                appendTextBlockResultMessage("Podczas generowania kart potworów wystąpił błąd: " + ex.Message);
+            }
+        }
+
         private void downloadMonsters(string dirPath)
         {
             try
@@ -228,6 +304,42 @@ namespace MyWarCreator
             }
         }
 
+        private void buttonWeaponsPdf_Click(object sender, RoutedEventArgs e)
+        {
+            // Equipment
+            string dirPath = @"./equipment";
+#if DEBUG
+            dirPath = @"../../AppData/equipment";
+#endif
+            updateProgressBar(0);
+            updateTextBlockResultMessage("");
+            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 0, 100));
+        }
+
+        private void buttonSkillsPdf_Click(object sender, RoutedEventArgs e)
+        {
+            // Skills
+            string dirPath = @"./skills";
+#if DEBUG
+            dirPath = @"../../AppData/skills";
+#endif
+            updateProgressBar(0);
+            updateTextBlockResultMessage("");
+            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 0, 100));
+        }
+
+        private void buttonMonstersPdf_Click(object sender, RoutedEventArgs e)
+        {
+            // Skills
+            string dirPath = @"./monsters";
+#if DEBUG
+            dirPath = @"../../AppData/monsters";
+#endif
+            updateProgressBar(0);
+            updateTextBlockResultMessage("");
+            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 0, 100));
+        }
+
         private void buttonGeneratePdf_Click(object sender, RoutedEventArgs e)
         {
             // Equipment
@@ -252,6 +364,18 @@ namespace MyWarCreator
             dirPath = @"../../AppData/monsters";
 #endif
             appendTextBlockResultMessage(preparePdf(dirPath + "/results", 66, 100));
+        }
+
+        private void buttonCustomPdf_Click(object sender, RoutedEventArgs e)
+        {
+            // Custom
+            string dirPath = @"./custom";
+#if DEBUG
+            dirPath = @"../../AppData/custom";
+#endif
+            updateProgressBar(0);
+            updateTextBlockResultMessage("");
+            appendTextBlockResultMessage(preparePdf(dirPath, 0, 100));
         }
 
         private string loadCards(string dirPath, string filePath, CardSet cardSet, int minProgressBar, int maxProgressBar)
