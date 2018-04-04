@@ -13,20 +13,15 @@ namespace MyWarCreator.Models
     {
         public Loot(IList<string> row, string dirPath) : base(row, dirPath)
         {
-            InitLoot(dirPath, "");
+            InitLoot(dirPath, row, "");
         }
         public Loot(IList<string> row, string dirPath, string id) : base(row, dirPath)
         {
-            InitLoot(dirPath, id);
+            InitLoot(dirPath, row, id);
         }
 
-        private void InitLoot(string dirPath, string id)
+        private void InitLoot(string dirPath, IList<string> row, string id)
         {
-            if (DescriptionFull.Length < 4)
-            {
-                DescriptionFont = 64;
-            }
-
             string backgroundPath = dirPath + "/background_loot.png";
             if (File.Exists(backgroundPath))
                 BackgroundImage = Image.FromFile(backgroundPath);

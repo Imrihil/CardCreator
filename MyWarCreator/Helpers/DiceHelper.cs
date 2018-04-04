@@ -110,7 +110,6 @@ namespace MyWarCreator.Helpers
         public static double GetAverage(string dices)
         {
             int idx = dices.ToLower().IndexOf(" plus ");
-            double result = 0;
             if (idx >= 0)
             {
                 return GetAverageDices(dices.Substring(0, idx)) + GetAverageDices(dices.Substring(idx + 6));

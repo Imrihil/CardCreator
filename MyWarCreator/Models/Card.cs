@@ -13,7 +13,7 @@ namespace MyWarCreator.Models
     class Card
     {
 #if DEBUG
-        protected const string dicesDirPath = @"../../dices";
+        protected const string dicesDirPath = @"../../AppData/dices";
 #else
         protected const string dicesDirPath = @"./dices";
 #endif
@@ -73,11 +73,11 @@ namespace MyWarCreator.Models
                 using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Akvaleir")), 12, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(Type.ToUpper(), font, Brushes.Black, TypeArea, FontsHelper.StringFormatCentered, 6);
             }
-            if (RunePlaces != null)
-            {
-                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Runic AltNo")), 64, FontStyle.Bold, GraphicsUnit.Pixel))
-                    graphics.DrawString(RunePlaces.ToUpper(), font, new SolidBrush(Color.FromArgb(196, Color.White)), RunesArea);
-            }
+            // if (RunePlaces != null)
+            // {
+            // using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Runic AltNo")), 64, FontStyle.Bold, GraphicsUnit.Pixel))
+            // graphics.DrawString(RunePlaces.ToUpper(), font, new SolidBrush(Color.FromArgb(196, Color.White)), RunesArea);
+            // }
             if (Rune != null)
             {
                 using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Runic AltNo")), 64, FontStyle.Bold, GraphicsUnit.Pixel))

@@ -26,12 +26,12 @@ namespace MyWarCreator.Models
             Type = monster.ChallengeRating;
             int str = monster.Str.HasValue ? monster.Str.Value : 0;
             int inte = monster.Int.HasValue ? monster.Int.Value : 0;
-            Attack = Math.Max((Math.Max(str, inte)) * 0.56 - 5.33, 0);
+            Attack = Math.Max((Math.Max(str, inte)) * 0.61 - 5.33, 0);
             if (!string.IsNullOrEmpty(monster.FirstAttack))
                 if (str == 0 && inte == 0)
-                    Attack = DiceHelper.GetAverage(monster.FirstAttack) + 1;
+                    Attack = DiceHelper.GetAverage(monster.FirstAttack) * 1.16 + 2;
                 else
-                    Attack += DiceHelper.GetAverage(monster.FirstAttack) * 0.5 + 1;
+                    Attack += DiceHelper.GetAverage(monster.FirstAttack) * 0.55 + 2;
             if (Attack != null && Attack < 0.5)
                 Attack = 0.5;
             if (!string.IsNullOrEmpty(monster.FirstAttack))
