@@ -289,9 +289,9 @@ namespace MyWarCreator
                     MonstersSet monstersSet = new MonstersSet();
                     updateProgressBar(0);
                     updateTextBlockResultMessage("");
-                    appendTextBlockResultMessage(loadCards(dirPath, filePathDD, monstersSet, 0, 33, true));
-                    appendTextBlockResultMessage(loadCards(dirPath, filePath, monstersSet, 33, 66));
-                    appendTextBlockResultMessage(generateCards(dirPath, monstersSet, 66, 100));
+                    //appendTextBlockResultMessage(loadCards(dirPath, filePathDD, monstersSet, 0, 33, true));
+                    appendTextBlockResultMessage(loadCards(dirPath, filePath, monstersSet, 0, 50));
+                    appendTextBlockResultMessage(generateCards(dirPath, monstersSet, 50, 100));
                 }
                 else
                 {

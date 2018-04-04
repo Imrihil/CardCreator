@@ -40,9 +40,9 @@ namespace MyWarCreator.DataSet
                 }
                 else
                 {
-                    Monster monster = new Monster(monsterData, dirPath);
+                    /*Monster monster = new Monster(monsterData, dirPath);
                     monster.Update(row, dirPath);
-                    Add(monster);
+                    Add(monster);*/
                 }
                 return true;
             }

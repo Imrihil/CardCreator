@@ -13,12 +13,16 @@ namespace MyWarCreator.Models
     {
         public override string FileName { get { return Name; } }
         public double? Attack { get; set; }
-        public string SpecialAttack { get; set; }
+        public string AttackDices { get; set; }
         public int Armour { get; set; }
         public int HitPoints { get; set; }
-        public string SpecialQualities { get; set; }
+        public List<Ability> AttackAbilities { get; set; } = new List<Ability>();
+        public List<Ability> BeforeAbilities { get; set; } = new List<Ability>();
+        public List<Ability> AfterAbilities { get; set; } = new List<Ability>();
+        public List<Ability> PassiveAbilities { get; set; } = new List<Ability>();
+        public string Tags { get; set; }
 
-        public Monster(MonsterData monster, string dirPath) : base(dirPath)
+        /*public Monster(MonsterData monster, string dirPath) : base(dirPath)
         {
             MainImageArea = new Rectangle(65, 20, 230, 230);
 
@@ -71,7 +75,7 @@ namespace MyWarCreator.Models
                 Attack.HasValue ? DiceHelper.GetDices(Attack.Value) : "-",
                 string.IsNullOrEmpty(SpecialAttack) ? "" : " " + SpecialAttack,
                 Armour, HitPoints, SpecialQualities);
-        }
+        }*/
 
         public Monster(IList<string> row, string dirPath) : base(dirPath)
         {
@@ -85,24 +89,50 @@ namespace MyWarCreator.Models
                     Name = row[1];
                 else
                     Name = row[0];
-                if ((string.IsNullOrEmpty(row[0]) && string.IsNullOrEmpty(row[1])) || string.IsNullOrEmpty(row[3]) || string.IsNullOrEmpty(row[5]) || string.IsNullOrEmpty(row[6]))
+                if ((string.IsNullOrEmpty(row[0]) && string.IsNullOrEmpty(row[1])) || (string.IsNullOrEmpty(row[4]) && string.IsNullOrEmpty(row[5])) || string.IsNullOrEmpty(row[6]) || string.IsNullOrEmpty(row[7]))
                     throw new ArgumentException($"Błędnie podane statystyki przeciwnika {Name}!");
-                Type = row[2];
-                if (row[3].Contains("d") || row[3].Contains("k"))
-                {
-                    Attack = DiceHelper.GetAverage(row[3]);
-                }
-                else
-                {
-                    double.TryParse(row[3], out dvalue);
-                    Attack = Math.Max(dvalue, 1);
-                }
-                SpecialAttack = row[4];
-                int.TryParse(row[5], out value);
-                Armour = value;
+                double.TryParse(row[2], out dvalue);
+                Type = Math.Round(dvalue / 12).ToString();
+                double.TryParse(row[4], out dvalue);
+                Attack = dvalue;
+                AttackDices = row[5];
                 int.TryParse(row[6], out value);
+                Armour = Math.Max(value, 0);
+                int.TryParse(row[7], out value);
                 HitPoints = Math.Max(value, 1);
-                SpecialQualities = row[7];
+                for (int i = 0; i < 4; ++i)
+                {
+                    if (!string.IsNullOrWhiteSpace(row[8 + i * 2]))
+                    {
+                        int.TryParse(row[9 + i * 2], out value);
+                        AttackAbilities.Add(new Ability(row[8 + i * 2], value));
+                    }
+                }
+                for (int i = 0; i < 2; ++i)
+                {
+                    if (!string.IsNullOrWhiteSpace(row[16 + i * 2]))
+                    {
+                        int.TryParse(row[17 + i * 2], out value);
+                        BeforeAbilities.Add(new Ability(row[16 + i * 2], value));
+                    }
+                }
+                for (int i = 0; i < 2; ++i)
+                {
+                    if (!string.IsNullOrWhiteSpace(row[20 + i * 2]))
+                    {
+                        int.TryParse(row[21 + i * 2], out value);
+                        AfterAbilities.Add(new Ability(row[20 + i * 2], value));
+                    }
+                }
+                for (int i = 0; i < 5; ++i)
+                {
+                    if (!string.IsNullOrWhiteSpace(row[24 + i * 2]))
+                    {
+                        int.TryParse(row[25 + i * 2], out value);
+                        AfterAbilities.Add(new Ability(row[24 + i * 2], value));
+                    }
+                }
+                Tags = row[34];
             }
             catch (Exception)
             {
@@ -119,7 +149,7 @@ namespace MyWarCreator.Models
             InitMainImage(row[0], row[1], dirPath);
         }
 
-        internal void Update(IList<string> row, string dirPath)
+        /*internal void Update(IList<string> row, string dirPath)
         {
             if (!string.IsNullOrEmpty(row[1]))
                 Name = row[1];
@@ -138,7 +168,7 @@ namespace MyWarCreator.Models
 
             InitMainImage(row[0], row[1], dirPath);
             InitDescription();
-        }
+        }*/
 
         private void InitMainImage(string nameAng, string namePl, string dirPath)
         {
@@ -156,9 +186,66 @@ namespace MyWarCreator.Models
         private void InitDescription()
         {
             Description = string.Format("Atak: {0}{1}\n\nPancerz: {2}\nWytrzymałość: {3}\n\n{4}",
-                Attack.HasValue ? DiceHelper.GetDices(Attack.Value) : "-",
-                string.IsNullOrEmpty(SpecialAttack) ? "" : " " + SpecialAttack,
-                Armour, HitPoints, SpecialQualities);
+                string.IsNullOrEmpty(AttackDices) ? (Attack.HasValue ? "-" : DiceHelper.GetDices(Attack.Value)) : AttackDices,
+                SpecialAttackAbbilities(),
+                Armour, HitPoints, SpecialQualities());
+        }
+
+        private string SpecialAttackAbbilities()
+        {
+            if (AttackAbilities.Any())
+            {
+                StringBuilder sb = new StringBuilder(" [");
+                foreach (var ability in AttackAbilities)
+                {
+                    sb.Append(string.Format("{0}, ", ability.Description));
+                }
+                return sb.ToString(0, sb.Length - 2) + "]";
+            }
+            return "";
+        }
+
+        private string SpecialQualities()
+        {
+            StringBuilder sb = new StringBuilder();
+            if (BeforeAbilities.Any())
+            {
+                foreach (var ability in BeforeAbilities)
+                {
+                    sb.Append(string.Format("{0}, ", ability.Description));
+                }
+            }
+            if (AfterAbilities.Any())
+            {
+                foreach (var ability in AfterAbilities)
+                {
+                    sb.Append(string.Format("{0}, ", ability.Description));
+                }
+            }
+            if (PassiveAbilities.Any())
+            {
+                foreach (var ability in PassiveAbilities)
+                {
+                    sb.Append(string.Format("{0}, ", ability.Description));
+                }
+            }
+            if (sb.Length > 2)
+            {
+                return sb.ToString(0, sb.Length - 2);
+            }
+            return "";
+        }
+    }
+
+    class Ability
+    {
+        public string Name { get; set; }
+        public int Difficulty { get; set; }
+        public string Description { get { return Name + (Difficulty > 0 ? (" " + Difficulty) : ""); } }
+        public Ability(string name, int difficulty)
+        {
+            Name = name;
+            Difficulty = difficulty;
         }
     }
 }

@@ -52,3 +52,4 @@ D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.Propert
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.csproj.GenerateResource.Cache
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.exe
 D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.pdb
+D:\Dokumenty\RPG\My War\MyWarCreator\MyWarCreator\obj\Debug\MyWarCreator.csprojResolveAssemblyReference.cache
