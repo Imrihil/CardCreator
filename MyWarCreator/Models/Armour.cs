@@ -11,7 +11,6 @@ namespace MyWarCreator.Models
 {
     class Armour : Equipment
     {
-        public int ArmourValue { get; set; }
         public override string DescriptionFull
         {
             get
@@ -21,19 +20,10 @@ namespace MyWarCreator.Models
         }
         public Armour(IList<string> row, string dirPath) : base(row, dirPath)
         {
-            if (row[3] != "NULL") RunePlaces = "A\nB\nC\nD\nE";
-            if (row.Count < 13)
-                throw new ArgumentException("W wierszu znajduje się za mało kolumn by utworzyć kartę pancerza!");
             int value;
-            try
-            {
-                int.TryParse(row[12], out value);
-                ArmourValue = value;
-            }
-            catch (Exception)
-            {
-                throw new ArgumentException("Kolumna 12 powinna zawierać liczbę!");
-            }
+            if (row[4] != "NULL") RunePlaces = "A\nB\nC\nD\nE";
+            if (row.Count < 22 || !int.TryParse(row[3], out value))
+                throw new ArgumentException("W wierszu znajduje się za mało kolumn by utworzyć kartę pancerza!");
             if (File.Exists(dicesDirPath + "/default.png"))
                 DiceImage = Image.FromFile(dicesDirPath + "/default.png");
         }

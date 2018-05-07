@@ -17,19 +17,22 @@ namespace MyWarCreator.Models
         public Rectangle PriceArea { get; set; } = new Rectangle(19, 431, 43, 43);
         public Image PriceImage { get; set; }
         public Rectangle PriceImageArea { get; set; } = new Rectangle(3, 409, 86, 86);
+        public int ArmourValue { get; set; }
         public Equipment(IList<string> row, string dirPath) : base(dirPath)
         {
             TypeArea = new Rectangle(79, 452, 253, 18);
-            if (row.Count < 5)
+            if (row.Count < 22)
                 throw new ArgumentException("W wierszu znajduje się za mało kolumn by utworzyć kartę!");
+            int value;
             Type = row[0];
             Name = row[1];
             Dmg = row[2];
-            Rune = row[3];
+            int.TryParse(row[3], out value);
+            ArmourValue = value;
+            Rune = row[4];
             if (Rune == "NULL") Rune = null;
-            Description = row[4];
-            int value;
-            int.TryParse(row[13], out value);
+            Description = row[5];
+            int.TryParse(row[21], out value);
             Price = value;
             string backgroundPath = dirPath + "/background.png";
             if (File.Exists(backgroundPath))

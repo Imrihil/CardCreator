@@ -17,7 +17,7 @@ namespace MyWarCreator.DataSet
                 Add(new Weapon(row, dirPath));
                 return true;
             }
-            else if (row.Skip(12).Take(1).Any(x => !string.IsNullOrEmpty(x)))
+            else if (row.Skip(3).Take(1).Any(x => !string.IsNullOrEmpty(x)))
             {
                 Add(new Armour(row, dirPath));
                 return true;
