@@ -13,69 +13,13 @@ namespace MyWarCreator.Models
     {
         public override string FileName { get { return Name; } }
         public double? Attack { get; set; }
-        public string AttackDices { get; set; }
         public int Armour { get; set; }
         public int HitPoints { get; set; }
-        public List<Ability> AttackAbilities { get; set; } = new List<Ability>();
-        public List<Ability> BeforeAbilities { get; set; } = new List<Ability>();
-        public List<Ability> AfterAbilities { get; set; } = new List<Ability>();
-        public List<Ability> PassiveAbilities { get; set; } = new List<Ability>();
+        public double Level { get; set; }
+        public List<AttackAbility> AttackAbilities { get; set; } = new List<AttackAbility>();
+        public List<ActiveAbility> ActiveAbilities { get; set; } = new List<ActiveAbility>();
+        public List<PassiveAbility> PassiveAbilities { get; set; } = new List<PassiveAbility>();
         public string Tags { get; set; }
-
-        /*public Monster(MonsterData monster, string dirPath) : base(dirPath)
-        {
-            MainImageArea = new Rectangle(65, 20, 230, 230);
-
-            Name = monster.Name;
-            Type = monster.ChallengeRating;
-            int str = monster.Str.HasValue ? monster.Str.Value : 0;
-            int inte = monster.Int.HasValue ? monster.Int.Value : 0;
-            Attack = Math.Max((Math.Max(str, inte)) * 0.61 - 5.33, 0);
-            if (!string.IsNullOrEmpty(monster.FirstAttack))
-                if (str == 0 && inte == 0)
-                    Attack = DiceHelper.GetAverage(monster.FirstAttack) * 1.16 + 2;
-                else
-                    Attack += DiceHelper.GetAverage(monster.FirstAttack) * 0.55 + 2;
-            if (Attack != null && Attack < 0.5)
-                Attack = 0.5;
-            if (!string.IsNullOrEmpty(monster.FirstAttack))
-            {
-                if (DiceHelper.HasDice(monster.FirstAttack))
-                {
-                    int attackIdx = monster.FirstAttack.IndexOf(" ");
-                    if (attackIdx >= 0)
-                        SpecialAttack = monster.FirstAttack.Substring(attackIdx + 1);
-                }
-                else
-                {
-                    SpecialAttack = monster.FirstAttack;
-                }
-            }
-            Armour = Convert.ToInt32(monster.ArmourClass * 0.5) - 5;
-            if (Armour < 0) Armour = 0;
-            HitPoints = Convert.ToInt32(monster.HitDice * 0.2);
-            if (HitPoints < 1) HitPoints = 1;
-            SpecialQualities = monster.SpecialQualities;
-
-            string backgroundPath = dirPath + "/background.png";
-            string mainImageFramePath = dirPath + "/frame.png";
-            if (File.Exists(backgroundPath))
-                BackgroundImage = Image.FromFile(backgroundPath);
-            if (File.Exists(mainImageFramePath))
-                MainImageFrame = Image.FromFile(mainImageFramePath);
-            string mainImagePath = dirPath + "/" + Name + ".png";
-            if (!File.Exists(mainImagePath))
-                mainImagePath = dirPath + "/" + Name + ".jpg";
-            if (!File.Exists(mainImagePath))
-                mainImagePath = monster.ImagePath;
-            if (File.Exists(mainImagePath))
-                MainImage = Image.FromFile(mainImagePath);
-
-            Description = string.Format("Atak: {0}{1}\n\nPancerz: {2}\nWytrzymałość: {3}\n\n{4}",
-                Attack.HasValue ? DiceHelper.GetDices(Attack.Value) : "-",
-                string.IsNullOrEmpty(SpecialAttack) ? "" : " " + SpecialAttack,
-                Armour, HitPoints, SpecialQualities);
-        }*/
 
         public Monster(IList<string> row, string dirPath) : base(dirPath)
         {
@@ -89,50 +33,52 @@ namespace MyWarCreator.Models
                     Name = row[1];
                 else
                     Name = row[0];
-                if ((string.IsNullOrEmpty(row[0]) && string.IsNullOrEmpty(row[1])) || (string.IsNullOrEmpty(row[4]) && string.IsNullOrEmpty(row[5])) || string.IsNullOrEmpty(row[6]) || string.IsNullOrEmpty(row[7]))
+                if ((string.IsNullOrEmpty(row[0]) && string.IsNullOrEmpty(row[1])) || (string.IsNullOrEmpty(row[5]) && string.IsNullOrEmpty(row[7])) || string.IsNullOrEmpty(row[10]) || string.IsNullOrEmpty(row[11]))
                     throw new ArgumentException($"Błędnie podane statystyki przeciwnika {Name}!");
-                double.TryParse(row[2], out dvalue);
-                Type = Math.Round(dvalue / 12).ToString();
                 double.TryParse(row[4], out dvalue);
+                Level = dvalue;
+                double.TryParse(row[5], out dvalue);
                 Attack = dvalue;
-                AttackDices = row[5];
-                int.TryParse(row[6], out value);
+                int.TryParse(row[10], out value);
                 Armour = Math.Max(value, 0);
-                int.TryParse(row[7], out value);
+                int.TryParse(row[11], out value);
                 HitPoints = Math.Max(value, 1);
-                for (int i = 0; i < 4; ++i)
+                for (int i = 0; i < 1; ++i)
                 {
-                    if (!string.IsNullOrWhiteSpace(row[8 + i * 2]))
+                    if (!(string.IsNullOrWhiteSpace(row[6 + i * 4]) && string.IsNullOrWhiteSpace(row[7 + i * 4])))
                     {
-                        int.TryParse(row[9 + i * 2], out value);
-                        AttackAbilities.Add(new Ability(row[8 + i * 2], value));
+                        int.TryParse(row[9 + i * 4], out value);
+                        if (string.IsNullOrEmpty(row[7 + i * 4]) && Attack.HasValue)
+                            AttackAbilities.Add(new AttackAbility(row[6 + i * 4], DiceHelper.GetDices(Attack.Value), row[8 + i * 4], value));
+                        else
+                            AttackAbilities.Add(new AttackAbility(row[6 + i * 4], row[7 + i * 4], row[8 + i * 4], value));
                     }
                 }
-                for (int i = 0; i < 2; ++i)
+                for (int i = 0; i < 3; ++i)
                 {
-                    if (!string.IsNullOrWhiteSpace(row[16 + i * 2]))
+                    if (!string.IsNullOrWhiteSpace(row[13 + i * 3]))
                     {
-                        int.TryParse(row[17 + i * 2], out value);
-                        BeforeAbilities.Add(new Ability(row[16 + i * 2], value));
-                    }
-                }
-                for (int i = 0; i < 2; ++i)
-                {
-                    if (!string.IsNullOrWhiteSpace(row[20 + i * 2]))
-                    {
-                        int.TryParse(row[21 + i * 2], out value);
-                        AfterAbilities.Add(new Ability(row[20 + i * 2], value));
+                        int.TryParse(row[14 + i * 3], out value);
+                        ActiveAbilities.Add(new ActiveAbility(row[12 + i * 3], row[13 + i * 3], value));
                     }
                 }
                 for (int i = 0; i < 5; ++i)
                 {
-                    if (!string.IsNullOrWhiteSpace(row[24 + i * 2]))
+                    if (!string.IsNullOrWhiteSpace(row[21 + i]))
                     {
-                        int.TryParse(row[25 + i * 2], out value);
-                        AfterAbilities.Add(new Ability(row[24 + i * 2], value));
+                        int.TryParse(row[21 + i], out value);
+                        PassiveAbilities.Add(new PassiveAbility(row[21 + i]));
                     }
                 }
-                Tags = row[34];
+                Tags = row[26];
+                if (!string.IsNullOrEmpty(Tags))
+                {
+                    Type = Tags + " (" + LevelString() + ")";
+                }
+                else
+                {
+                    Type = LevelString();
+                }
             }
             catch (Exception)
             {
@@ -149,26 +95,36 @@ namespace MyWarCreator.Models
             InitMainImage(row[0], row[1], dirPath);
         }
 
-        /*internal void Update(IList<string> row, string dirPath)
+        private string LevelString()
         {
-            if (!string.IsNullOrEmpty(row[1]))
-                Name = row[1];
-            if (!string.IsNullOrEmpty(row[2]))
-                Type = row[2];
-            if (!string.IsNullOrEmpty(row[3]))
-                Attack = double.Parse(row[3]);
-            if (!string.IsNullOrEmpty(row[4]))
-                SpecialAttack = row[4];
-            if (!string.IsNullOrEmpty(row[5]))
-                Armour = int.Parse(row[5]);
-            if (!string.IsNullOrEmpty(row[6]))
-                HitPoints = int.Parse(row[6]);
-            if (!string.IsNullOrEmpty(row[7]))
-                SpecialQualities = row[7];
+            if (Level < 0.19)
+                return "1/8";
+            else if (Level < 0.28)
+                return "1/4";
+            else if (Level < 0.41)
+                return "1/3";
+            else if (Level < 0.58)
+                return "1/2";
+            else if (Level < 0.7)
+                return "2/3";
+            else if (Level < 0.81)
+                return "3/4";
+            else if (Level < 0.93)
+                return "7/8";
+            else if (Level < 1.12)
+                return "1";
+            else if (Level < 1.38)
+                return "1 1/4";
+            else if (Level < 1.62)
+                return "1 1/2";
+            else if (Level < 1.87)
+                return "1 3/4";
+            else if (Level < 2.75)
+                return "2 1/2";
+            else
+                return Math.Round(Level).ToString();
 
-            InitMainImage(row[0], row[1], dirPath);
-            InitDescription();
-        }*/
+        }
 
         private void InitMainImage(string nameAng, string namePl, string dirPath)
         {
@@ -185,67 +141,53 @@ namespace MyWarCreator.Models
 
         private void InitDescription()
         {
-            Description = string.Format("Atak: {0}{1}\n\nPancerz: {2}\nWytrzymałość: {3}\n\n{4}",
-                string.IsNullOrEmpty(AttackDices) ? (Attack.HasValue ? "-" : DiceHelper.GetDices(Attack.Value)) : AttackDices,
-                SpecialAttackAbbilities(),
-                Armour, HitPoints, SpecialQualities());
-        }
-
-        private string SpecialAttackAbbilities()
-        {
-            if (AttackAbilities.Any())
+            StringBuilder sb = new StringBuilder(string.Format("Pancerz: {0}, Wytrzymałość: {1}\n\n", Armour, HitPoints));
+            foreach (var ability in AttackAbilities)
             {
-                StringBuilder sb = new StringBuilder(" [");
-                foreach (var ability in AttackAbilities)
-                {
-                    sb.Append(string.Format("{0}, ", ability.Description));
-                }
-                return sb.ToString(0, sb.Length - 2) + "]";
+                sb.AppendLine(ability.Description);
             }
-            return "";
-        }
-
-        private string SpecialQualities()
-        {
-            StringBuilder sb = new StringBuilder();
-            if (BeforeAbilities.Any())
+            if (AttackAbilities.Any() && (ActiveAbilities.Any() || PassiveAbilities.Any()))
+                sb.AppendLine("");
+            foreach (var ability in ActiveAbilities)
             {
-                foreach (var ability in BeforeAbilities)
-                {
-                    sb.Append(string.Format("{0}, ", ability.Description));
-                }
+                sb.AppendLine(ability.Description);
             }
-            if (AfterAbilities.Any())
-            {
-                foreach (var ability in AfterAbilities)
-                {
-                    sb.Append(string.Format("{0}, ", ability.Description));
-                }
-            }
-            if (PassiveAbilities.Any())
-            {
-                foreach (var ability in PassiveAbilities)
-                {
-                    sb.Append(string.Format("{0}, ", ability.Description));
-                }
-            }
-            if (sb.Length > 2)
-            {
-                return sb.ToString(0, sb.Length - 2);
-            }
-            return "";
+            if (ActiveAbilities.Any() && PassiveAbilities.Any())
+                sb.AppendLine("");
+            sb.Append(string.Join(", ", PassiveAbilities.Select(x => x.Description.ToString())));
+            Description = sb.ToString();
         }
     }
 
-    class Ability
+    class PassiveAbility
     {
         public string Name { get; set; }
-        public int Difficulty { get; set; }
-        public string Description { get { return Name + (Difficulty > 0 ? (" " + Difficulty) : ""); } }
-        public Ability(string name, int difficulty)
+        public virtual string Description { get { return Name; } }
+        public PassiveAbility(string name)
         {
             Name = name;
+        }
+    }
+
+    class ActiveAbility : PassiveAbility
+    {
+        public string Type { get; set; }
+        public int Difficulty { get; set; }
+        public override string Description { get { return (string.IsNullOrWhiteSpace(Type) ? "" : Type + ": ") + Name + (Difficulty > 0 ? (" [" + Difficulty + "]") : ""); } }
+        public ActiveAbility(string type, string name, int difficulty) : base(name)
+        {
+            Type = type;
             Difficulty = difficulty;
+        }
+    }
+
+    class AttackAbility : ActiveAbility
+    {
+        public string Dmg { get; set; }
+        public override string Description { get { return (string.IsNullOrWhiteSpace(Type) ? "" : Type + ": ") + Dmg + (string.IsNullOrEmpty(Name) ? "" : (" + " + Name + (Difficulty > 0 ? (" [" + Difficulty + "]") : ""))); } }
+        public AttackAbility(string type, string dmg, string name, int difficulty) : base(type, name, difficulty)
+        {
+            Dmg = dmg;
         }
     }
 }
