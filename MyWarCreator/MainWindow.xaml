@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MyWarCreator"
         xmlns:p="clr-namespace:MyWarCreator.Properties"
         mc:Ignorable="d"
-        Title="MyWarCreator v.1.10" Height="600" Width="600">
+        Title="MyWarCreator v.1.11" Height="600" Width="600">
     <Grid x:Name="mainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

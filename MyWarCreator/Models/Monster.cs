@@ -114,13 +114,13 @@ namespace MyWarCreator.Models
             else if (Level < 1.12)
                 return "1";
             else if (Level < 1.38)
-                return "1 1/4";
+                return "5/4";
             else if (Level < 1.62)
-                return "1 1/2";
+                return "3/2";
             else if (Level < 1.87)
-                return "1 3/4";
+                return "7/4";
             else if (Level < 2.75)
-                return "2 1/2";
+                return "5/2";
             else
                 return Math.Round(Level).ToString();
 
