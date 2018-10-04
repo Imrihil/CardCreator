@@ -50,11 +50,11 @@ namespace MyWarCreator.Models
                 if (Fire > 0)
                     sb.AppendLine(ChancesLine("Podpalenie", Fire, ref actual));
                 if (Freeze > 0)
-                    sb.AppendLine(ChancesLine("Zamrożenie", Freeze, ref actual));
+                    sb.AppendLine(ChancesLine("Przemoczenie/zamrożenie", Freeze, ref actual));
                 if (Terror > 0)
-                    sb.AppendLine(ChancesLine("Przerażenie", Terror, ref actual));
+                    sb.AppendLine(ChancesLine("Strach", Terror, ref actual));
                 if (Weakness > 0)
-                    sb.AppendLine(ChancesLine("Osłabienie", Weakness, ref actual));
+                    sb.AppendLine(ChancesLine("Osłabienie k4", Weakness, ref actual));
                 if (Rage > 0)
                     sb.AppendLine(ChancesLine("Szał", Rage, ref actual));
                 if (Knockdown > 0)
@@ -68,6 +68,7 @@ namespace MyWarCreator.Models
                 return sb.ToString();
             }
         }
+
         private string ChancesLine(string name, int hitChance, ref int actual)
         {
             int min = actual;
@@ -81,6 +82,7 @@ namespace MyWarCreator.Models
             else
                 return string.Format("{0}-{1}: {2}", min, actual - 1, name);
         }
+
         public Weapon(IList<string> row, string dirPath) : base(row, dirPath)
         {
             if (row[3] != "NULL") RunePlaces = "A\nB\nC\nD\nE";
@@ -125,9 +127,10 @@ namespace MyWarCreator.Models
                 throw new ArgumentException("Kolumny 6-20 powinny zawierać liczby!");
             }
             LoadDiceImage();
-            if (File.Exists(dicesDirPath + "/upgrade.png"))
-                UpgradesImage = Image.FromFile(dicesDirPath + "/upgrade.png");
+            /*if (File.Exists(dicesDirPath + "/upgrade.png"))
+                UpgradesImage = Image.FromFile(dicesDirPath + "/upgrade.png");*/
         }
+
         public override void DrawCard(Graphics graphics)
         {
             base.DrawCard(graphics);
