@@ -71,7 +71,7 @@ namespace MyWarCreator
                 }
                 else
                 {
-                    appendTextBlockResultMessage("Nie znaleziono katalogu o nazwie equipments!");
+                    appendTextBlockResultMessage("Nie znaleziono katalogu o nazwie equipment!");
                 }
             }
             catch (Exception ex)

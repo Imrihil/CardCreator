@@ -18,7 +18,7 @@ namespace MyWarCreator.Models
         public Image PriceImage { get; set; }
         public Rectangle PriceImageArea { get; set; } = new Rectangle(3, 409, 86, 86);
         public int ArmourValue { get; set; }
-        public bool UseFrame { get; set; }
+        public int UseFrame { get; set; }
 
         public Equipment(IList<string> row, string dirPath) : base(dirPath)
         {
@@ -36,8 +36,8 @@ namespace MyWarCreator.Models
             Description = row[5];
             int.TryParse(row[21], out value);
             Price = value;
-            if (row[22] == "1")
-                UseFrame = true;
+            int.TryParse(row[22], out value);
+            UseFrame = value;
             string backgroundPath = dirPath + "/background.png";
             if (File.Exists(backgroundPath))
                 BackgroundImage = Image.FromFile(backgroundPath);
@@ -48,9 +48,11 @@ namespace MyWarCreator.Models
                 MainImage = Image.FromFile(mainImagePath);
             if (File.Exists(dicesDirPath + "/price.png"))
                 PriceImage = Image.FromFile(dicesDirPath + "/price.png");
-            if (UseFrame)
+            if (UseFrame > 0)
             {
                 string framePath = dirPath + "/frame.png";
+                if (UseFrame > 1)
+                    framePath = string.Format("{0}/frame{1}.png", dirPath, UseFrame);
                 if (File.Exists(framePath))
                     MainImageFrame = Image.FromFile(framePath);
             }
