@@ -12,73 +12,121 @@ namespace MyWarCreator.Models
 {
     class Skill : Card
     {
-        public List<string> PTs { get; set; } = new List<string>();
-        public string PTMain { get { return PTs.Any() ? ("PT: " + PTs.FirstOrDefault().ToString()) : ""; } }
-        public Rectangle PTMainArea { get; set; } = new Rectangle(29, 331, 53, 20);
-        public string PTRune { get { return PTs.Count > 1 ? ("/" + string.Join("/", PTs.Skip(1).Take(3).Select(x => x.ToString()))) : ""; } }
-        public Rectangle PTRuneArea { get; set; } = new Rectangle(79, 333, 43, 20);
+        public string Statistic { get; set; }
+        public Rectangle StatisticArea { get; set; } = new Rectangle(25, 460, 120, 15);
         public string Attribute { get; set; }
-        public Rectangle AttributeArea { get; set; } = new Rectangle(99, 303, 163, 18);
+        public Rectangle AttributeArea { get; set; } = new Rectangle(215, 460, 120, 15);
+        public int Lvl { get; set; }
+        public Rectangle LvlArea { get; set; } = new Rectangle(70, 460, 220, 15);
         public string Critical { get; set; }
-        public Rectangle CriticalArea { get; set; } = new Rectangle(122, 331, 207, 20);
-        public override string FileName { get { return $"{Type} - {Attribute} {Rune} - {Name}"; } }
+        public Image CriticalImage { get; set; }
+        public Rectangle CriticalArea { get; set; } = new Rectangle(70, 25, 50, 50);
+        public override string FileName { get { return $"{Statistic} - {Attribute} {Lvl} - {Name}"; } }
+        public bool IsOffensive { get; set; }
+        public string FirstType { get; set; }
+        public Image FirstTypeImage { get; set; }
+        public Rectangle FirstTypeImageArea { get; set; } = new Rectangle(30, 350, 40, 40);
+        public string FirstDescription { get; set; }
+        public Rectangle FirstDescriptionArea { get; set; } = new Rectangle(70, 285, 260, 170);
+        public string SecondType { get; set; }
+        public Image SecondTypeImage { get; set; }
+        public Rectangle SecondTypeImageArea { get; set; } = new Rectangle(30, 415, 40, 40);
+        public string SecondDescription { get; set; }
+        public Rectangle SecondDescriptionArea { get; set; } = new Rectangle(70, 415, 260, 40);
+
         public Skill(IList<string> row, string dirPath) : base(dirPath)
         {
-            RunesArea = new Rectangle(25, 35, 45, 70);
-            DescriptionArea = new Rectangle(29, 353, 303, 97);
-            MainImageArea = new Rectangle(72, 72, 217, 173);
-
-            if (row.Count < 5)
+            if (row.Count < 17)
                 throw new ArgumentException("W wierszu znajduje się za mało kolumn by utworzyć kartę!");
 
-            Rune = row[0];
-            Type = row[1];
+            int value;
+            int.TryParse(row[0], out value);
+            Lvl = value;
+            Statistic = row[1];
             Attribute = row[2];
             Name = row[3];
-            Dmg = row[4];
-            if (!string.IsNullOrEmpty(row[6])) PTs.Add(row[6]);
-            if (Rune == "NULL") Rune = null;
-            Description = row[8];
-            Critical = string.IsNullOrEmpty(row[9]) ? "" : $"[{row[9]}]";
-            if (PTs.Any())
+            for (int i = 4; i < 4 + 5; ++i)
             {
-                for (int i = 10; i < 14; ++i)
-                {
-                    if (!string.IsNullOrEmpty(row[i]) && row[i] != PTs.Last()) PTs.Add(row[i]);
-                }
+                if (!string.IsNullOrEmpty(row[i]))
+                    LeftEffects.Add(row[i] + "+");
             }
-
-            string defaultBackgroudPath = dirPath + "/background.png";
-            string backgroundPath = dirPath + $"/background" + (Description.Any() ? "_" + new string(Description.Split().FirstOrDefault().Where(Char.IsLetter).ToArray()).ToLower() : "") + ".png";
-            string defaultFramePath = dirPath + "/frame.png";
-            string mainImageFramePath = dirPath + $"/frame" + (Description.Any() ? "_" + new string(Description.Split().FirstOrDefault().Where(Char.IsLetter).ToArray()).ToLower() : "") + ".png";
-            if (File.Exists(backgroundPath))
-                BackgroundImage = Image.FromFile(backgroundPath);
-            else if (File.Exists(defaultBackgroudPath))
-                BackgroundImage = Image.FromFile(defaultBackgroudPath);
-            if (File.Exists(mainImageFramePath))
-                MainImageFrame = Image.FromFile(mainImageFramePath);
-            else if (File.Exists(defaultFramePath))
-                MainImageFrame = Image.FromFile(defaultFramePath);
+            for (int i = 9; i < 9 + 5; ++i)
+            {
+                if (!string.IsNullOrEmpty(row[i]))
+                    RightEffects.Add(row[i]);
+            }
+            if (row[14].ToLower() == "tak")
+            {
+                IsOffensive = true;
+                string imagePath = cardsDirPath + "/left-atk.png";
+                if (File.Exists(imagePath))
+                    LeftEffectsImage = Image.FromFile(imagePath);
+            }
+            FirstType = row[15];
+            FirstDescription = row[16];
+            Critical = row[17];
+            SecondType = row[18];
+            SecondDescription = row[19];
+            if (!string.IsNullOrEmpty(SecondDescription))
+            {
+                FirstTypeImageArea = new Rectangle(30, 327, 40, 40);
+                FirstDescriptionArea = new Rectangle(70, 285, 260, 125);
+            }
             string mainImagePath = dirPath + "/" + Name + ".png";
             if (!File.Exists(mainImagePath))
                 mainImagePath = dirPath + "/" + Name + ".jpg";
             if (File.Exists(mainImagePath))
                 MainImage = Image.FromFile(mainImagePath);
-            if (!string.IsNullOrEmpty(Dmg))
-                LoadDiceImage();
+            string criticalImagePath = cardsDirPath + "/" + Critical.Trim('.').ToLower() + ".png";
+            if (File.Exists(criticalImagePath))
+                CriticalImage = Image.FromFile(criticalImagePath);
+            string firstTypeImagePath = cardsDirPath + "/" + FirstType.Trim('.').ToLower() + ".png";
+            if (File.Exists(firstTypeImagePath))
+                FirstTypeImage = Image.FromFile(firstTypeImagePath);
+            string secondTypeImagePath = cardsDirPath + "/" + SecondType.Trim('.').ToLower() + ".png";
+            if (File.Exists(secondTypeImagePath))
+                SecondTypeImage = Image.FromFile(secondTypeImagePath);
         }
         public override void DrawCard(Graphics graphics)
         {
             base.DrawCard(graphics);
-            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 18, FontStyle.Bold, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedString(PTMain, font, Brushes.Black, PTMainArea, FontsHelper.StringFormatLeft, 6);
-            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 10, FontStyle.Bold, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedString(PTRune, font, Brushes.Black, PTRuneArea, FontsHelper.StringFormatLeft, 6);
-            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 10, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedString(Critical, font, Brushes.Black, CriticalArea, FontsHelper.StringFormatRight, 6);
-            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Akvaleir")), 12, FontStyle.Bold, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedString(Attribute, font, Brushes.Black, AttributeArea, FontsHelper.StringFormatCentered, 6);
+            if (CriticalImage != null)
+            {
+                DrawingHelper.MapDrawing(graphics, CriticalImage, CriticalArea);
+            }
+            else
+            {
+                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
+                    graphics.DrawAdjustedString(Critical, font, Brushes.White, CriticalArea, FontsHelper.StringFormatCentered, 6);
+            }
+            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
+                graphics.DrawAdjustedString(Statistic, font, Brushes.White, StatisticArea, FontsHelper.StringFormatLeft, 6);
+            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
+                graphics.DrawAdjustedString(Attribute, font, Brushes.White, AttributeArea, FontsHelper.StringFormatRight, 6);
+            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
+                graphics.DrawAdjustedString(DescriptionHelper.ToRoman(Lvl), font, Brushes.White, LvlArea, FontsHelper.StringFormatCentered, 6);
+            if (FirstTypeImage != null)
+            {
+                DrawingHelper.MapDrawing(graphics, FirstTypeImage, FirstTypeImageArea);
+            }
+            else
+            {
+                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
+                    graphics.DrawAdjustedString(FirstType, font, Brushes.White, FirstTypeImageArea, FontsHelper.StringFormatCentered, 6);
+            }
+            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
+                graphics.DrawAdjustedString(FirstDescription, font, Brushes.White, FirstDescriptionArea, FontsHelper.StringFormatCentered, 6);
+            if (SecondTypeImage != null)
+            {
+                DrawingHelper.MapDrawing(graphics, SecondTypeImage, SecondTypeImageArea);
+            }
+            else
+            {
+                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
+                    graphics.DrawAdjustedString(SecondType, font, Brushes.White, SecondTypeImageArea, FontsHelper.StringFormatCentered, 6);
+            }
+            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
+                graphics.DrawAdjustedString(SecondDescription, font, Brushes.White, SecondDescriptionArea, FontsHelper.StringFormatCentered, 6);
         }
     }
 }

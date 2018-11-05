@@ -11,7 +11,7 @@ namespace MyWarCreator.DataSet
     {
         public override bool AddRow(IList<string> row, string dirPath)
         {
-            if (row.Skip(1).Take(1).Any(x => !string.IsNullOrEmpty(x)))
+            if (row.Skip(3).Take(1).Any(x => !string.IsNullOrEmpty(x)))
             {
                 Skill skill = new Skill(row, dirPath);
                 if (!string.IsNullOrEmpty(skill.Name))

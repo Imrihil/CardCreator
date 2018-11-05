@@ -397,7 +397,7 @@ namespace MyWarCreator
                             var totalRows = myWorksheet.Dimension.End.Row;
                             var totalColumns = myWorksheet.Dimension.End.Column;
 
-                            for (int rowNum = 2; rowNum <= totalRows; ++rowNum) //selet starting row here
+                            for (int rowNum = 10; rowNum <= totalRows; ++rowNum) //selet starting row here
                             {
                                 List<string> row = new List<string>();
                                 for (int colNum = 1; colNum <= totalColumns; ++colNum)

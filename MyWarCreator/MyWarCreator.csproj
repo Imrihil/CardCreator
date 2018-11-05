@@ -113,13 +113,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Armour.cs" />
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Equipment.cs" />
-    <Compile Include="Models\Loot.cs" />
     <Compile Include="Models\Monster.cs" />
     <Compile Include="Models\Skill.cs" />
-    <Compile Include="Models\Weapon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

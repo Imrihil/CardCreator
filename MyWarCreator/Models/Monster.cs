@@ -90,8 +90,6 @@ namespace MyWarCreator.Models
             string mainImageFramePath = dirPath + "/frame.png";
             if (File.Exists(backgroundPath))
                 BackgroundImage = Image.FromFile(backgroundPath);
-            if (File.Exists(mainImageFramePath))
-                MainImageFrame = Image.FromFile(mainImageFramePath);
             InitMainImage(row[0], row[1], dirPath);
         }
 

@@ -14,31 +14,10 @@ namespace MyWarCreator.DataSet
         {
             if (row.Skip(2).Take(1).Any(x => !string.IsNullOrEmpty(x)))
             {
-                Add(new Weapon(row, dirPath));
-                return true;
-            }
-            else if (row.Skip(3).Take(1).Any(x => !string.IsNullOrEmpty(x)))
-            {
-                Add(new Armour(row, dirPath));
-                return true;
-            }
-            else if (row[0].ToLower().Equals("łup"))
-            {
-                Add(new Loot(row, dirPath));
-                int id = 1;
-                while (File.Exists(dirPath + "/" + row[1] + " " + row[3] + id.ToString() + ".png")
-                    || File.Exists(dirPath + "/" + row[1] + " " + row[3] + id.ToString() + ".jpg"))
-                {
-                    Add(new Loot(row, dirPath, id.ToString()));
-                    ++id;
-                }
-                return true;
-            }
-            else
-            {
                 Add(new Equipment(row, dirPath));
                 return true;
             }
+            return false;
         }
     }
 }
