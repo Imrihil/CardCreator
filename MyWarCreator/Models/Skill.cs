@@ -58,9 +58,9 @@ namespace MyWarCreator.Models
             if (row[14].ToLower() == "tak")
             {
                 IsOffensive = true;
-                string imagePath = cardsDirPath + "/left-atk.png";
-                if (File.Exists(imagePath))
-                    LeftEffectsImage = Image.FromFile(imagePath);
+                string leftEffectsImagePath = cardsDirPath + "/left-atk.png";
+                if (File.Exists(leftEffectsImagePath))
+                    LeftEffectsImage = Image.FromFile(leftEffectsImagePath);
             }
             FirstType = row[15];
             FirstDescription = row[16];

@@ -12,7 +12,7 @@ namespace MyWarCreator.DataSet
     {
         public override bool AddRow(IList<string> row, string dirPath)
         {
-            if (row.Skip(2).Take(1).Any(x => !string.IsNullOrEmpty(x)))
+            if (row.Skip(1).Take(1).Any(x => !string.IsNullOrEmpty(x)))
             {
                 Add(new Equipment(row, dirPath));
                 return true;

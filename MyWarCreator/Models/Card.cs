@@ -18,7 +18,7 @@ namespace MyWarCreator.Models
         protected const string cardsDirPath = @"./cards";
 #endif
         public virtual string Type { get; set; }
-        public Rectangle TypeArea { get; set; } = new Rectangle(130, 460, 205, 15);
+        public Rectangle TypeArea { get; set; } = new Rectangle(100, 460, 235, 15);
         public string Name { get; set; }
         public Rectangle NameArea { get; set; } = new Rectangle(70, 245, 220, 40);
         public List<string> LeftEffects { get; set; } = new List<string>();
@@ -42,6 +42,7 @@ namespace MyWarCreator.Models
         public Image BackgroundImage { get; set; }
         public string ResultsDirPath { get; set; }
         public virtual string FileName { get { return $"{Type} - {Name}"; } }
+        public int PriceLimit { get; set; } = 2;
 
         public Card(string dirPath)
         {
@@ -89,10 +90,11 @@ namespace MyWarCreator.Models
                     graphics.DrawAdjustedString(Type.ToUpper(), font, Brushes.White, TypeArea, FontsHelper.StringFormatCentered, 6);
             }
             float leftEffectsFont = 20;
-            for(int i = 0; i < LeftEffects.Count; ++i)
+            for (int i = 0; i < LeftEffects.Count; ++i)
             {
-                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), leftEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
-                    leftEffectsFont = FontsHelper.GetAdjustedFont(graphics, LeftEffects[i], font, LeftEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)leftEffectsFont, true, false).Size;
+                if (!string.IsNullOrEmpty(LeftEffects[i]))
+                    using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), leftEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
+                        leftEffectsFont = FontsHelper.GetAdjustedFont(graphics, LeftEffects[i], font, LeftEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)leftEffectsFont, true, false).Size;
             }
             for (int i = 0; i < LeftEffects.Count; ++i)
             {
@@ -102,13 +104,37 @@ namespace MyWarCreator.Models
             float rightEffectsFont = 20;
             for (int i = 0; i < RightEffects.Count; ++i)
             {
-                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
-                    rightEffectsFont = FontsHelper.GetAdjustedFont(graphics, RightEffects[i], font, RightEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)rightEffectsFont, true, false).Size;
+                if (!string.IsNullOrEmpty(RightEffects[i]))
+                    using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
+                        rightEffectsFont = FontsHelper.GetAdjustedFont(graphics, RightEffects[i], font, RightEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)rightEffectsFont, true, false).Size;
             }
             for (int i = 0; i < RightEffects.Count; ++i)
             {
                 using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(RightEffects[i], font, Brushes.White, RightEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)rightEffectsFont, true, false);
+            }
+            if (PriceImage != null)
+            {
+                if (Price <= PriceLimit)
+                {
+                    for (int i = 0; i < Price; ++i)
+                    {
+                        Rectangle priceImageAreaI = new Rectangle(PriceImageArea.X + i * PriceImageArea.Width, PriceImageArea.Y, PriceImageArea.Width, PriceImageArea.Height);
+                        DrawingHelper.MapDrawing(graphics, PriceImage, priceImageAreaI);
+                    }
+                }
+                else
+                {
+                    using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
+                        graphics.DrawAdjustedString(Price.ToString(), font, Brushes.White, PriceImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
+                    Rectangle priceImageAreaI = new Rectangle(PriceImageArea.X + PriceImageArea.Width, PriceImageArea.Y, PriceImageArea.Width, PriceImageArea.Height);
+                    DrawingHelper.MapDrawing(graphics, PriceImage, priceImageAreaI);
+                }
+            }
+            else
+            {
+                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
+                    graphics.DrawAdjustedString(Price.ToString(), font, Brushes.White, PriceImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
             }
         }
         public string GenerateFile(string fileNamePrefix = "", string fileNameSuffix = "")

@@ -6,12 +6,11 @@
         xmlns:local="clr-namespace:MyWarCreator"
         xmlns:p="clr-namespace:MyWarCreator.Properties"
         mc:Ignorable="d"
-        Title="MyWarCreator v.2.0" Height="600" Width="600">
+        Title="MyWarCreator v.2.1" Height="600" Width="600">
     <Grid x:Name="mainGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="25*"/>
-            <ColumnDefinition Width="49*"/>
-            <ColumnDefinition Width="74*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -27,18 +26,18 @@
         </Grid.RowDefinitions>
         <TextBlock x:Name="textBlockHello" Margin="10,10,10,10" TextWrapping="Wrap" Grid.ColumnSpan="3"><Run Text="{x:Static p:Resources.Hello}"/></TextBlock>
         <TextBlock x:Name="textBlockDescription" Margin="10,10,10,10" TextWrapping="Wrap" FontStyle="Italic" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="3"><Run Text="{x:Static p:Resources.Description}"/></TextBlock>
-        <Button x:Name="buttonGenerateWeapons" Content="Generuj karty ekwipunku" Margin="10,5,5,5" Click="buttonGenerateWeapons_Click" Grid.Row="2" Grid.ColumnSpan="2"/>
+        <Button x:Name="buttonGenerateWeapons" Content="Generuj karty ekwipunku" Margin="10,5,5,5" Click="buttonGenerateWeapons_Click" Grid.Row="2" />
         <Button x:Name="buttonWeaponsPdf" Content="{x:Static p:Resources.WeaponsPdf}" Margin="5,5,10,5" Click="buttonWeaponsPdf_Click" Grid.Row="2" Grid.Column="2"/>
-        <Button x:Name="buttonGenerateSkills" Content="{x:Static p:Resources.Skills}" Margin="10,5,5,5" Click="buttonGenerateSkills_Click" Grid.Row="3" Grid.ColumnSpan="2"/>
+        <Button x:Name="buttonGenerateSkills" Content="{x:Static p:Resources.Skills}" Margin="10,5,5,5" Click="buttonGenerateSkills_Click" Grid.Row="3" />
         <Button x:Name="buttonSkillsPdf" Content="{x:Static p:Resources.SkillsPdf}" Margin="5,5,10,5" Click="buttonSkillsPdf_Click" Grid.Row="3" Grid.Column="2"/>
-        <Button x:Name="buttonDownloadMonsters" Content="{x:Static p:Resources.DownloadMonsters}" Margin="10,5,10,5" Click="buttonDownloadMonsters_Click" Grid.Row="4" Grid.ColumnSpan="3"/>
-        <Button x:Name="buttonGenerateMonsters" Content="{x:Static p:Resources.GenerateMonsters}" Margin="10,5,5,5" Click="buttonGenerateMonsters_Click" Grid.Row="5" Grid.ColumnSpan="2"/>
+        <Button x:Name="buttonDownloadMonsters" Content="{x:Static p:Resources.DownloadMonsters}" Margin="10,5,10,5" Click="buttonDownloadMonsters_Click" Grid.Row="4" Grid.ColumnSpan="2"/>
+        <Button x:Name="buttonGenerateMonsters" Content="{x:Static p:Resources.GenerateMonsters}" Margin="10,5,5,5" Click="buttonGenerateMonsters_Click" Grid.Row="5" />
         <Button x:Name="buttonMonstersPdf" Content="{x:Static p:Resources.MonstersPdf}" Margin="5,5,10,5" Click="buttonMonstersPdf_Click" Grid.Row="5" Grid.Column="2"/>
-        <Button x:Name="buttonGenerateAll" Content="{x:Static p:Resources.GenerateAll}" Margin="10,5,5,5" Click="buttonGenerateAll_Click" Grid.Row="6" Grid.ColumnSpan="2"/>
+        <Button x:Name="buttonGenerateAll" Content="{x:Static p:Resources.GenerateAll}" Margin="10,5,5,5" Click="buttonGenerateAll_Click" Grid.Row="6" />
         <Button x:Name="buttonPreparePdf" Content="{x:Static p:Resources.PreparePdf}" Margin="5,5,10,5" Click="buttonGeneratePdf_Click" Grid.Row="6" Grid.Column="2"/>
-        <Button x:Name="buttonCustomPdf" Content="{x:Static p:Resources.CustomPdf}" Margin="10,5,10,5" Click="buttonCustomPdf_Click" Grid.Row="7" Grid.ColumnSpan="3"/>
-        <ProgressBar x:Name="progressBar" Margin="10,10,10,10" IsHitTestVisible="True" Grid.Row="8" Grid.ColumnSpan="3"/>
-        <TextBlock x:Name="progressBarText" Margin="188,12,287,12" Text="{Binding ElementName=progressBar, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="8" Grid.ColumnSpan="2" Grid.Column="1"/>
+        <Button x:Name="buttonCustomPdf" Content="{x:Static p:Resources.CustomPdf}" Margin="10,5,10,5" Click="buttonCustomPdf_Click" Grid.Row="7" Grid.ColumnSpan="2"/>
+        <ProgressBar x:Name="progressBar" Margin="10,10,10,10" IsHitTestVisible="True" Grid.Row="8" Grid.ColumnSpan="2"/>
+        <TextBlock x:Name="progressBarText" Margin="188,12,287,12" Text="{Binding ElementName=progressBar, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="8" Grid.ColumnSpan="2"/>
         <TextBox x:Name="textBoxResultMessage" Margin="10,10,10,10" Grid.Row="9" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="Logi." Grid.ColumnSpan="3"/>
     </Grid>
 </Window>
