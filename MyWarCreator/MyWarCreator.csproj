@@ -113,6 +113,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\AttackAbilityCard.cs" />
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Equipment.cs" />
     <Compile Include="Models\Monster.cs" />

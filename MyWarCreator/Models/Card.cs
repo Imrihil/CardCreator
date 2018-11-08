@@ -47,21 +47,11 @@ namespace MyWarCreator.Models
         public Card(string dirPath)
         {
             ResultsDirPath = dirPath + "/results";
-            string leftEffectsImagePath = cardsDirPath + "/left.png";
-            if (File.Exists(leftEffectsImagePath))
-                LeftEffectsImage = Image.FromFile(leftEffectsImagePath);
-            string rightEffectsImagePathImagePath = cardsDirPath + "/right.png";
-            if (File.Exists(rightEffectsImagePathImagePath))
-                RightEffectsImage = Image.FromFile(rightEffectsImagePathImagePath);
-            string priceImagePath = cardsDirPath + "/price.png";
-            if (File.Exists(priceImagePath))
-                PriceImage = Image.FromFile(priceImagePath);
-            string frontImagePath = cardsDirPath + "/front.png";
-            if (File.Exists(frontImagePath))
-                FrontImage = Image.FromFile(frontImagePath);
-            string backgroundImagePath = cardsDirPath + "/background.png";
-            if (File.Exists(backgroundImagePath))
-                BackgroundImage = Image.FromFile(backgroundImagePath);
+            LeftEffectsImage = LoadImage(cardsDirPath, "left");
+            RightEffectsImage = LoadImage(cardsDirPath, "right");
+            PriceImage = LoadImage(cardsDirPath, "price");
+            FrontImage = LoadImage(cardsDirPath, "front");
+            BackgroundImage = LoadImage(cardsDirPath, "background");
         }
 
         public virtual void DrawCard(Graphics graphics)
@@ -137,6 +127,7 @@ namespace MyWarCreator.Models
                     graphics.DrawAdjustedString(Price.ToString(), font, Brushes.White, PriceImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
             }
         }
+
         public string GenerateFile(string fileNamePrefix = "", string fileNameSuffix = "")
         {
             try
@@ -160,6 +151,20 @@ namespace MyWarCreator.Models
             {
                 return $"Podczas generowania karty {Name} wystąpił błąd: " + ex.Message;
             }
+        }
+
+        public Image LoadImage(string dirPath, string name)
+        {
+            string imagePath = dirPath + "/" + name + ".png";
+            if (!File.Exists(imagePath))
+                imagePath = dirPath + "/" + name + ".jpg";
+            if (!File.Exists(imagePath))
+                imagePath = dirPath + "/" + name.ToLower() + ".png";
+            if (!File.Exists(imagePath))
+                imagePath = dirPath + "/" + name.ToLower() + ".jpg";
+            if (File.Exists(imagePath))
+                return Image.FromFile(imagePath);
+            return null;
         }
     }
 }
