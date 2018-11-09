@@ -40,7 +40,7 @@ namespace MyWarCreator.Models
             if (FriendyFire > 0)
                 sb.AppendLine(ChancesLine("Swój", FriendyFire, ref actual));
             if (Hit > 0)
-                sb.AppendLine(ChancesLine("Trafienie", Hit, ref actual));
+                ChancesLine("Trafienie", Hit, ref actual);
             if (Downturn > 0)
                 sb.AppendLine(ChancesLine("Spowolnienie", Downturn, ref actual));
             if (Knockdown > 0)
@@ -109,8 +109,6 @@ namespace MyWarCreator.Models
             Hypnosis = value;
             int.TryParse(row[16], out value);
             Crit = value;
-            int.TryParse(row[17], out value);
-            Defence = value;
         }
 
         private string ChancesLine(string name, int hitChance, ref int actual)

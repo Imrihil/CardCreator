@@ -18,7 +18,7 @@ namespace MyWarCreator.Models
         protected const string cardsDirPath = @"./cards";
 #endif
         public virtual string Type { get; set; }
-        public Rectangle TypeArea { get; set; } = new Rectangle(100, 460, 235, 15);
+        public Rectangle TypeArea { get; set; } = new Rectangle(25, 460, 310, 15);
         public string Name { get; set; }
         public Rectangle NameArea { get; set; } = new Rectangle(70, 245, 220, 40);
         public List<string> LeftEffects { get; set; } = new List<string>();
@@ -42,7 +42,7 @@ namespace MyWarCreator.Models
         public Image BackgroundImage { get; set; }
         public string ResultsDirPath { get; set; }
         public virtual string FileName { get { return $"{Type} - {Name}"; } }
-        public int PriceLimit { get; set; } = 2;
+        public int PriceLimit { get; set; } = 3;
 
         public Card(string dirPath)
         {
@@ -105,20 +105,24 @@ namespace MyWarCreator.Models
             }
             if (PriceImage != null)
             {
-                if (Price <= PriceLimit)
+                if (Price > 0)
                 {
-                    for (int i = 0; i < Price; ++i)
+                    if (Price <= PriceLimit)
                     {
-                        Rectangle priceImageAreaI = new Rectangle(PriceImageArea.X + i * PriceImageArea.Width, PriceImageArea.Y, PriceImageArea.Width, PriceImageArea.Height);
+                        for (int i = 0; i < Price; ++i)
+                        {
+                            Rectangle priceImageAreaI = new Rectangle(PriceImageArea.X + i * PriceImageArea.Width, PriceImageArea.Y, PriceImageArea.Width, PriceImageArea.Height);
+                            DrawingHelper.MapDrawing(graphics, PriceImage, priceImageAreaI);
+                        }
+                    }
+                    else
+                    {
+                        Rectangle priceImageAreaI = new Rectangle(PriceImageArea.X, PriceImageArea.Y, PriceImageArea.Width / 2, PriceImageArea.Height);
+                        using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
+                            graphics.DrawAdjustedString(Price.ToString(), font, Brushes.White, priceImageAreaI, FontsHelper.StringFormatCentered, 6, 12, true, false);
+                        priceImageAreaI = new Rectangle(PriceImageArea.X + PriceImageArea.Width / 2, PriceImageArea.Y, PriceImageArea.Width, PriceImageArea.Height);
                         DrawingHelper.MapDrawing(graphics, PriceImage, priceImageAreaI);
                     }
-                }
-                else
-                {
-                    using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
-                        graphics.DrawAdjustedString(Price.ToString(), font, Brushes.White, PriceImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
-                    Rectangle priceImageAreaI = new Rectangle(PriceImageArea.X + PriceImageArea.Width, PriceImageArea.Y, PriceImageArea.Width, PriceImageArea.Height);
-                    DrawingHelper.MapDrawing(graphics, PriceImage, priceImageAreaI);
                 }
             }
             else
@@ -153,7 +157,7 @@ namespace MyWarCreator.Models
             }
         }
 
-        public Image LoadImage(string dirPath, string name)
+        protected Image LoadImage(string dirPath, string name)
         {
             string imagePath = dirPath + "/" + name + ".png";
             if (!File.Exists(imagePath))
@@ -165,6 +169,17 @@ namespace MyWarCreator.Models
             if (File.Exists(imagePath))
                 return Image.FromFile(imagePath);
             return null;
+        }
+
+        protected void CalculateTypeArea()
+        {
+            if (Price > 0)
+            {
+                if (Price <= PriceLimit)
+                    TypeArea = new Rectangle(TypeArea.X + PriceImage.Width * Price, TypeArea.Y, TypeArea.Width - PriceImage.Width * Price, TypeArea.Height);
+                else
+                    TypeArea = new Rectangle(TypeArea.X + PriceImage.Width * 3 / 2, TypeArea.Y, TypeArea.Width - PriceImage.Width * 3 / 2, TypeArea.Height);
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ namespace MyWarCreator.DataSet
         {
             if (row.Skip(1).Take(1).Any(x => !string.IsNullOrEmpty(x)))
             {
-                Add(new Equipment(row, dirPath));
+                Add(new Monster(row, dirPath));
                 return true;
             }
             return false;

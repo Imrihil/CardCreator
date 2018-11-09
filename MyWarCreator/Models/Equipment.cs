@@ -51,21 +51,20 @@ namespace MyWarCreator.Models
                 !string.IsNullOrEmpty(row[10]) ||
                 !string.IsNullOrEmpty(row[11]))
             {
-                if (!string.IsNullOrEmpty(row[7])) RightEffects.Add((row[7] == "1" ? "" : row[7]) + "k4"); else RightEffects.Add("");
-                if (!string.IsNullOrEmpty(row[8])) RightEffects.Add((row[8] == "1" ? "" : row[8]) + "k6"); else RightEffects.Add("");
-                if (!string.IsNullOrEmpty(row[9])) RightEffects.Add((row[9] == "1" ? "" : row[9]) + "k8"); else RightEffects.Add("");
-                if (!string.IsNullOrEmpty(row[10])) RightEffects.Add((row[10] == "1" ? "" : row[10]) + "k10"); else RightEffects.Add("");
-                if (!string.IsNullOrEmpty(row[11])) RightEffects.Add((row[11] == "1" ? "" : row[11]) + "k12"); else RightEffects.Add("");
+                if (!string.IsNullOrEmpty(row[7])) RightEffects.Add((row[7] == "1" ? (row[29] == "TAK" ? "1" : "") : row[7]) + (row[29] == "TAK" ? "" : "k4")); else RightEffects.Add("");
+                if (!string.IsNullOrEmpty(row[8])) RightEffects.Add((row[8] == "1" ? (row[29] == "TAK" ? "1" : "") : row[8]) + (row[29] == "TAK" ? "" : "k6")); else RightEffects.Add("");
+                if (!string.IsNullOrEmpty(row[9])) RightEffects.Add((row[9] == "1" ? (row[29] == "TAK" ? "1" : "") : row[9]) + (row[29] == "TAK" ? "" : "k8")); else RightEffects.Add("");
+                if (!string.IsNullOrEmpty(row[10])) RightEffects.Add((row[10] == "1" ? (row[29] == "TAK" ? "1" : "") : row[10]) + (row[29] == "TAK" ? "" : "k10")); else RightEffects.Add("");
+                if (!string.IsNullOrEmpty(row[11])) RightEffects.Add((row[11] == "1" ? (row[29] == "TAK" ? "1" : "") : row[11]) + (row[29] == "TAK" ? "" : "k12")); else RightEffects.Add("");
             }
             ProcessRow(row.Skip(12).ToList());
+            int.TryParse(row[29], out value);
+            Defence = value;
             Description = row[30];
             int.TryParse(row[31], out value);
             Price = value;
-            if (Price == 3)
-            {
-                PriceLimit = 3;
-                TypeArea = new Rectangle(TypeArea.X + PriceImage.Width, TypeArea.Y, TypeArea.Width - PriceImage.Width, TypeArea.Height);
-            }
+
+            CalculateTypeArea();
 
             MainImage = LoadImage(dirPath, Name);
             LeftEffectsImage = LoadImage(cardsDirPath, "left-stats");

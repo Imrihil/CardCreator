@@ -67,25 +67,17 @@ namespace MyWarCreator.Models
             Critical = row[17];
             SecondType = row[18];
             SecondDescription = row[19];
+
             if (!string.IsNullOrEmpty(SecondDescription))
             {
                 FirstTypeImageArea = new Rectangle(30, 327, 40, 40);
                 FirstDescriptionArea = new Rectangle(70, 285, 260, 125);
             }
-            string mainImagePath = dirPath + "/" + Name + ".png";
-            if (!File.Exists(mainImagePath))
-                mainImagePath = dirPath + "/" + Name + ".jpg";
-            if (File.Exists(mainImagePath))
-                MainImage = Image.FromFile(mainImagePath);
-            string criticalImagePath = cardsDirPath + "/" + Critical.Trim('.').ToLower() + ".png";
-            if (File.Exists(criticalImagePath))
-                CriticalImage = Image.FromFile(criticalImagePath);
-            string firstTypeImagePath = cardsDirPath + "/" + FirstType.Trim('.').ToLower() + ".png";
-            if (File.Exists(firstTypeImagePath))
-                FirstTypeImage = Image.FromFile(firstTypeImagePath);
-            string secondTypeImagePath = cardsDirPath + "/" + SecondType.Trim('.').ToLower() + ".png";
-            if (File.Exists(secondTypeImagePath))
-                SecondTypeImage = Image.FromFile(secondTypeImagePath);
+
+            MainImage = LoadImage(dirPath, Name);
+            CriticalImage = LoadImage(cardsDirPath, Critical.Trim('.'));
+            FirstTypeImage = LoadImage(cardsDirPath, FirstType.Trim('.'));
+            SecondTypeImage = LoadImage(cardsDirPath, SecondType.Trim('.'));
         }
         public override void DrawCard(Graphics graphics)
         {

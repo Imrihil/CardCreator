@@ -25,11 +25,16 @@ namespace MyWarCreator.Models
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat("Atak: {0}k12, Obrona: {1}, Życie: {2}\n\n", Attack, Defence, HitPoints);
-                sb.Append(string.Join(", ", ActiveAbilities.Select(x => x.Description.ToString())));
+                sb.Append(string.Join(", ", ActiveAbilities.Select(x => x.Description)));
                 if (ActiveAbilities.Any()) sb.AppendLine();
-                sb.Append(string.Join(", ", PassiveAbilities.Select(x => x.Description.ToString())));
+                sb.Append(string.Join(", ", PassiveAbilities.Select(x => x.Description)));
                 if (PassiveAbilities.Any()) sb.AppendLine();
                 sb.Append(AttackDescription());
+                if (!string.IsNullOrEmpty(Description))
+                {
+                    sb.AppendLine();
+                    sb.Append(Description);
+                }
                 return sb.ToString();
             }
         }
@@ -48,52 +53,52 @@ namespace MyWarCreator.Models
             Defence = value;
             int.TryParse(row[5], out value);
             HitPoints = value;
+            ProcessRow(row.Skip(6).ToList());
+            for (int i = 0; i < 3; ++i)
+            {
+                string type = row[23 + i * 3];
+                string name = row[24 + i * 3];
+                int.TryParse(row[25 + i * 3], out value);
+                if (!string.IsNullOrEmpty(name))
+                    ActiveAbilities.Add(new ActiveAbility(type, name, value));
+            }
+            for (int i = 32; i < 32 + 5; ++i)
+            {
+                string name = row[i];
+                if (!string.IsNullOrEmpty(name))
+                    PassiveAbilities.Add(new PassiveAbility(name));
+            }
+            Description = row[65];
+            double.TryParse(row[66], out dvalue);
+            Level = dvalue;
+            if (string.IsNullOrEmpty(Type))
+            {
+                Type = LevelString();
+            }
+            else
+            {
+                Type = Type + " " + LevelString();
+            }
 
             MainImage = LoadImage(dirPath, Name);
         }
 
         private string LevelString()
         {
-            if (Level < 0.19)
-                return "1/8";
-            else if (Level < 0.28)
-                return "1/4";
-            else if (Level < 0.41)
-                return "1/3";
-            else if (Level < 0.58)
-                return "1/2";
-            else if (Level < 0.7)
-                return "2/3";
-            else if (Level < 0.81)
-                return "3/4";
-            else if (Level < 0.93)
-                return "7/8";
-            else if (Level < 1.12)
-                return "1";
-            else if (Level < 1.38)
-                return "5/4";
-            else if (Level < 1.62)
-                return "3/2";
-            else if (Level < 1.87)
-                return "7/4";
-            else if (Level < 2.75)
-                return "5/2";
-            else
-                return Math.Round(Level).ToString();
+            if (Level < 0.19) return "1/8";
+            else if (Level < 0.28) return "1/4";
+            else if (Level < 0.41) return "1/3";
+            else if (Level < 0.58) return "1/2";
+            else if (Level < 0.70) return "2/3";
+            else if (Level < 0.81) return "3/4";
+            else if (Level < 0.93) return "7/8";
+            else if (Level < 1.12) return "1";
+            else if (Level < 1.38) return "5/4";
+            else if (Level < 1.62) return "3/2";
+            else if (Level < 1.87) return "7/4";
+            else if (Level < 2.75) return "5/2";
+            else return ((int)Math.Round(Level)).ToString();
 
-        }
-
-        private void InitMainImage(string nameAng, string namePl, string dirPath)
-        {
-            string mainImagePath = dirPath + "/" + namePl + ".png";
-            if (!File.Exists(mainImagePath))
-                mainImagePath = dirPath + "/" + namePl + ".jpg";
-            if (!File.Exists(mainImagePath))
-                mainImagePath = dirPath + "/" + nameAng + ".png";
-            if (!File.Exists(mainImagePath))
-                mainImagePath = dirPath + "/" + nameAng + ".jpg";
-            if (File.Exists(mainImagePath))
-                MainImage = Image.FromFile(mainImagePath);
         }
     }
 
@@ -111,7 +116,7 @@ namespace MyWarCreator.Models
     {
         public string Type { get; set; }
         public int Difficulty { get; set; }
-        public override string Description { get { return (string.IsNullOrWhiteSpace(Type) ? "" : Type + ": ") + Name + (Difficulty > 0 ? (" [" + Difficulty + "]") : ""); } }
+        public override string Description { get { return (string.IsNullOrWhiteSpace(Type) ? "" : Type + ": ") + Name + (Difficulty > 0 ? (" [" + Difficulty + "+]") : ""); } }
         public ActiveAbility(string type, string name, int difficulty) : base(name)
         {
             Type = type;
