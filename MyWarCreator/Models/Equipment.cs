@@ -27,9 +27,6 @@ namespace MyWarCreator.Models
 
         public Equipment(IList<string> row, string dirPath) : base(dirPath)
         {
-            TypeArea = new Rectangle(79, 452, 253, 18);
-            if (row.Count < 22)
-                throw new ArgumentException("W wierszu znajduje się za mało kolumn by utworzyć kartę!");
             int value;
             Type = row[0];
             Name = row[1];
@@ -68,11 +65,6 @@ namespace MyWarCreator.Models
 
             MainImage = LoadImage(dirPath, Name);
             LeftEffectsImage = LoadImage(cardsDirPath, "left-stats");
-        }
-
-        public override void DrawCard(Graphics graphics)
-        {
-            base.DrawCard(graphics);
         }
     }
 }

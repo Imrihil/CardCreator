@@ -1,4 +1,5 @@
-﻿using MyWarCreator.Helpers;
+﻿using MyWarCreator.Extensions;
+using MyWarCreator.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,7 +14,9 @@ namespace MyWarCreator.Models
     {
         public override string FileName { get { return Name; } }
         public int Attack { get; set; }
+        public Rectangle DefenceArea { get; set; } = new Rectangle(10, 95, 60, 40);
         public int HitPoints { get; set; }
+        public Rectangle HitPointsArea { get; set; } = new Rectangle(10, 170, 60, 40);
         public double Level { get; set; }
         public bool IsRanged { get; set; }
         public List<ActiveAbility> ActiveAbilities { get; set; } = new List<ActiveAbility>();
@@ -24,7 +27,6 @@ namespace MyWarCreator.Models
             get
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("Atak: {0}k12, Obrona: {1}, Życie: {2}\n\n", Attack, Defence, HitPoints);
                 sb.Append(string.Join(", ", ActiveAbilities.Select(x => x.Description)));
                 if (ActiveAbilities.Any()) sb.AppendLine();
                 sb.Append(string.Join(", ", PassiveAbilities.Select(x => x.Description)));
@@ -47,6 +49,7 @@ namespace MyWarCreator.Models
             Name = row[1];
             int.TryParse(row[2], out value);
             Attack = value;
+            LeftEffects.Add(string.Format("{0}k12", Attack));
             int.TryParse(row[3], out value);
             IsRanged = value == 1;
             int.TryParse(row[4], out value);
@@ -81,6 +84,16 @@ namespace MyWarCreator.Models
             }
 
             MainImage = LoadImage(dirPath, Name);
+            LeftEffectsImage = LoadImage(cardsDirPath, "left-monster");
+        }
+
+        public override void DrawCard(Graphics graphics)
+        {
+            base.DrawCard(graphics);
+            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 20, FontStyle.Regular, GraphicsUnit.Pixel))
+                graphics.DrawAdjustedString(Defence.ToString(), font, Brushes.White, DefenceArea, FontsHelper.StringFormatCentered, 6);
+            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 20, FontStyle.Regular, GraphicsUnit.Pixel))
+                graphics.DrawAdjustedString(HitPoints.ToString(), font, Brushes.White, HitPointsArea, FontsHelper.StringFormatCentered, 6);
         }
 
         private string LevelString()

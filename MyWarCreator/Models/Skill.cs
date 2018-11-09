@@ -53,7 +53,7 @@ namespace MyWarCreator.Models
             for (int i = 9; i < 9 + 5; ++i)
             {
                 if (!string.IsNullOrEmpty(row[i]))
-                    RightEffects.Add(row[i]);
+                    RightEffects.Add(row[i].Replace("+", "\n+"));
             }
             if (row[14].ToLower() == "tak")
             {
@@ -79,6 +79,7 @@ namespace MyWarCreator.Models
             FirstTypeImage = LoadImage(cardsDirPath, FirstType.Trim('.'));
             SecondTypeImage = LoadImage(cardsDirPath, SecondType.Trim('.'));
         }
+
         public override void DrawCard(Graphics graphics)
         {
             base.DrawCard(graphics);
