@@ -80,25 +80,25 @@ namespace MyWarCreator.Models
                     graphics.DrawAdjustedString(Type.ToUpper(), font, Brushes.White, TypeArea, FontsHelper.StringFormatCentered, 6);
             }
             float leftEffectsFont = 20;
-            for (int i = 0; i < LeftEffects.Count; ++i)
+            for (int i = 0; i < LeftEffects.Count && i < LeftEffectsArea.Count; ++i)
             {
                 if (!string.IsNullOrEmpty(LeftEffects[i]))
                     using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), leftEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
                         leftEffectsFont = FontsHelper.GetAdjustedFont(graphics, LeftEffects[i], font, LeftEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)leftEffectsFont, true, false).Size;
             }
-            for (int i = 0; i < LeftEffects.Count; ++i)
+            for (int i = 0; i < LeftEffects.Count && i < LeftEffectsArea.Count; ++i)
             {
                 using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), leftEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(LeftEffects[i], font, Brushes.White, LeftEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)leftEffectsFont, true, false);
             }
             float rightEffectsFont = 20;
-            for (int i = 0; i < RightEffects.Count; ++i)
+            for (int i = 0; i < RightEffects.Count && i < RightEffectsArea.Count; ++i)
             {
                 if (!string.IsNullOrEmpty(RightEffects[i]))
                     using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
                         rightEffectsFont = FontsHelper.GetAdjustedFont(graphics, RightEffects[i], font, RightEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)rightEffectsFont, true, false).Size;
             }
-            for (int i = 0; i < RightEffects.Count; ++i)
+            for (int i = 0; i < RightEffects.Count && i < RightEffectsArea.Count; ++i)
             {
                 using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(RightEffects[i], font, Brushes.White, RightEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)rightEffectsFont, true, false);

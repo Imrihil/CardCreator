@@ -18,7 +18,7 @@ namespace MyWarCreator.Models
         {
             get
             {
-                return Type == "Zbroja" || Type == "Tarcza" || Type == "Hełm" || Type == "Buty" || Type == "Rękawice";
+                return Type == "Zbroja" || Type == "Hełm" || Type == "Buty" || Type == "Rękawice";
             }
         }
 
@@ -84,7 +84,7 @@ namespace MyWarCreator.Models
             MainImage = LoadImage(dirPath, Name);
             LeftEffectsImage = LoadImage(cardsDirPath, "left-stats");
             WeightImage = LoadImage(cardsDirPath, "weight");
-            if (IsArmour && Type != "Tarcza")
+            if (IsArmour)
                 RightEffectsImage = LoadImage(cardsDirPath, "right-armour");
         }
 
