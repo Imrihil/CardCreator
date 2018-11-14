@@ -11,10 +11,24 @@ namespace MyWarCreator.Models
 {
     class Equipment : AttackAbilityCard
     {
+        public int Weight { get; set; }
+        public Image WeightImage { get; set; }
+        public Rectangle WeightImageArea { get; set; } = new Rectangle(300, 440, 40, 40);
+        public bool IsArmour
+        {
+            get
+            {
+                return Type == "Zbroja" || Type == "Tarcza" || Type == "Hełm" || Type == "Buty" || Type == "Rękawice";
+            }
+        }
+
         public override string DescriptionFull
         {
             get
             {
+                if (IsArmour)
+                    return base.DescriptionFull;
+
                 StringBuilder sb = new StringBuilder();
                 if (!string.IsNullOrEmpty(Description))
                     sb.AppendFormat("{0}\n\n", Description);
@@ -57,14 +71,65 @@ namespace MyWarCreator.Models
             ProcessRow(row.Skip(12).ToList());
             int.TryParse(row[29], out value);
             Defence = value;
-            Description = row[30];
-            int.TryParse(row[31], out value);
+            if (IsArmour)
+                RightEffects.Add(Defence.ToString());
+            int.TryParse(row[30], out value);
+            Weight = value;
+            Description = row[31];
+            int.TryParse(row[32], out value);
             Price = value;
 
             CalculateTypeArea();
 
             MainImage = LoadImage(dirPath, Name);
             LeftEffectsImage = LoadImage(cardsDirPath, "left-stats");
+            WeightImage = LoadImage(cardsDirPath, "weight");
+            if (IsArmour && Type != "Tarcza")
+                RightEffectsImage = LoadImage(cardsDirPath, "right-armour");
+        }
+
+        protected override void CalculateTypeArea()
+        {
+            base.CalculateTypeArea();
+            if (Weight > 0)
+            {
+                if (Weight <= 5 - (Price > PriceLimit ? 2 : Price))
+                    TypeArea = new Rectangle(TypeArea.X, TypeArea.Y, TypeArea.Width - WeightImageArea.Width * Weight, TypeArea.Height);
+                else
+                    TypeArea = new Rectangle(TypeArea.X, TypeArea.Y, TypeArea.Width - WeightImageArea.Width * 2, TypeArea.Height);
+            }
+        }
+
+        public override void DrawCard(Graphics graphics)
+        {
+            base.DrawCard(graphics);
+
+            if (WeightImage != null)
+            {
+                if (Weight > 0)
+                {
+                    if (Weight <= 5 - (Price > PriceLimit ? 2 : Price))
+                    {
+                        for (int i = 0; i < Weight; ++i)
+                        {
+                            Rectangle weightImageAreaI = new Rectangle(WeightImageArea.X - i * WeightImageArea.Width, WeightImageArea.Y, WeightImageArea.Width, WeightImageArea.Height);
+                            DrawingHelper.MapDrawing(graphics, WeightImage, weightImageAreaI);
+                        }
+                    }
+                    else
+                    {
+                        Rectangle weightImageAreaI = new Rectangle(WeightImageArea.X - WeightImageArea.Width + 5, WeightImageArea.Y, WeightImageArea.Width - 5, WeightImageArea.Height);
+                        using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Bold, GraphicsUnit.Pixel))
+                            graphics.DrawAdjustedString(Weight.ToString(), font, Brushes.White, weightImageAreaI, FontsHelper.StringFormatCentered, 6, 12, true, false);
+                        DrawingHelper.MapDrawing(graphics, WeightImage, WeightImageArea);
+                    }
+                }
+            }
+            else
+            {
+                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Bold, GraphicsUnit.Pixel))
+                    graphics.DrawAdjustedString(Weight.ToString(), font, Brushes.White, WeightImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
+            }
         }
     }
 }
