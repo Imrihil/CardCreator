@@ -12,18 +12,19 @@ namespace MyWarCreator.Models
         public int FriendyFire { get; set; }
         public int Hit { get; set; }
         public int Downturn { get; set; }
-        public int Knockdown { get; set; }
-        public int Poison { get; set; }
         public int Weakness { get; set; }
-        public int Stun { get; set; }
+        public int Poison { get; set; }
         public int Bleeding { get; set; }
         public int AreaAttack { get; set; }
+        public int Blinding { get; set; }
         public int Cleave { get; set; }
         public int Fire { get; set; }
+        public int Calm { get; set; }
+        public int Stun { get; set; }
+        public int Knockdown { get; set; }
+        public int Hypnosis { get; set; }
         public int Push { get; set; }
         public int Terror { get; set; }
-        public int Confusion { get; set; }
-        public int Hypnosis { get; set; }
         public int Crit { get; set; }
         public int Defence { get; set; }
 
@@ -43,30 +44,32 @@ namespace MyWarCreator.Models
                 ChancesLine("Trafienie", Hit, ref actual);
             if (Downturn > 0)
                 sb.AppendLine(ChancesLine("Spowolnienie", Downturn, ref actual));
-            if (Knockdown > 0)
-                sb.AppendLine(ChancesLine("Powalenie", Knockdown, ref actual));
-            if (Poison > 0)
-                sb.AppendLine(ChancesLine("Zatrucie", Poison, ref actual));
             if (Weakness > 0)
                 sb.AppendLine(ChancesLine("Osłabienie", Weakness, ref actual));
-            if (Stun > 0)
-                sb.AppendLine(ChancesLine("Ogłuszenie", Stun, ref actual));
+            if (Poison > 0)
+                sb.AppendLine(ChancesLine("Zatrucie", Poison, ref actual));
             if (Bleeding > 0)
                 sb.AppendLine(ChancesLine("Krwawienie", Bleeding, ref actual));
             if (AreaAttack > 0)
                 sb.AppendLine(ChancesLine("Atak obszarowy", AreaAttack, ref actual));
+            if (Blinding > 0)
+                sb.AppendLine(ChancesLine("Oślepienie", Blinding, ref actual));
             if (Cleave > 0)
                 sb.AppendLine(ChancesLine("Przebicie", Cleave, ref actual));
             if (Fire > 0)
                 sb.AppendLine(ChancesLine("Podpalenie", Fire, ref actual));
+            if (Calm > 0)
+                sb.AppendLine(ChancesLine("Wyciszenie", Calm, ref actual));
+            if (Stun > 0)
+                sb.AppendLine(ChancesLine("Ogłuszenie", Stun, ref actual));
+            if (Knockdown > 0)
+                sb.AppendLine(ChancesLine("Powalenie", Knockdown, ref actual));
+            if (Hypnosis > 0)
+                sb.AppendLine(ChancesLine("Hipnoza", Hypnosis, ref actual));
             if (Push > 0)
                 sb.AppendLine(ChancesLine("Odepchnięcie", Push, ref actual));
             if (Terror > 0)
                 sb.AppendLine(ChancesLine("Strach", Terror, ref actual));
-            if (Confusion > 0)
-                sb.AppendLine(ChancesLine("Dezorientacja", Confusion, ref actual));
-            if (Hypnosis > 0)
-                sb.AppendLine(ChancesLine("Hipnoza", Hypnosis, ref actual));
             if (Crit > 0)
                 sb.Append(ChancesLine("Krytyk", Crit, ref actual));
             return sb.ToString();
@@ -84,30 +87,32 @@ namespace MyWarCreator.Models
             int.TryParse(row[3], out value);
             Downturn = value;
             int.TryParse(row[4], out value);
-            Knockdown = value;
+            Weakness = value;
             int.TryParse(row[5], out value);
             Poison = value;
             int.TryParse(row[6], out value);
-            Weakness = value;
-            int.TryParse(row[7], out value);
-            Stun = value;
-            int.TryParse(row[8], out value);
             Bleeding = value;
-            int.TryParse(row[9], out value);
+            int.TryParse(row[7], out value);
             AreaAttack = value;
-            int.TryParse(row[10], out value);
+            int.TryParse(row[8], out value);
+            Blinding = value;
+            int.TryParse(row[9], out value);
             Cleave = value;
-            int.TryParse(row[11], out value);
+            int.TryParse(row[10], out value);
             Fire = value;
+            int.TryParse(row[11], out value);
+            Calm = value;
             int.TryParse(row[12], out value);
-            Push = value;
+            Stun = value;
             int.TryParse(row[13], out value);
-            Terror = value;
+            Knockdown = value;
             int.TryParse(row[14], out value);
-            Confusion = value;
-            int.TryParse(row[15], out value);
             Hypnosis = value;
+            int.TryParse(row[15], out value);
+            Push = value;
             int.TryParse(row[16], out value);
+            Terror = value;
+            int.TryParse(row[17], out value);
             Crit = value;
         }
 

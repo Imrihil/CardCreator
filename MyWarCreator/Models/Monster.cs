@@ -59,20 +59,20 @@ namespace MyWarCreator.Models
             ProcessRow(row.Skip(6).ToList());
             for (int i = 0; i < 3; ++i)
             {
-                string type = row[23 + i * 3];
-                string name = row[24 + i * 3];
-                int.TryParse(row[25 + i * 3], out value);
+                string type = row[24 + i * 3];
+                string name = row[25 + i * 3];
+                int.TryParse(row[26 + i * 3], out value);
                 if (!string.IsNullOrEmpty(name))
                     ActiveAbilities.Add(new ActiveAbility(type, name, value));
             }
-            for (int i = 32; i < 32 + 5; ++i)
+            for (int i = 33; i < 33 + 5; ++i)
             {
                 string name = row[i];
                 if (!string.IsNullOrEmpty(name))
                     PassiveAbilities.Add(new PassiveAbility(name));
             }
-            Description = row[65];
-            double.TryParse(row[66], out dvalue);
+            Description = row[38];
+            double.TryParse(row[39], out dvalue);
             Level = dvalue;
             if (string.IsNullOrEmpty(Type))
             {

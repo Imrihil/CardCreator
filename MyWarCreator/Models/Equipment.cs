@@ -69,14 +69,14 @@ namespace MyWarCreator.Models
                 if (!string.IsNullOrEmpty(row[11])) RightEffects.Add((row[11] == "1" ? (row[29] == "TAK" ? "1" : "") : row[11]) + (row[29] == "TAK" ? "" : "k12")); else RightEffects.Add("");
             }
             ProcessRow(row.Skip(12).ToList());
-            int.TryParse(row[29], out value);
+            int.TryParse(row[30], out value);
             Defence = value;
             if (IsArmour)
                 RightEffects.Add(Defence.ToString());
-            int.TryParse(row[30], out value);
+            int.TryParse(row[31], out value);
             Weight = value;
-            Description = row[31];
-            int.TryParse(row[32], out value);
+            Description = row[32];
+            int.TryParse(row[33], out value);
             Price = value;
 
             CalculateTypeArea();
