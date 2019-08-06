@@ -24,15 +24,11 @@ namespace MyWarCreator.Models
         public override string FileName { get { return $"{Statistic} - {Attribute} {Lvl} - {Name}"; } }
         public bool IsOffensive { get; set; }
         public string FirstType { get; set; }
-        public Image FirstTypeImage { get; set; }
-        public Rectangle FirstTypeImageArea { get; set; } = new Rectangle(30, 350, 40, 40);
         public string FirstDescription { get; set; }
-        public Rectangle FirstDescriptionArea { get; set; } = new Rectangle(70, 285, 260, 170);
+        public Rectangle FirstDescriptionArea { get; set; } = new Rectangle(30, 285, 300, 170);
         public string SecondType { get; set; }
-        public Image SecondTypeImage { get; set; }
-        public Rectangle SecondTypeImageArea { get; set; } = new Rectangle(30, 415, 40, 40);
         public string SecondDescription { get; set; }
-        public Rectangle SecondDescriptionArea { get; set; } = new Rectangle(70, 415, 260, 40);
+        public Rectangle SecondDescriptionArea { get; set; } = new Rectangle(30, 415, 300, 40);
 
         public Skill(IList<string> row, string dirPath) : base(dirPath)
         {
@@ -67,17 +63,11 @@ namespace MyWarCreator.Models
             Critical = row[17];
             SecondType = row[18];
             SecondDescription = row[19];
-
             if (!string.IsNullOrEmpty(SecondDescription))
-            {
-                FirstTypeImageArea = new Rectangle(30, 327, 40, 40);
-                FirstDescriptionArea = new Rectangle(70, 285, 260, 125);
-            }
+                FirstDescriptionArea = new Rectangle(30, 285, 300, 125);
 
             MainImage = LoadImage(dirPath, Name);
             CriticalImage = LoadImage(cardsDirPath, Critical.Trim('.'));
-            FirstTypeImage = LoadImage(cardsDirPath, FirstType.Trim('.'));
-            SecondTypeImage = LoadImage(cardsDirPath, SecondType.Trim('.'));
         }
 
         public override void DrawCard(Graphics graphics)
@@ -98,28 +88,10 @@ namespace MyWarCreator.Models
                 graphics.DrawAdjustedString(Attribute, font, Brushes.White, AttributeArea, FontsHelper.StringFormatRight, 6);
             using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
                 graphics.DrawAdjustedString(DescriptionHelper.ToRoman(Lvl), font, Brushes.White, LvlArea, FontsHelper.StringFormatCentered, 6);
-            if (FirstTypeImage != null)
-            {
-                DrawingHelper.MapDrawing(graphics, FirstTypeImage, FirstTypeImageArea);
-            }
-            else
-            {
-                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedString(FirstType, font, Brushes.White, FirstTypeImageArea, FontsHelper.StringFormatCentered, 6);
-            }
             using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedString(FirstDescription, font, Brushes.White, FirstDescriptionArea, FontsHelper.StringFormatCentered, 6);
-            if (SecondTypeImage != null)
-            {
-                DrawingHelper.MapDrawing(graphics, SecondTypeImage, SecondTypeImageArea);
-            }
-            else
-            {
-                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedString(SecondType, font, Brushes.White, SecondTypeImageArea, FontsHelper.StringFormatCentered, 6);
-            }
+                graphics.DrawAdjustedString($"{FirstType} {FirstDescription}", font, Brushes.White, FirstDescriptionArea, FontsHelper.StringFormatCentered, 6);
             using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedString(SecondDescription, font, Brushes.White, SecondDescriptionArea, FontsHelper.StringFormatCentered, 6);
+                graphics.DrawAdjustedString($"{SecondType} {SecondDescription}", font, Brushes.White, SecondDescriptionArea, FontsHelper.StringFormatCentered, 6);
         }
     }
 }
