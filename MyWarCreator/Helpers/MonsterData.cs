@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyWarCreator.Helpers
 {
-    class MonsterData
+    public class MonsterData
     {
         private Dictionary<string, string> Stats { get; }
         public string Name { get; private set; }
@@ -24,55 +20,46 @@ namespace MyWarCreator.Helpers
         public string ChallengeRating { get; private set; }
         public string SpecialQualities { get; private set; }
         public string ImagePath { get; }
-        public static IList<string> Headers
-        {
-            get
-            {
-                return new string[] {
-                    "Name",
-                    "Str",
-                    "Dex",
-                    "Con",
-                    "Int",
-                    "Wis",
-                    "Cha",
-                    "ArmourClass",
-                    "HitDice",
-                    "FirstAttack",
-                    "SecondAttack",
-                    "ChallengeRating",
-                    "SpecialQualities",
-                    "ImagePath"
-                };
-            }
-        }
-        public IList<string> Row
-        {
-            get
-            {
-                return new string[] {
-                    Name,
-                    Str.ToString(),
-                    Dex.ToString(),
-                    Con.ToString(),
-                    Int.ToString(),
-                    Wis.ToString(),
-                    Cha.ToString(),
-                    ArmourClass.ToString(),
-                    HitDice.ToString(),
-                    FirstAttack,
-                    SecondAttack,
-                    ChallengeRating,
-                    SpecialQualities,
-                    ImagePath
-                };
-            }
-        }
+        public static IList<string> Headers =>
+            new[] {
+                "Name",
+                "Str",
+                "Dex",
+                "Con",
+                "Int",
+                "Wis",
+                "Cha",
+                "ArmourClass",
+                "HitDice",
+                "FirstAttack",
+                "SecondAttack",
+                "ChallengeRating",
+                "SpecialQualities",
+                "ImagePath"
+            };
+
+        public IList<string> Row =>
+            new[] {
+                Name,
+                Str.ToString(),
+                Dex.ToString(),
+                Con.ToString(),
+                Int.ToString(),
+                Wis.ToString(),
+                Cha.ToString(),
+                ArmourClass.ToString(),
+                HitDice.ToString(),
+                FirstAttack,
+                SecondAttack,
+                ChallengeRating,
+                SpecialQualities,
+                ImagePath
+            };
 
         public MonsterData(List<List<string>> table, string defaultName, string imagePath, int colId)
         {
             Stats = new Dictionary<string, string>();
-            for (int i = 0; i < table.Count; ++i)
+            for (var i = 0; i < table.Count; ++i)
             {
                 var statName = table[i][0];
                 statName = statName.Trim(':');
@@ -122,30 +109,28 @@ namespace MyWarCreator.Helpers
             ChallengeRating = Stats["Challenge Rating"].ToLower();
             if (ChallengeRating.Contains("frac"))
             {
-                int idx = ChallengeRating.IndexOf("frac");
+                var idx = ChallengeRating.IndexOf("frac", StringComparison.InvariantCultureIgnoreCase);
                 ChallengeRating = ChallengeRating[idx + 4] + "/" + ChallengeRating[idx + 5];
             }
-            string armourString = Stats["Armor Class"];
+            var armourString = Stats["Armor Class"];
             if (!string.IsNullOrEmpty(armourString))
             {
-                int armourIdx = armourString.IndexOf(" ");
+                var armourIdx = armourString.IndexOf(" ", StringComparison.InvariantCultureIgnoreCase);
                 if (armourIdx >= 0)
                     armourString = armourString.Substring(0, armourIdx);
-                int armour;
-                int.TryParse(armourString, out armour);
+                int.TryParse(armourString, out var armour);
                 ArmourClass = armour;
             }
-            string healthString = Stats["Hit Dice"];
+            var healthString = Stats["Hit Dice"];
             if (!string.IsNullOrEmpty(healthString))
             {
-                int healthIdx = healthString.IndexOf("(");
+                var healthIdx = healthString.IndexOf("(", StringComparison.InvariantCultureIgnoreCase);
                 if (healthIdx >= 0)
                 {
-                    int healthIdx2 = healthString.IndexOf(" ", healthIdx);
+                    var healthIdx2 = healthString.IndexOf(" ", healthIdx, StringComparison.InvariantCultureIgnoreCase);
                     if (healthIdx2 >= 0)
                         healthString = healthString.Substring(healthIdx + 1, healthIdx2 - healthIdx - 1);
-                    int health;
-                    int.TryParse(healthString, out health);
+                    int.TryParse(healthString, out var health);
                     HitDice = health;
                 }
             }
@@ -155,24 +140,22 @@ namespace MyWarCreator.Helpers
         private void InitAbilities()
         {
             var abilities = Stats["Abilities"];
-            if (abilities != null)
-            {
-                Str = GetAbility("Str", abilities);
-                Dex = GetAbility("Dex", abilities);
-                Con = GetAbility("Con", abilities);
-                Int = GetAbility("Int", abilities);
-                Wis = GetAbility("Wis", abilities);
-                Cha = GetAbility("Cha", abilities);
-            }
+            if (abilities == null) return;
+
+            Str = GetAbility("Str", abilities);
+            Dex = GetAbility("Dex", abilities);
+            Con = GetAbility("Con", abilities);
+            Int = GetAbility("Int", abilities);
+            Wis = GetAbility("Wis", abilities);
+            Cha = GetAbility("Cha", abilities);
         }
 
         private int? GetAbility(string abilityName, string abilities)
         {
-            int idxStart = abilities.IndexOf(abilityName);
-            int idxEnd = abilities.IndexOf(",", idxStart);
+            var idxStart = abilities.IndexOf(abilityName, StringComparison.InvariantCultureIgnoreCase);
+            var idxEnd = abilities.IndexOf(",", idxStart, StringComparison.InvariantCultureIgnoreCase);
             if (idxEnd == -1) idxEnd = abilities.Length;
-            int abilityValue;
-            if (!int.TryParse(abilities.Substring(idxStart + 4, idxEnd - idxStart - 4), out abilityValue))
+            if (!int.TryParse(abilities.Substring(idxStart + 4, idxEnd - idxStart - 4), out var abilityValue))
             {
                 return null;
             }
@@ -182,23 +165,20 @@ namespace MyWarCreator.Helpers
         private void InitAttacks()
         {
             var fullAttack = Stats["Full Attack"];
-            if (fullAttack != null)
-            {
-                int idxStart = fullAttack.IndexOf("(");
-                if (idxStart > -1)
-                {
-                    int idxEnd = fullAttack.IndexOf(")", idxStart);
-                    if (idxEnd > -1)
-                        FirstAttack = fullAttack.Substring(idxStart + 1, idxEnd - idxStart - 1);
-                    idxStart = fullAttack.IndexOf("(", idxEnd);
-                    if (idxStart > -1)
-                    {
-                        idxEnd = fullAttack.IndexOf(")", idxStart);
-                        if (idxEnd > -1)
-                            SecondAttack = fullAttack.Substring(idxStart + 1, idxEnd - idxStart - 1);
-                    }
-                }
-            }
+            if (fullAttack == null) return;
+
+            var idxStart = fullAttack.IndexOf("(", StringComparison.InvariantCultureIgnoreCase);
+            if (idxStart <= -1) return;
+
+            var idxEnd = fullAttack.IndexOf(")", idxStart, StringComparison.InvariantCultureIgnoreCase);
+            if (idxEnd > -1)
+                FirstAttack = fullAttack.Substring(idxStart + 1, idxEnd - idxStart - 1);
+            idxStart = fullAttack.IndexOf("(", idxEnd, StringComparison.InvariantCultureIgnoreCase);
+            if (idxStart <= -1) return;
+
+            idxEnd = fullAttack.IndexOf(")", idxStart, StringComparison.InvariantCultureIgnoreCase);
+            if (idxEnd > -1)
+                SecondAttack = fullAttack.Substring(idxStart + 1, idxEnd - idxStart - 1);
         }
     }
 }

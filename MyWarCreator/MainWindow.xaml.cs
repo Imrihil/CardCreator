@@ -1,20 +1,15 @@
-﻿using MyWarCreator.DataSet;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using MyWarCreator.Crawler;
+using MyWarCreator.DataSet;
 using MyWarCreator.Extensions;
 using MyWarCreator.Helpers;
-using MyWarCreator.Models;
-using MyWarCreator.Crawler;
 using OfficeOpenXml;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Text;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows;
 
 namespace MyWarCreator
 {
@@ -22,209 +17,215 @@ namespace MyWarCreator
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public MainWindow()
         {
             InitializeComponent();
             InitializeFonts();
-            progressBar.Visibility = Visibility.Collapsed;
-            progressBarText.Visibility = Visibility.Collapsed;
-            textBoxResultMessage.Visibility = Visibility.Visible;
-            textBoxResultMessage.IsReadOnly = true;
+            ProgressBar.Visibility = Visibility.Collapsed;
+            ProgressBarText.Visibility = Visibility.Collapsed;
+            TextBoxResultMessage.Visibility = Visibility.Visible;
+            TextBoxResultMessage.IsReadOnly = true;
         }
 
         private void InitializeFonts()
         {
-            updateTextBlockResultMessage("");
+            UpdateTextBlockResultMessage("");
             FontsHelper.AddFont(Properties.Resources.Akvaléir_Normal_v2007);
-            appendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.pfc.Families.LastOrDefault().Name}.");
+            AppendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.Pfc.Families.LastOrDefault()?.Name}.");
             FontsHelper.AddFont(Properties.Resources.colonna_mt);
-            appendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.pfc.Families.LastOrDefault().Name}.");
+            AppendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.Pfc.Families.LastOrDefault()?.Name}.");
             FontsHelper.AddFont(Properties.Resources.runic);
-            appendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.pfc.Families.LastOrDefault().Name}.");
+            AppendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.Pfc.Families.LastOrDefault()?.Name}.");
             FontsHelper.AddFont(Properties.Resources.runic_altno);
-            appendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.pfc.Families.LastOrDefault().Name}.");
+            AppendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.Pfc.Families.LastOrDefault()?.Name}.");
             FontsHelper.AddFont(Properties.Resources.trebuc);
             FontsHelper.AddFont(Properties.Resources.trebucbd);
             FontsHelper.AddFont(Properties.Resources.trebucbi);
             FontsHelper.AddFont(Properties.Resources.trebucit);
-            appendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.pfc.Families.LastOrDefault().Name}.");
+            AppendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.Pfc.Families.LastOrDefault()?.Name}.");
         }
 
-        private void buttonGenerateWeapons_Click(object sender, RoutedEventArgs e)
+        private void ButtonGenerateWeapons_Click(object sender, RoutedEventArgs e)
         {
-            string dirPath = @"./equipment";
 #if DEBUG
-            dirPath = @"../../AppData/equipment";
+            const string dirPath = @"../../AppData/equipment";
+#else
+            const string dirPath = @"./equipment";
 #endif
             try
             {
-                string filePath = dirPath + "/equipment.xlsx";
+                var filePath = dirPath + "/equipment.xlsx";
                 if (Directory.Exists(dirPath))
                 {
-                    EquipmentSet equipmentSet = new EquipmentSet();
-                    updateProgressBar(0);
-                    updateTextBlockResultMessage("");
-                    appendTextBlockResultMessage(loadCards(dirPath, filePath, equipmentSet, 0, 50));
-                    appendTextBlockResultMessage(generateCards(dirPath, equipmentSet, 50, 100));
+                    var equipmentSet = new EquipmentSet();
+                    UpdateProgressBar(0);
+                    UpdateTextBlockResultMessage("");
+                    AppendTextBlockResultMessage(LoadCards(dirPath, filePath, equipmentSet, 0, 50));
+                    AppendTextBlockResultMessage(GenerateCards(equipmentSet, 50, 100));
                 }
                 else
                 {
-                    appendTextBlockResultMessage("Nie znaleziono katalogu o nazwie equipment!");
+                    AppendTextBlockResultMessage("Nie znaleziono katalogu o nazwie equipment!");
                 }
             }
             catch (Exception ex)
             {
-                appendTextBlockResultMessage("Podczas generowania ekwipunku wystąpił błąd: " + ex.Message);
+                AppendTextBlockResultMessage("Podczas generowania ekwipunku wystąpił błąd: " + ex.Message);
             }
         }
 
-        private void buttonGenerateSkills_Click(object sender, RoutedEventArgs e)
+        private void ButtonGenerateSkills_Click(object sender, RoutedEventArgs e)
         {
-            string dirPath = @"./skills";
 #if DEBUG
-            dirPath = @"../../AppData/skills";
+            const string dirPath = @"../../AppData/skills";
+#else
+            const string dirPath = @"./skills";
 #endif
             try
             {
-                string filePath = dirPath + "/skills.xlsx";
+                var filePath = dirPath + "/skills.xlsx";
                 if (Directory.Exists(dirPath))
                 {
-                    SkillsSet skillsSet = new SkillsSet();
-                    updateProgressBar(0);
-                    updateTextBlockResultMessage("");
-                    appendTextBlockResultMessage(loadCards(dirPath, filePath, skillsSet, 0, 50));
-                    appendTextBlockResultMessage(generateCards(dirPath, skillsSet, 50, 100));
+                    var skillsSet = new SkillsSet();
+                    UpdateProgressBar(0);
+                    UpdateTextBlockResultMessage("");
+                    AppendTextBlockResultMessage(LoadCards(dirPath, filePath, skillsSet, 0, 50));
+                    AppendTextBlockResultMessage(GenerateCards(skillsSet, 50, 100));
                 }
                 else
                 {
-                    appendTextBlockResultMessage("Nie znaleziono katalogu o nazwie skills!");
+                    AppendTextBlockResultMessage("Nie znaleziono katalogu o nazwie skills!");
                 }
             }
             catch (Exception ex)
             {
-                appendTextBlockResultMessage("Podczas generowania umiejętności wystąpił błąd: " + ex.Message);
+                AppendTextBlockResultMessage("Podczas generowania umiejętności wystąpił błąd: " + ex.Message);
             }
         }
 
-        private void buttonDownloadMonsters_Click(object sender, RoutedEventArgs e)
+        private void ButtonDownloadMonsters_Click(object sender, RoutedEventArgs e)
         {
-            string dirPath = @"./monsters";
 #if DEBUG
-            dirPath = @"../../AppData/monsters";
+            const string dirPath = @"../../AppData/monsters";
+#else
+            const string dirPath = @"./monsters";
 #endif
             if (File.Exists(Path.Combine(dirPath, "monsters_dd.xlsx")))
             {
-                MessageBoxResult messageBoxResult = MessageBox.Show("Czy na pewno chcesz ponownie pobrać statystyki przeciwników ze strony http://www.d20srd.org? \n\nSpowoduje to usunięcie obecnego pliku monsters_dd.xlsx i stworzenie nowego.", "Potwierdzenie pobierania", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var messageBoxResult = MessageBox.Show("Czy na pewno chcesz ponownie pobrać statystyki przeciwników ze strony http://www.d20srd.org? \n\nSpowoduje to usunięcie obecnego pliku monsters_dd.xlsx i stworzenie nowego.", "Potwierdzenie pobierania", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (messageBoxResult == MessageBoxResult.Yes)
                 {
                     File.Delete(Path.Combine(dirPath, "monsters_dd.xlsx"));
-                    downloadMonsters(dirPath);
+                    DownloadMonsters(dirPath);
                 }
                 else
                 {
-                    appendTextBlockResultMessage("Anulowano pobieranie przeciwników.");
+                    AppendTextBlockResultMessage("Anulowano pobieranie przeciwników.");
                 }
             }
             else
             {
-                downloadMonsters(dirPath);
+                DownloadMonsters(dirPath);
             }
         }
 
-        private void buttonGenerateAll_Click(object sender, RoutedEventArgs e)
+        private void ButtonGenerateAll_Click(object sender, RoutedEventArgs e)
         {
-            string dirPath = @"./equipment";
 #if DEBUG
-            dirPath = @"../../AppData/equipment";
+            const string equipmentDirPath = @"../../AppData/equipment";
+#else
+            const string equipmentDirPath = @"./equipment";
 #endif
             try
             {
-                string filePath = dirPath + "/equipment.xlsx";
-                if (Directory.Exists(dirPath))
+                var filePath = equipmentDirPath + "/equipment.xlsx";
+                if (Directory.Exists(equipmentDirPath))
                 {
-                    EquipmentSet equipmentSet = new EquipmentSet();
-                    updateProgressBar(0);
-                    updateTextBlockResultMessage("");
-                    appendTextBlockResultMessage(loadCards(dirPath, filePath, equipmentSet, 0, 17));
-                    appendTextBlockResultMessage(generateCards(dirPath, equipmentSet, 17, 33));
+                    var equipmentSet = new EquipmentSet();
+                    UpdateProgressBar(0);
+                    UpdateTextBlockResultMessage("");
+                    AppendTextBlockResultMessage(LoadCards(equipmentDirPath, filePath, equipmentSet, 0, 17));
+                    AppendTextBlockResultMessage(GenerateCards(equipmentSet, 17, 33));
                 }
                 else
                 {
-                    appendTextBlockResultMessage("Nie znaleziono katalogu o nazwie equipments!");
+                    AppendTextBlockResultMessage("Nie znaleziono katalogu o nazwie equipments!");
                 }
             }
             catch (Exception ex)
             {
-                appendTextBlockResultMessage("Podczas generowania ekwipunku wystąpił błąd: " + ex.Message);
+                AppendTextBlockResultMessage("Podczas generowania ekwipunku wystąpił błąd: " + ex.Message);
             }
 
-            dirPath = @"./skills";
 #if DEBUG
-            dirPath = @"../../AppData/skills";
+            const string skillsDirPath = @"../../AppData/skills";
+#else
+            const string skillsDirPath = @"./skills";
 #endif
             try
             {
-                string filePath = dirPath + "/skills.xlsx";
-                if (Directory.Exists(dirPath))
+                const string filePath = skillsDirPath + "/skills.xlsx";
+                if (Directory.Exists(skillsDirPath))
                 {
-                    SkillsSet skillsSet = new SkillsSet();
-                    appendTextBlockResultMessage(loadCards(dirPath, filePath, skillsSet, 33, 50));
-                    appendTextBlockResultMessage(generateCards(dirPath, skillsSet, 50, 67));
+                    var skillsSet = new SkillsSet();
+                    AppendTextBlockResultMessage(LoadCards(skillsDirPath, filePath, skillsSet, 33, 50));
+                    AppendTextBlockResultMessage(GenerateCards(skillsSet, 50, 67));
                 }
                 else
                 {
-                    appendTextBlockResultMessage("Nie znaleziono katalogu o nazwie skills!");
+                    AppendTextBlockResultMessage("Nie znaleziono katalogu o nazwie skills!");
                 }
             }
             catch (Exception ex)
             {
-                appendTextBlockResultMessage("Podczas generowania umiejętności wystąpił błąd: " + ex.Message);
+                AppendTextBlockResultMessage("Podczas generowania umiejętności wystąpił błąd: " + ex.Message);
             }
 
-            dirPath = @"./monsters";
 #if DEBUG
-            dirPath = @"../../AppData/monsters";
+            const string monstersDirPath = @"../../AppData/monsters";
+#else
+            const string monstersDirPath = @"./monsters";
 #endif
             try
             {
-                string filePathDD = dirPath + "/monsters_dd.xlsx";
-                string filePath = dirPath + "/monsters.xlsx";
-                if (Directory.Exists(dirPath))
+                const string filePathDd = monstersDirPath + "/monsters_dd.xlsx";
+                const string filePath = monstersDirPath + "/monsters.xlsx";
+                if (Directory.Exists(monstersDirPath))
                 {
-                    MonstersSet monstersSet = new MonstersSet();
-                    appendTextBlockResultMessage(loadCards(dirPath, filePathDD, monstersSet, 67, 78, true));
-                    appendTextBlockResultMessage(loadCards(dirPath, filePath, monstersSet, 78, 89));
-                    appendTextBlockResultMessage(generateCards(dirPath, monstersSet, 89, 100));
+                    var monstersSet = new MonstersSet();
+                    AppendTextBlockResultMessage(LoadCards(monstersDirPath, filePathDd, monstersSet, 67, 78, true));
+                    AppendTextBlockResultMessage(LoadCards(monstersDirPath, filePath, monstersSet, 78, 89));
+                    AppendTextBlockResultMessage(GenerateCards(monstersSet, 89, 100));
                 }
                 else
                 {
-                    appendTextBlockResultMessage("Nie znaleziono katalogu o nazwie skills!");
+                    AppendTextBlockResultMessage("Nie znaleziono katalogu o nazwie skills!");
                 }
             }
             catch (Exception ex)
             {
-                appendTextBlockResultMessage("Podczas generowania kart potworów wystąpił błąd: " + ex.Message);
+                AppendTextBlockResultMessage("Podczas generowania kart potworów wystąpił błąd: " + ex.Message);
             }
         }
 
-        private void downloadMonsters(string dirPath)
+        private void DownloadMonsters(string dirPath)
         {
             try
             {
-                CrawlerCore crawler = new CrawlerCore("http://www.d20srd.org", "/indexes/monsters.htm", dirPath);
-                int i = 0;
-                int extraI = 0;
-                int n = crawler.Count;
+                var crawler = new CrawlerCore("http://www.d20srd.org", "/indexes/monsters.htm", dirPath);
+                var i = 0;
+                var extraI = 0;
+                var n = crawler.Count;
                 using (var package = new ExcelPackage(new FileInfo(Path.Combine(dirPath, "monsters_dd.xlsx"))))
                 {
-                    HashSet<string> monsterNames = new HashSet<string>();
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Monsters");
+                    var monsterNames = new HashSet<string>();
+                    var worksheet = package.Workbook.Worksheets.Add("Monsters");
                     var font = worksheet.Cells[1, 1].Style.Font;
                     font.Bold = true;
                     worksheet.Row(1).Style.Font = font;
-                    for (int j = 0; j < MonsterData.Headers.Count; ++j)
+                    for (var j = 0; j < MonsterData.Headers.Count; ++j)
                     {
                         worksheet.Cells[1, j + 1].Value = MonsterData.Headers[j];
                     }
@@ -236,26 +237,27 @@ namespace MyWarCreator
                             foreach (var monster in monsters)
                             {
                                 ++extraI;
-                                IList<string> row = monster.Row;
-                                for (int j = 0; j < row.Count; ++j)
+                                var row = monster.Row;
+                                for (var j = 0; j < row.Count; ++j)
                                 {
                                     worksheet.Cells[i + extraI + 1, j + 1].Value = row[j];
                                 }
                                 monsterNames.Add(monster.Name);
-                                appendTextBlockResultMessage($"{monster.Name} downloaded.");
+                                AppendTextBlockResultMessage($"{monster.Name} downloaded.");
                             }
                         }
                         catch (Exception ex)
                         {
-                            appendTextBlockResultMessage(string.Format("Przy przetwarzaniu strony {0} wystąpił błąd: {1}", crawler.GetLastUrl(), ex.Message));
+                            AppendTextBlockResultMessage(
+                                $"Przy przetwarzaniu strony {crawler.GetLastUrl()} wystąpił błąd: {ex.Message}");
                         }
                         finally
                         {
                             --extraI;
-                            updateProgressBar((double)(++i) * 100 / n);
+                            UpdateProgressBar((double)(++i) * 100 / n);
                         }
                     }
-                    for (int j = 0; j < MonsterData.Headers.Count; ++j)
+                    for (var j = 0; j < MonsterData.Headers.Count; ++j)
                     {
                         worksheet.Column(j + 1).AutoFit();
                         if (worksheet.Column(j + 1).Width > 100)
@@ -266,204 +268,187 @@ namespace MyWarCreator
                     package.Workbook.Properties.Company = "MyWar";
                     package.Save();
                 }
-                appendTextBlockResultMessage($"Pomyślnie pobrano potwory ze strony d&d ({n}).");
+                AppendTextBlockResultMessage($"Pomyślnie pobrano potwory ze strony d&d ({n}).");
             }
             catch (Exception ex)
             {
-                appendTextBlockResultMessage("W czasie generowania kart potworów wystąpił błąd: " + ex.Message);
+                AppendTextBlockResultMessage("W czasie generowania kart potworów wystąpił błąd: " + ex.Message);
             }
         }
 
-        private void buttonGenerateMonsters_Click(object sender, RoutedEventArgs e)
+        private void ButtonGenerateMonsters_Click(object sender, RoutedEventArgs e)
         {
-            string dirPath = @"./monsters";
 #if DEBUG
-            dirPath = @"../../AppData/monsters";
+            const string dirPath = @"../../AppData/monsters";
+#else
+            const string dirPath = @"./monsters";
 #endif
             try
             {
-                string filePathDD = dirPath + "/monsters_dd.xlsx";
-                string filePath = dirPath + "/monsters.xlsx";
+                const string filePath = dirPath + "/monsters.xlsx";
                 if (Directory.Exists(dirPath))
                 {
-                    MonstersSet monstersSet = new MonstersSet();
-                    updateProgressBar(0);
-                    updateTextBlockResultMessage("");
-                    //appendTextBlockResultMessage(loadCards(dirPath, filePathDD, monstersSet, 0, 33, true));
-                    appendTextBlockResultMessage(loadCards(dirPath, filePath, monstersSet, 0, 50));
-                    appendTextBlockResultMessage(generateCards(dirPath, monstersSet, 50, 100));
+                    var monstersSet = new MonstersSet();
+                    UpdateProgressBar(0);
+                    UpdateTextBlockResultMessage("");
+                    AppendTextBlockResultMessage(LoadCards(dirPath, filePath, monstersSet, 0, 50));
+                    AppendTextBlockResultMessage(GenerateCards(monstersSet, 50, 100));
                 }
                 else
                 {
-                    appendTextBlockResultMessage("Nie znaleziono katalogu o nazwie skills!");
+                    AppendTextBlockResultMessage("Nie znaleziono katalogu o nazwie skills!");
                 }
             }
             catch (Exception ex)
             {
-                appendTextBlockResultMessage("Podczas generowania kart potworów wystąpił błąd: " + ex.Message);
+                AppendTextBlockResultMessage("Podczas generowania kart potworów wystąpił błąd: " + ex.Message);
             }
         }
 
-        private void buttonWeaponsPdf_Click(object sender, RoutedEventArgs e)
+        private void ButtonWeaponsPdf_Click(object sender, RoutedEventArgs e)
         {
             // Equipment
-            string dirPath = @"./equipment";
 #if DEBUG
-            dirPath = @"../../AppData/equipment";
+            const string dirPath = @"../../AppData/equipment";
+#else
+            const string dirPath = @"./equipment";
 #endif
-            updateProgressBar(0);
-            updateTextBlockResultMessage("");
-            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 0, 100));
+            UpdateProgressBar(0);
+            UpdateTextBlockResultMessage("");
+            AppendTextBlockResultMessage(PreparePdf(dirPath + "/results", 0, 100));
         }
 
-        private void buttonSkillsPdf_Click(object sender, RoutedEventArgs e)
+        private void ButtonSkillsPdf_Click(object sender, RoutedEventArgs e)
         {
             // Skills
-            string dirPath = @"./skills";
 #if DEBUG
-            dirPath = @"../../AppData/skills";
+            const string dirPath = @"../../AppData/skills";
+#else
+            const string dirPath = @"./skills";
 #endif
-            updateProgressBar(0);
-            updateTextBlockResultMessage("");
-            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 0, 100));
+            UpdateProgressBar(0);
+            UpdateTextBlockResultMessage("");
+            AppendTextBlockResultMessage(PreparePdf(dirPath + "/results", 0, 100));
         }
 
-        private void buttonMonstersPdf_Click(object sender, RoutedEventArgs e)
+        private void ButtonMonstersPdf_Click(object sender, RoutedEventArgs e)
         {
             // Skills
-            string dirPath = @"./monsters";
 #if DEBUG
-            dirPath = @"../../AppData/monsters";
+            const string dirPath = @"../../AppData/monsters";
+#else
+            const string dirPath = @"./monsters";
 #endif
-            updateProgressBar(0);
-            updateTextBlockResultMessage("");
-            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 0, 100));
+            UpdateProgressBar(0);
+            UpdateTextBlockResultMessage("");
+            AppendTextBlockResultMessage(PreparePdf(dirPath + "/results", 0, 100));
         }
 
-        private void buttonGeneratePdf_Click(object sender, RoutedEventArgs e)
+        private void ButtonGeneratePdf_Click(object sender, RoutedEventArgs e)
         {
             // Equipment
-            string dirPath = @"./equipment";
 #if DEBUG
-            dirPath = @"../../AppData/equipment";
+            const string equipmentDirPath = @"../../AppData/equipment";
+#else
+            const string equipmentDirPath = @"./equipment";
 #endif
-            updateProgressBar(0);
-            updateTextBlockResultMessage("");
-            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 0, 33));
+            UpdateProgressBar(0);
+            UpdateTextBlockResultMessage("");
+            AppendTextBlockResultMessage(PreparePdf(equipmentDirPath + "/results", 0, 33));
 
             // Skills
-            dirPath = @"./skills";
 #if DEBUG
-            dirPath = @"../../AppData/skills";
+            const string skillsDirPath = @"../../AppData/skills";
+#else
+            const string skillsDirPath = @"./skills";
 #endif
-            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 33, 66));
+            AppendTextBlockResultMessage(PreparePdf(skillsDirPath + "/results", 33, 66));
 
             // Monsters
-            dirPath = @"./monsters";
 #if DEBUG
-            dirPath = @"../../AppData/monsters";
+            const string monstersDirPath = @"../../AppData/monsters";
+#else
+            const string monstersDirPath = @"./monsters";
 #endif
-            appendTextBlockResultMessage(preparePdf(dirPath + "/results", 66, 100));
+            AppendTextBlockResultMessage(PreparePdf(monstersDirPath + "/results", 66, 100));
         }
 
-        private void buttonCustomPdf_Click(object sender, RoutedEventArgs e)
+        private void ButtonCustomPdf_Click(object sender, RoutedEventArgs e)
         {
             // Custom
-            string dirPath = @"./custom";
 #if DEBUG
-            dirPath = @"../../AppData/custom";
+            const string dirPath = @"../../AppData/custom";
+#else
+            const string dirPath = @"./custom";
 #endif
-            updateProgressBar(0);
-            updateTextBlockResultMessage("");
-            appendTextBlockResultMessage(preparePdf(dirPath, 0, 100));
+            UpdateProgressBar(0);
+            UpdateTextBlockResultMessage("");
+            AppendTextBlockResultMessage(PreparePdf(dirPath, 0, 100));
         }
 
-        private string loadCards(string dirPath, string filePath, CardSet cardSet, int minProgressBar, int maxProgressBar)
+        private string LoadCards(string dirPath, string filePath, CardSet cardSet, int minProgressBar, int maxProgressBar, bool quiet = false)
         {
-            return loadCards(dirPath, filePath, cardSet, minProgressBar, maxProgressBar, false);
-        }
+            if (!Directory.Exists(dirPath)) return $"Nie znaleziono katalogu {dirPath}!";
 
-        private string loadCards(string dirPath, string filePath, CardSet cardSet, int minProgressBar, int maxProgressBar, bool quiet)
-        {
-            if (Directory.Exists(dirPath))
+            if (!File.Exists(filePath)) return $"Nie znaleziono pliku {filePath}.";
+
+            try
             {
-                if (File.Exists(filePath))
+                using (var xlPackage = new ExcelPackage(new FileInfo(filePath)))
                 {
-                    try
+                    var myWorksheet = xlPackage.Workbook.Worksheets.First(); //select sheet here
+                    var totalRows = myWorksheet.Dimension.End.Row;
+                    var totalColumns = myWorksheet.Dimension.End.Column;
+
+                    for (var rowNum = 10; rowNum <= totalRows; ++rowNum) //select starting row here
                     {
-                        using (ExcelPackage xlPackage = new ExcelPackage(new FileInfo(filePath)))
+                        var row = new List<string>();
+                        for (var colNum = 1; colNum <= totalColumns; ++colNum)
                         {
-                            var myWorksheet = xlPackage.Workbook.Worksheets.First(); //select sheet here
-                            var totalRows = myWorksheet.Dimension.End.Row;
-                            var totalColumns = myWorksheet.Dimension.End.Column;
-
-                            for (int rowNum = 10; rowNum <= totalRows; ++rowNum) //selet starting row here
-                            {
-                                List<string> row = new List<string>();
-                                for (int colNum = 1; colNum <= totalColumns; ++colNum)
-                                {
-                                    var cell = myWorksheet.Cells[rowNum, colNum];
-                                    row.Add(cell.Value == null ? string.Empty : cell.Value.ToString());
-                                }
-                                if (cardSet.AddRow(row, dirPath))
-                                {
-                                    if (!quiet)
-                                        appendTextBlockResultMessage($"Wczytano kartę {cardSet.LastOrDefault().Name}.");
-                                }
-                                else
-                                {
-                                    appendTextBlockResultMessage($"Błąd przy wczytywaniu karty {rowNum}.");
-                                }
-                                updateProgressBar(minProgressBar + (double)(rowNum - 1) * (maxProgressBar - minProgressBar) / (totalRows - 1));
-                            }
+                            var cell = myWorksheet.Cells[rowNum, colNum];
+                            row.Add(cell.Value == null ? string.Empty : cell.Value.ToString());
                         }
-                        return $"Pomyślnie wczytano plik {filePath}.";
-                    }
-                    catch (IOException ex)
-                    {
-                        return ex.Message;
+                        if (cardSet.AddRow(row, dirPath))
+                        {
+                            if (!quiet)
+                                AppendTextBlockResultMessage($"Wczytano kartę {cardSet.LastOrDefault()?.Name}.");
+                        }
+                        else
+                        {
+                            AppendTextBlockResultMessage($"Błąd przy wczytywaniu karty {rowNum}.");
+                        }
+                        UpdateProgressBar(minProgressBar + (double)(rowNum - 1) * (maxProgressBar - minProgressBar) / (totalRows - 1));
                     }
                 }
-                else
-                {
-                    return $"Nie znaleziono pliku {filePath}.";
-                }
+                return $"Pomyślnie wczytano plik {filePath}.";
             }
-            else
+            catch (IOException ex)
             {
-                return $"Nie znaleziono katalogu {dirPath}!";
+                return ex.Message;
             }
         }
 
-        private string generateCards(string dirPath, CardSet cardSet, int minProgressBar, int maxProgressBar)
-        {
-            return generateCards(dirPath, cardSet, minProgressBar, maxProgressBar, true);
-        }
-
-        private string generateCards(string dirPath, CardSet cardSet, int minProgressBar, int maxProgressBar, bool createDuplicates)
+        private string GenerateCards(CardSet cardSet, int minProgressBar, int maxProgressBar, bool createDuplicates = true)
         {
             try
             {
-                int n = cardSet.Count;
-                string result;
-                Dictionary<string, int> cardsNames = new Dictionary<string, int>();
-                for (int i = 0; i < n; ++i)
+                var n = cardSet.Count;
+                var cardsNames = new Dictionary<string, int>();
+                for (var i = 0; i < n; ++i)
                 {
-                    Card card = cardSet[i];
+                    var card = cardSet[i];
+                    string result;
                     if (cardsNames.ContainsKey(card.Name))
                     {
-                        if (createDuplicates)
-                            result = card.GenerateFile("", " " + (++cardsNames[card.Name]).ToString());
-                        else
-                            result = $"Nie stworzono duplikatu karty {card.Name}.";
+                        result = createDuplicates ? card.GenerateFile("", " " + (++cardsNames[card.Name])) : $"Nie stworzono duplikatu karty {card.Name}.";
                     }
                     else
                     {
                         result = card.GenerateFile();
                         cardsNames.Add(card.Name, 1);
                     }
-                    updateProgressBar(minProgressBar + (double)(i + 1) * (maxProgressBar - minProgressBar) / n);
-                    appendTextBlockResultMessage(result);
+                    UpdateProgressBar(minProgressBar + (double)(i + 1) * (maxProgressBar - minProgressBar) / n);
+                    AppendTextBlockResultMessage(result);
                 }
                 return $"Pomyślnie stworzono {n} kart{GetPolishEnding(n)}.";
             }
@@ -473,43 +458,48 @@ namespace MyWarCreator
             }
         }
 
-        private string preparePdf(string dirPath, int minProgressBar, int maxProgressBar)
+        private string PreparePdf(string dirPath, int minProgressBar, int maxProgressBar)
         {
             try
             {
-                appendTextBlockResultMessage($"Trwa przygotowywanie pdfa do wydruku...");
-                using (PdfDocument pdf = new PdfDocument())
+                AppendTextBlockResultMessage("Trwa przygotowywanie PDFa do wydruku...");
+                using (var pdf = new PdfDocument())
                 {
                     PdfPage pdfPage = null;
-                    XRect xrect;
-                    string[] filesPath = Directory.GetFiles(dirPath, "*.png");
-                    int n = filesPath.Length;
-                    int nCard = 0;
-                    int nToPrint = 1;
-                    for (int i = 0; i < n; ++i)
+                    var filesPath = Directory.GetFiles(dirPath, "*.png");
+                    var n = filesPath.Length;
+                    if (n == 0)
                     {
-                        string filePath = Path.GetFullPath(filesPath[i]);
+                        UpdateProgressBar(100);
+                        return "Brak plików do wygenerowania PDFa.";
+                    }
+
+                    var nCard = 0;
+                    for (var i = 0; i < n; ++i)
+                    {
+                        var filePath = Path.GetFullPath(filesPath[i]);
+                        int nToPrint;
                         if (filePath.ToLower().Contains("skills") && filePath.ToLower().Contains("podstawow"))
                             nToPrint = 20;
                         else if (filePath.ToLower().Contains("equipment") && filePath.ToLower().Contains("początkow"))
                             nToPrint = 3;
                         else
                             nToPrint = 1;
-                        for (int j = 0; j < nToPrint; ++j)
+                        for (var j = 0; j < nToPrint; ++j)
                         {
                             if (nCard % 9 == 0)
                                 pdfPage = pdf.AddPage();
-                            xrect = new XRect((nCard % 3) * 185 + 20, ((nCard % 9) / 3) * 258 + 20, 184, 257); // (2.5 x 3.5 inches) * 72 pt/inch
-                            using (XGraphics xgraphics = XGraphics.FromPdfPage(pdfPage))
+                            var xRect = new XRect((nCard % 3) * 185 + 20, ((nCard % 9) / 3) * 258 + 20, 184, 257);
+                            using (var xGraphics = XGraphics.FromPdfPage(pdfPage))
                             {
-                                using (XImage ximage = XImage.FromFile(filePath))
+                                using (var xImage = XImage.FromFile(filePath))
                                 {
-                                    xgraphics.DrawImage(ximage, xrect);
+                                    xGraphics.DrawImage(xImage, xRect);
                                     ++nCard;
                                 }
                             }
                         }
-                        updateProgressBar(minProgressBar + (double)(i + 1) * (maxProgressBar - minProgressBar) / n);
+                        UpdateProgressBar(minProgressBar + (double)(i + 1) * (maxProgressBar - minProgressBar) / n);
                     }
                     pdf.Save(Path.GetFullPath(dirPath + "/AllFilesPrint.pdf"));
                 }
@@ -521,50 +511,46 @@ namespace MyWarCreator
             }
         }
 
-        private long progressBarLastRefresh = 0;
-        private void updateProgressBar(double value, Visibility visibility = Visibility.Visible)
+        private long progressBarLastRefresh;
+        private void UpdateProgressBar(double value, Visibility visibility = Visibility.Visible)
         {
-            progressBar.Visibility = visibility;
-            progressBarText.Visibility = visibility;
-            progressBar.Value = value;
-            long time = DateTime.Now.Ticks;
-            if (time - progressBarLastRefresh > 1000)
-            {
-                progressBar.Refresh();
-                progressBarText.Refresh();
-                progressBarLastRefresh = time;
-            }
+            ProgressBar.Visibility = visibility;
+            ProgressBarText.Visibility = visibility;
+            ProgressBar.Value = value;
+            var time = DateTime.Now.Ticks;
+            if (time - progressBarLastRefresh <= 1000) return;
+
+            ProgressBar.Refresh();
+            ProgressBarText.Refresh();
+            progressBarLastRefresh = time;
         }
 
-        private long textBoxResultMessageLastRefresh = 0;
-        private void updateTextBlockResultMessage(string text, Visibility visibility = Visibility.Visible)
+        private long textBoxResultMessageLastRefresh;
+        private void UpdateTextBlockResultMessage(string text, Visibility visibility = Visibility.Visible)
         {
-            textBoxResultMessage.Visibility = visibility;
-            textBoxResultMessage.Text = text;
-            long time = DateTime.Now.Ticks;
-            if (time - textBoxResultMessageLastRefresh > 1000)
-            {
-                textBoxResultMessage.Refresh();
-                textBoxResultMessageLastRefresh = time;
-            }
+            TextBoxResultMessage.Visibility = visibility;
+            TextBoxResultMessage.Text = text;
+            var time = DateTime.Now.Ticks;
+            if (time - textBoxResultMessageLastRefresh <= 1000) return;
+
+            TextBoxResultMessage.Refresh();
+            textBoxResultMessageLastRefresh = time;
         }
-        private void appendTextBlockResultMessage(string text, Visibility visibility = Visibility.Visible)
+        private void AppendTextBlockResultMessage(string text, Visibility visibility = Visibility.Visible)
         {
-            textBoxResultMessage.Visibility = visibility;
-            if (!string.IsNullOrEmpty(text))
-            {
-                textBoxResultMessage.Text = (string.IsNullOrEmpty(textBoxResultMessage.Text) ? "" : (textBoxResultMessage.Text + "\n")) + text;
-                textBoxResultMessage.ScrollToEnd();
-                long time = DateTime.Now.Ticks;
-                if (time - textBoxResultMessageLastRefresh > 1000)
-                {
-                    textBoxResultMessage.Refresh();
-                    textBoxResultMessageLastRefresh = time;
-                }
-            }
+            TextBoxResultMessage.Visibility = visibility;
+            if (string.IsNullOrEmpty(text)) return;
+
+            TextBoxResultMessage.Text = (string.IsNullOrEmpty(TextBoxResultMessage.Text) ? "" : (TextBoxResultMessage.Text + "\n")) + text;
+            TextBoxResultMessage.ScrollToEnd();
+            var time = DateTime.Now.Ticks;
+            if (time - textBoxResultMessageLastRefresh <= 1000) return;
+
+            TextBoxResultMessage.Refresh();
+            textBoxResultMessageLastRefresh = time;
         }
 
-        private string GetPolishEnding(int n)
+        private static string GetPolishEnding(int n)
         {
             if (n == 1) return "ę";
             if (n % 10 >= 2 && n % 10 < 5) return "y";

@@ -1,24 +1,17 @@
-﻿using MyWarCreator.Helpers;
-using MyWarCreator.Models;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MyWarCreator.Models;
 
 namespace MyWarCreator.DataSet
 {
-    class MonstersSet : CardSet
+    public class MonstersSet : CardSet
     {
-        private List<MonsterData> MonstersDD { get; } = new List<MonsterData>();
         public override bool AddRow(IList<string> row, string dirPath)
         {
-            if (row.Skip(1).Take(1).Any(x => !string.IsNullOrEmpty(x)))
-            {
-                Add(new Monster(row, dirPath));
-                return true;
-            }
-            return false;
+            if (row.Skip(1).Take(1).All(string.IsNullOrEmpty)) return false;
+
+            Add(new Monster(row, dirPath));
+            return true;
         }
     }
 }

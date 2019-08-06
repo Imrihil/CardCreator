@@ -3,70 +3,69 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace MyWarCreator.Helpers
 {
-    class DiceHelper
+    public class DiceHelper
     {
-        public static readonly Dice d1 = new Dice(1, 1);
-        public static readonly Dice d2 = new Dice(1, 2);
-        public static readonly Dice d3 = new Dice(1, 3);
-        public static readonly Dice d4 = new Dice(1, 4);
-        public static readonly Dice d6 = new Dice(1, 6);
-        public static readonly Dice d8 = new Dice(1, 8);
-        public static readonly Dice d10 = new Dice(1, 10);
-        public static readonly Dice d12 = new Dice(1, 12);
-        public static readonly Dice d20 = new Dice(1, 20);
-        public static readonly Dice d100 = new Dice(1, 100);
-        private static readonly List<Dice> Dices = new List<Dice>() { d1, d2, d3, d4, d6, d8, d10, d12, d20, d100 };
-        private static List<DicesSet> DicesForSum = new List<DicesSet>();
+        private static readonly Dice D1 = new Dice(1, 1);
+        private static readonly Dice D2 = new Dice(1, 2);
+        private static readonly Dice D3 = new Dice(1, 3);
+        private static readonly Dice D4 = new Dice(1, 4);
+        private static readonly Dice D6 = new Dice(1, 6);
+        private static readonly Dice D8 = new Dice(1, 8);
+        private static readonly Dice D10 = new Dice(1, 10);
+        private static readonly Dice D12 = new Dice(1, 12);
+        private static readonly Dice D20 = new Dice(1, 20);
+        private static readonly Dice D100 = new Dice(1, 100);
+        private static readonly List<Dice> Dices = new List<Dice> { D1, D2, D3, D4, D6, D8, D10, D12, D20, D100 };
+        private static readonly List<DicesSet> DicesForSum = new List<DicesSet>();
 
         static DiceHelper()
         {
             DicesForSum.Add(new DicesSet()); // 0
-            DicesForSum.Add(new DicesSet() { d1 }); // 0.5
-            DicesForSum.Add(new DicesSet() { d1 }); // 1
-            DicesForSum.Add(new DicesSet() { d2 }); // 1.5
-            DicesForSum.Add(new DicesSet() { d3 }); // 2
-            DicesForSum.Add(new DicesSet() { d4 }); // 2.5
-            DicesForSum.Add(new DicesSet() { d4 }); // 3
-            DicesForSum.Add(new DicesSet() { d6 }); // 3.5
-            DicesForSum.Add(new DicesSet() { d6 }); // 4
-            DicesForSum.Add(new DicesSet() { d8 }); // 4.5
-            DicesForSum.Add(new DicesSet() { { d4, 2 } }); // 5
-            DicesForSum.Add(new DicesSet() { d10 }); // 5.5
-            DicesForSum.Add(new DicesSet() { d4, d6 }); // 6
-            DicesForSum.Add(new DicesSet() { d12 }); // 6.5
-            DicesForSum.Add(new DicesSet() { { d6, 2 } }); // 7
-            DicesForSum.Add(new DicesSet() { { d6, 2 } }); // 7.5
-            DicesForSum.Add(new DicesSet() { d6, d8 }); // 8
-            DicesForSum.Add(new DicesSet() { d6, d8 }); // 8.5
-            DicesForSum.Add(new DicesSet() { { d8, 2 } }); // 9
-            DicesForSum.Add(new DicesSet() { { d8, 2 } }); // 9.5
-            DicesForSum.Add(new DicesSet() { d8, d10 }); // 10
-            DicesForSum.Add(new DicesSet() { d20 }); // 10.5
-            DicesForSum.Add(new DicesSet() { { d10, 2 } }); // 11
-            DicesForSum.Add(new DicesSet() { { d10, 2 } }); // 11.5
-            DicesForSum.Add(new DicesSet() { d10, d12 }); // 12
-            DicesForSum.Add(new DicesSet() { d10, d12 }); // 12.5
-            DicesForSum.Add(new DicesSet() { { d12, 2 } }); // 13
-            DicesForSum.Add(new DicesSet() { { d12, 2 } }); // 13.5
-            DicesForSum.Add(new DicesSet() { d6, d20 }); // 14
-            DicesForSum.Add(new DicesSet() { { d8, 2 }, d10 }); // 14.5
-            DicesForSum.Add(new DicesSet() { d8, d20 }); // 15
-            DicesForSum.Add(new DicesSet() { d8, { d10, 2 } }); // 15.5
-            DicesForSum.Add(new DicesSet() { d10, d20 }); // 16
-            DicesForSum.Add(new DicesSet() { { d10, 3 } }); // 16.5
-            DicesForSum.Add(new DicesSet() { d12, d20 }); // 17
-            DicesForSum.Add(new DicesSet() { { d10, 2 }, d12 }); // 17.5
-            DicesForSum.Add(new DicesSet() { { d8, 4 } }); // 18
-            DicesForSum.Add(new DicesSet() { d10, { d12, 2 } }); // 18.5
-            DicesForSum.Add(new DicesSet() { { d8, 3 }, d10 }); // 19
-            DicesForSum.Add(new DicesSet() { { d12, 3 } }); // 19.5
-            DicesForSum.Add(new DicesSet() { { d8, 2 }, { d10, 2 } }); // 20
-            DicesForSum.Add(new DicesSet() { { d8, 2 }, { d10, 2 } }); // 20.5
-            DicesForSum.Add(new DicesSet() { { d20, 2 } }); // 21
+            DicesForSum.Add(new DicesSet { D1 }); // 0.5
+            DicesForSum.Add(new DicesSet { D1 }); // 1
+            DicesForSum.Add(new DicesSet { D2 }); // 1.5
+            DicesForSum.Add(new DicesSet { D3 }); // 2
+            DicesForSum.Add(new DicesSet { D4 }); // 2.5
+            DicesForSum.Add(new DicesSet { D4 }); // 3
+            DicesForSum.Add(new DicesSet { D6 }); // 3.5
+            DicesForSum.Add(new DicesSet { D6 }); // 4
+            DicesForSum.Add(new DicesSet { D8 }); // 4.5
+            DicesForSum.Add(new DicesSet { { D4, 2 } }); // 5
+            DicesForSum.Add(new DicesSet { D10 }); // 5.5
+            DicesForSum.Add(new DicesSet { D4, D6 }); // 6
+            DicesForSum.Add(new DicesSet { D12 }); // 6.5
+            DicesForSum.Add(new DicesSet { { D6, 2 } }); // 7
+            DicesForSum.Add(new DicesSet { { D6, 2 } }); // 7.5
+            DicesForSum.Add(new DicesSet { D6, D8 }); // 8
+            DicesForSum.Add(new DicesSet { D6, D8 }); // 8.5
+            DicesForSum.Add(new DicesSet { { D8, 2 } }); // 9
+            DicesForSum.Add(new DicesSet { { D8, 2 } }); // 9.5
+            DicesForSum.Add(new DicesSet { D8, D10 }); // 10
+            DicesForSum.Add(new DicesSet { D20 }); // 10.5
+            DicesForSum.Add(new DicesSet { { D10, 2 } }); // 11
+            DicesForSum.Add(new DicesSet { { D10, 2 } }); // 11.5
+            DicesForSum.Add(new DicesSet { D10, D12 }); // 12
+            DicesForSum.Add(new DicesSet { D10, D12 }); // 12.5
+            DicesForSum.Add(new DicesSet { { D12, 2 } }); // 13
+            DicesForSum.Add(new DicesSet { { D12, 2 } }); // 13.5
+            DicesForSum.Add(new DicesSet { D6, D20 }); // 14
+            DicesForSum.Add(new DicesSet { { D8, 2 }, D10 }); // 14.5
+            DicesForSum.Add(new DicesSet { D8, D20 }); // 15
+            DicesForSum.Add(new DicesSet { D8, { D10, 2 } }); // 15.5
+            DicesForSum.Add(new DicesSet { D10, D20 }); // 16
+            DicesForSum.Add(new DicesSet { { D10, 3 } }); // 16.5
+            DicesForSum.Add(new DicesSet { D12, D20 }); // 17
+            DicesForSum.Add(new DicesSet { { D10, 2 }, D12 }); // 17.5
+            DicesForSum.Add(new DicesSet { { D8, 4 } }); // 18
+            DicesForSum.Add(new DicesSet { D10, { D12, 2 } }); // 18.5
+            DicesForSum.Add(new DicesSet { { D8, 3 }, D10 }); // 19
+            DicesForSum.Add(new DicesSet { { D12, 3 } }); // 19.5
+            DicesForSum.Add(new DicesSet { { D8, 2 }, { D10, 2 } }); // 20
+            DicesForSum.Add(new DicesSet { { D8, 2 }, { D10, 2 } }); // 20.5
+            DicesForSum.Add(new DicesSet { { D20, 2 } }); // 21
         }
 
         public static string GetDices(double average)
@@ -75,20 +74,18 @@ namespace MyWarCreator.Helpers
             {
                 throw new ArgumentException("The average cannot be negative!");
             }
-            int sum = Convert.ToInt32(2 * average);
+            var sum = Convert.ToInt32(2 * average);
             if (sum < DicesForSum.Count)
             {
                 return DicesForSum[sum].ToString();
             }
-            else
+
             if (sum == DicesForSum.Count)
             {
                 return DicesForSum[DicesForSum.Count - 1].ToString();
             }
-            else
-            {
-                return DicesForSum[DicesForSum.Count - 1].ToString() + "+" + (sum + 1 - DicesForSum.Count) / 2;
-            }
+
+            return DicesForSum[DicesForSum.Count - 1] + "+" + (sum + 1 - DicesForSum.Count) / 2;
         }
 
         public static bool HasDice(string dice)
@@ -101,15 +98,14 @@ namespace MyWarCreator.Helpers
             return Regex.IsMatch(dice, @"^\d*[kd]\d+$");
         }
 
-        public static bool IsDiceOrNumber(string dice)
+        private static bool IsDiceOrNumber(string dice)
         {
-            double val;
-            return Regex.IsMatch(dice, @"^\d*[kd]\d+$") || double.TryParse(dice, out val);
+            return Regex.IsMatch(dice, @"^\d*[kd]\d+$") || double.TryParse(dice, out _);
         }
 
         public static double GetAverage(string dices)
         {
-            int idx = dices.ToLower().IndexOf(" plus ");
+            var idx = dices.ToLower().IndexOf(" plus ", StringComparison.InvariantCultureIgnoreCase);
             if (idx >= 0)
             {
                 return GetAverageDices(dices.Substring(0, idx)) + GetAverageDices(dices.Substring(idx + 6));
@@ -120,48 +116,46 @@ namespace MyWarCreator.Helpers
         private static double GetAverageDices(string dices)
         {
             double result = 0;
-            int idx = dices.IndexOf(" ");
+            var idx = dices.IndexOf(" ", StringComparison.InvariantCultureIgnoreCase);
             if (idx >= 0)
                 dices = dices.Substring(0, idx);
-            idx = dices.IndexOf("/");
+            idx = dices.IndexOf("/", StringComparison.InvariantCultureIgnoreCase);
             if (idx >= 0)
                 dices = dices.Substring(0, idx);
-            idx = dices.IndexOf("*");
+            idx = dices.IndexOf("*", StringComparison.InvariantCultureIgnoreCase);
             if (idx >= 0)
                 dices = dices.Substring(0, idx);
             dices = dices.Replace("d", "k");
-            bool minus = dices.Contains("-");
-            string[] dicesStrings = Regex.Split(dices, @"[+-]");
-            for (int i = 0; i < dicesStrings.Length; ++i)
+            var minus = dices.Contains("-");
+            var dicesStrings = Regex.Split(dices, @"[+-]");
+            for (var i = 0; i < dicesStrings.Length; ++i)
             {
-                if (IsDiceOrNumber(dicesStrings[i]))
+                if (!IsDiceOrNumber(dicesStrings[i])) continue;
+
+                idx = dicesStrings[i].IndexOf("k", StringComparison.InvariantCultureIgnoreCase);
+                string numberString;
+                string diceName;
+                if (idx >= 0)
                 {
-                    int number;
-                    int dIdx = dicesStrings[i].IndexOf("k");
-                    string numberString;
-                    string diceName;
-                    if (dIdx >= 0)
-                    {
-                        numberString = dicesStrings[i].Substring(0, dIdx);
-                        diceName = dicesStrings[i].Substring(dIdx);
-                    }
-                    else
-                    {
-                        numberString = dicesStrings[i];
-                        diceName = "1";
-                    }
-                    int.TryParse(numberString, out number);
-                    if (minus && i == dicesStrings.Length - 1)
-                        result -= number * Dices.FirstOrDefault(x => x.Name == diceName).Average;
-                    else
-                        result += number * Dices.FirstOrDefault(x => x.Name == diceName).Average;
+                    numberString = dicesStrings[i].Substring(0, idx);
+                    diceName = dicesStrings[i].Substring(idx);
                 }
+                else
+                {
+                    numberString = dicesStrings[i];
+                    diceName = "1";
+                }
+                int.TryParse(numberString, out var number);
+                if (minus && i == dicesStrings.Length - 1)
+                    result -= number * (Dices.FirstOrDefault(x => x.Name == diceName)?.Average ?? 0);
+                else
+                    result += number * (Dices.FirstOrDefault(x => x.Name == diceName)?.Average ?? 0);
             }
             return result;
         }
     }
 
-    class DicesSet : Dictionary<Dice, int>
+    public class DicesSet : Dictionary<Dice, int>
     {
         public int CountDices { get { return this.Sum(x => x.Value); } }
         public int SumDices { get { return this.Sum(x => x.Value * x.Key.Sum); } }
@@ -188,27 +182,26 @@ namespace MyWarCreator.Helpers
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach (var p in this.OrderByDescending(x => x.Key))
             {
-                if (p.Value > 0)
-                {
-                    if (p.Value > 1)
-                        sb.Append(p.Value);
-                    sb.Append(p.Key);
-                    sb.Append("+");
-                }
+                if (p.Value <= 0) continue;
+
+                if (p.Value > 1)
+                    sb.Append(p.Value);
+                sb.Append(p.Key);
+                sb.Append("+");
             }
-            if (sb.Length == 0) return "0";
-            return sb.ToString(0, sb.Length - 1);
+            return sb.Length == 0
+                ? "0" : sb.ToString(0, sb.Length - 1);
         }
     }
 
-    class Dice : IComparable<Dice>
+    public class Dice : IComparable<Dice>
     {
         public string Name { get; }
-        public int MinValue { get; }
-        public int MaxValue { get; }
+        private int MinValue { get; }
+        private int MaxValue { get; }
         public int Sum { get; }
         public double Average { get; }
 
@@ -217,6 +210,7 @@ namespace MyWarCreator.Helpers
             MinValue = minValue;
             MaxValue = maxValue;
             Sum = MinValue + MaxValue;
+            // ReSharper disable once PossibleLossOfFraction
             Average = Sum / 2;
             Name = MaxValue > 1 ? "k" + MaxValue : "1";
         }

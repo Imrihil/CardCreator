@@ -1,13 +1,9 @@
-﻿using MyWarCreator.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using MyWarCreator.Models;
 
 namespace MyWarCreator.DataSet
 {
-    abstract class CardSet : List<Card>
+    public abstract class CardSet : List<Card>
     {
         public abstract bool AddRow(IList<string> row, string dirPath);
     }

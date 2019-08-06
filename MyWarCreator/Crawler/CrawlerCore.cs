@@ -1,54 +1,55 @@
-﻿using MyWarCreator.Helpers;
-using MyWarCreator.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using HtmlAgilityPack;
+using MyWarCreator.Helpers;
 
 namespace MyWarCreator.Crawler
 {
-    class CrawlerCore
+    public class CrawlerCore
     {
-        public string MainPageUrl { get; set; }
-        public string MonstersIndexUrl { get; set; }
-        public int Count { get { return MonstersLinks.Count; } }
-        private List<string> MonstersLinks;
-        private int MonstersIdx;
-        private string DirPath;
+        private string MainPageUrl { get; }
+        private string MonstersIndexUrl { get; }
+        public int Count => monstersLinks.Count;
+        private readonly List<string> monstersLinks;
+        private int monstersIdx;
+        private readonly string dirPath;
 
         public CrawlerCore(string mainPageUrl, string monstersIndexUrl, string dirPath)
         {
             MainPageUrl = mainPageUrl;
             MonstersIndexUrl = monstersIndexUrl;
-            DirPath = dirPath;
-            List<MonsterData> monsters = new List<MonsterData>();
-            string webText = GetWebText(MainPageUrl + MonstersIndexUrl);
-            ISet<string> links = GetNewLinks(webText, "/srd/monsters/");
-            MonstersLinks = links.ToList();
-            MonstersLinks.Sort();
-            MonstersIdx = 0;
+            this.dirPath = dirPath;
+            var webText = GetWebText(MainPageUrl + MonstersIndexUrl);
+            var links = GetNewLinks(webText, "/srd/monsters/");
+            monstersLinks = links.ToList();
+            monstersLinks.Sort();
+            monstersIdx = 0;
         }
 
         public bool HasNext()
         {
-            return MonstersIdx < MonstersLinks.Count;
+            return monstersIdx < monstersLinks.Count;
         }
 
-        public List<MonsterData> GetNextMonsters()
+        public IEnumerable<MonsterData> GetNextMonsters()
         {
-            string webText = GetWebText(MainPageUrl + MonstersLinks[MonstersIdx++]);
-            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            var monsters = new List<MonsterData>();
+
+            var webText = GetWebText(MainPageUrl + monstersLinks[monstersIdx++]);
+            var doc = new HtmlDocument();
             doc.LoadHtml(webText);
 
             var tableHtmlNodes = doc.DocumentNode.SelectNodes("//table");
             var tableHtmlNode = tableHtmlNodes.FirstOrDefault(x => x.HasClass("statBlock"));
-            var tableDescendants = tableHtmlNode.Descendants("tr");
-            List<List<string>> table = tableDescendants
-                        .Where(tr => tr.SelectNodes("th|td").Count() > 1)
+            var tableDescendants = tableHtmlNode?.Descendants("tr");
+            if (tableDescendants == null) return monsters;
+
+            var table = tableDescendants
+                        .Where(tr => tr.SelectNodes("th|td").Count > 1)
                         .Select(tr => tr.SelectNodes("th|td").Select(td => td.InnerText.Trim()).ToList())
                         .ToList();
 
@@ -57,12 +58,12 @@ namespace MyWarCreator.Crawler
             string imageFullUrl = null;
             if (imageNode != null)
             {
-                string imageHref = imageNode.GetAttributeValue("href", null);
+                var imageHref = imageNode.GetAttributeValue("href", null);
                 if (imageHref.Contains("javascript:ShowImage"))
                 {
-                    int showImageStartIdx = imageHref.IndexOf("javascript:ShowImage");
-                    showImageStartIdx = imageHref.IndexOf("(", showImageStartIdx);
-                    int showImageColon = imageHref.IndexOf(",", showImageStartIdx);
+                    var showImageStartIdx = imageHref.IndexOf("javascript:ShowImage", StringComparison.InvariantCultureIgnoreCase);
+                    showImageStartIdx = imageHref.IndexOf("(", showImageStartIdx, StringComparison.InvariantCultureIgnoreCase);
+                    var showImageColon = imageHref.IndexOf(",", showImageStartIdx, StringComparison.InvariantCultureIgnoreCase);
                     imageUrl = imageHref.Substring(showImageStartIdx + 1, showImageColon - showImageStartIdx - 1);
                     imageUrl = imageUrl.Replace("'", "");
                     imageFullUrl = "http://www.wizards.com/dnd/images/" + imageUrl;
@@ -74,33 +75,32 @@ namespace MyWarCreator.Crawler
                 }
                 if (!string.IsNullOrWhiteSpace(imageFullUrl) && !string.IsNullOrWhiteSpace(imageUrl))
                 {
-                    using (WebClient client = new WebClient())
+                    using (var client = new WebClient())
                     {
-                        if (!Directory.Exists(DirPath))
+                        if (!Directory.Exists(dirPath))
                         {
-                            Directory.CreateDirectory(DirPath);
+                            Directory.CreateDirectory(dirPath);
                         }
-                        string directories = imageUrl.Substring(0, imageUrl.LastIndexOf("/"));
-                        if (!Directory.Exists(DirPath + "/" + directories))
+                        var directories = imageUrl.Substring(0, imageUrl.LastIndexOf("/", StringComparison.InvariantCultureIgnoreCase));
+                        if (!Directory.Exists(dirPath + "/" + directories))
                         {
-                            Directory.CreateDirectory(DirPath + "/" + directories);
+                            Directory.CreateDirectory(dirPath + "/" + directories);
                         }
-                        if (!File.Exists(DirPath + "/" + imageUrl))
+                        if (!File.Exists(dirPath + "/" + imageUrl))
                         {
-                            client.DownloadFile(new Uri(imageFullUrl), DirPath + "/" + imageUrl);
+                            client.DownloadFile(new Uri(imageFullUrl), dirPath + "/" + imageUrl);
                         }
                     }
                 }
             }
             var docH1 = doc.DocumentNode.Descendants("h1").FirstOrDefault();
-            var defaultName = docH1.ChildNodes.FirstOrDefault().InnerText.Trim();
-            List<MonsterData> monsters = new List<MonsterData>();
-            if (table.Count > 0)
+            var defaultName = docH1?.ChildNodes.FirstOrDefault()?.InnerText.Trim();
+
+            if (table.Count <= 0) return monsters;
+
+            for (var i = 1; i < table[0].Count; ++i)
             {
-                for (int i = 1; i < table[0].Count; ++i)
-                {
-                    monsters.Add(new MonsterData(table, defaultName + (i > 1 ? " " + i.ToString() : ""), imageUrl != null ? DirPath + "/" + imageUrl : null, i));
-                }
+                monsters.Add(new MonsterData(table, defaultName + (i > 1 ? " " + i : ""), imageUrl != null ? dirPath + "/" + imageUrl : null, i));
             }
 
             return monsters;
@@ -108,34 +108,38 @@ namespace MyWarCreator.Crawler
 
         public string GetLastUrl()
         {
-            if (MonstersIdx > 0)
-                return MonstersLinks[MonstersIdx - 1];
-            else return MonstersLinks[0];
+            return monstersIdx > 0 ? monstersLinks[monstersIdx - 1] : monstersLinks[0];
         }
 
         //http://ericsowell.com/blog/2007/8/14/how-to-write-a-web-crawler-in-csharp
         private static string GetWebText(string url)
         {
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+            var request = (HttpWebRequest)WebRequest.Create(url);
             request.UserAgent = "MyWarCreator .NET Web Crawler";
-            WebResponse response = request.GetResponse();
-            Stream stream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(stream);
-            string htmlText = reader.ReadToEnd();
-            return htmlText;
+            using (var response = request.GetResponse())
+            {
+                using (var stream = response.GetResponseStream())
+                {
+                    if (stream == null) return null;
+                    using (var reader = new StreamReader(stream))
+                    {
+                        var htmlText = reader.ReadToEnd();
+                        return htmlText;
+                    }
+                }
+            }
         }
 
         //https://stackoverflow.com/questions/10452749/simple-web-crawler-in-c-sharp
-        public ISet<string> GetNewLinks(string content, string filterRegex)
+        private static IEnumerable<string> GetNewLinks(string content, string filterRegex)
         {
-            Regex regexLink = new Regex("(?<=<a\\s*?href=(?:'|\"))[^'\"]*?(?=(?:'|\"))");
-            Regex regexFilter = new Regex(filterRegex);
+            var regexLink = new Regex("(?<=<a\\s*?href=(?:'|\"))[^'\"]*?(?=(?:'|\"))");
 
             ISet<string> newLinks = new HashSet<string>();
             foreach (var match in regexLink.Matches(content))
             {
-                string link = match.ToString();
-                int idx = link.LastIndexOf('#');
+                var link = match.ToString();
+                var idx = link.LastIndexOf('#');
                 if (idx > 0)
                     link = link.Substring(0, idx);
                 if (link.Contains(filterRegex) && !newLinks.Contains(link))

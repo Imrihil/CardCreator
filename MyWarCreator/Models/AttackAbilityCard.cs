@@ -1,45 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MyWarCreator.Models
 {
-    class AttackAbilityCard : Card
+    public class AttackAbilityCard : Card
     {
-        public int Fatigue { get; set; }
-        public int FriendyFire { get; set; }
-        public int Hit { get; set; }
-        public int Downturn { get; set; }
-        public int Weakness { get; set; }
-        public int Poison { get; set; }
-        public int Bleeding { get; set; }
-        public int AreaAttack { get; set; }
-        public int Blinding { get; set; }
-        public int Cleave { get; set; }
-        public int Fire { get; set; }
-        public int Calm { get; set; }
-        public int Stun { get; set; }
-        public int Knockdown { get; set; }
-        public int Hypnosis { get; set; }
-        public int Push { get; set; }
-        public int Terror { get; set; }
-        public int Crit { get; set; }
-        public int Defence { get; set; }
+        private int Fatigue { get; set; }
+        private int FriendlyFire { get; set; }
+        private int Hit { get; set; }
+        private int Downturn { get; set; }
+        private int Weakness { get; set; }
+        private int Poison { get; set; }
+        private int Bleeding { get; set; }
+        private int AreaAttack { get; set; }
+        private int Blinding { get; set; }
+        private int Cleave { get; set; }
+        private int Fire { get; set; }
+        private int Calm { get; set; }
+        private int Stun { get; set; }
+        private int Knockdown { get; set; }
+        private int Hypnosis { get; set; }
+        private int Push { get; set; }
+        private int Terror { get; set; }
+        private int Crit { get; set; }
+        protected int Defence { get; set; }
 
-        public AttackAbilityCard(string dirPath) : base(dirPath)
+        protected AttackAbilityCard(string dirPath) : base(dirPath)
         {
         }
 
         protected string AttackDescription()
         {
-            StringBuilder sb = new StringBuilder();
-            int actual = 1;
+            var sb = new StringBuilder();
+            var actual = 1;
             if (Fatigue > 0)
                 sb.AppendLine(ChancesLine("Zmęczenie", Fatigue, ref actual));
-            if (FriendyFire > 0)
-                sb.AppendLine(ChancesLine("Swój", FriendyFire, ref actual));
+            if (FriendlyFire > 0)
+                sb.AppendLine(ChancesLine("Swój", FriendlyFire, ref actual));
             if (Hit > 0)
                 ChancesLine("Trafienie", Hit, ref actual);
             if (Downturn > 0)
@@ -77,11 +74,10 @@ namespace MyWarCreator.Models
 
         protected void ProcessRow(IList<string> row)
         {
-            int value;
-            int.TryParse(row[0], out value);
+            int.TryParse(row[0], out var value);
             Fatigue = value;
             int.TryParse(row[1], out value);
-            FriendyFire = value;
+            FriendlyFire = value;
             int.TryParse(row[2], out value);
             Hit = value;
             int.TryParse(row[3], out value);
@@ -118,16 +114,15 @@ namespace MyWarCreator.Models
 
         private string ChancesLine(string name, int hitChance, ref int actual)
         {
-            int min = actual;
+            var min = actual;
             actual += hitChance;
             if (actual > 12)
-                return string.Format("{0}+: {1}", min, name);
-            else if (min == 1)
-                return string.Format("{0}-: {1}", hitChance, name);
-            else if (hitChance == 1)
-                return string.Format("{0}: {1}", min, name);
-            else
-                return string.Format("{0}-{1}: {2}", min, actual - 1, name);
+                return $"{min}+: {name}";
+            if (min == 1)
+                return $"{hitChance}-: {name}";
+            return hitChance == 1
+                ? $"{min}: {name}"
+                : $"{min}-{actual - 1}: {name}";
         }
     }
 }

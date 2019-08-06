@@ -1,79 +1,72 @@
-﻿using MyWarCreator.Extensions;
-using MyWarCreator.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using MyWarCreator.Extensions;
+using MyWarCreator.Helpers;
 
 namespace MyWarCreator.Models
 {
-    class Monster : AttackAbilityCard
+    public sealed class Monster : AttackAbilityCard
     {
-        public override string FileName { get { return Name; } }
-        public int Attack { get; set; }
-        public Rectangle DefenceArea { get; set; } = new Rectangle(10, 95, 60, 40);
-        public int HitPoints { get; set; }
-        public Rectangle HitPointsArea { get; set; } = new Rectangle(10, 170, 60, 40);
-        public double Level { get; set; }
-        public bool IsRanged { get; set; }
-        public List<ActiveAbility> ActiveAbilities { get; set; } = new List<ActiveAbility>();
-        public List<PassiveAbility> PassiveAbilities { get; set; } = new List<PassiveAbility>();
+        protected override string FileName => Name;
+        private int Attack { get; }
+        private Rectangle DefendArea { get; } = new Rectangle(10, 95, 60, 40);
+        private int HitPoints { get; }
+        private Rectangle HitPointsArea { get; } = new Rectangle(10, 170, 60, 40);
+        private double Level { get; }
+        private List<ActiveAbility> ActiveAbilities { get; } = new List<ActiveAbility>();
+        private List<PassiveAbility> PassiveAbilities { get; } = new List<PassiveAbility>();
 
-        public override string DescriptionFull
+        protected override string DescriptionFull
         {
             get
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 sb.Append(string.Join(", ", ActiveAbilities.Select(x => x.Description)));
                 if (ActiveAbilities.Any()) sb.AppendLine();
                 sb.Append(string.Join(", ", PassiveAbilities.Select(x => x.Description)));
                 if (PassiveAbilities.Any()) sb.AppendLine();
                 sb.Append(AttackDescription());
-                if (!string.IsNullOrEmpty(Description))
-                {
-                    sb.AppendLine();
-                    sb.Append(Description);
-                }
+                if (string.IsNullOrEmpty(Description)) return sb.ToString();
+
+                sb.AppendLine();
+                sb.Append(Description);
                 return sb.ToString();
             }
         }
 
         public Monster(IList<string> row, string dirPath) : base(dirPath)
         {
-            int value;
-            double dvalue;
             Type = row[0];
             Name = row[1];
-            int.TryParse(row[2], out value);
+            int.TryParse(row[2], out var value);
             Attack = value;
-            LeftEffects.Add(string.Format("{0}k12", Attack));
+            LeftEffects.Add($"{Attack}k12");
             int.TryParse(row[3], out value);
-            IsRanged = value == 1;
             int.TryParse(row[4], out value);
             Defence = value;
             int.TryParse(row[5], out value);
             HitPoints = value;
             ProcessRow(row.Skip(6).ToList());
-            for (int i = 0; i < 3; ++i)
+            for (var i = 0; i < 3; ++i)
             {
-                string type = row[24 + i * 3];
-                string name = row[25 + i * 3];
+                var type = row[24 + i * 3];
+                var name = row[25 + i * 3];
                 int.TryParse(row[26 + i * 3], out value);
                 if (!string.IsNullOrEmpty(name))
                     ActiveAbilities.Add(new ActiveAbility(type, name, value));
             }
-            for (int i = 33; i < 33 + 5; ++i)
+            for (var i = 33; i < 33 + 5; ++i)
             {
-                string name = row[i];
+                var name = row[i];
                 if (!string.IsNullOrEmpty(name))
                     PassiveAbilities.Add(new PassiveAbility(name));
             }
             Description = row[38];
-            double.TryParse(row[39], out dvalue);
-            Level = dvalue;
+            double.TryParse(row[39], out var doubleValue);
+            Level = doubleValue;
             if (string.IsNullOrEmpty(Type))
             {
                 Type = LevelString();
@@ -84,52 +77,56 @@ namespace MyWarCreator.Models
             }
 
             MainImage = LoadImage(dirPath, Name);
-            LeftEffectsImage = LoadImage(cardsDirPath, "left-monster");
+            LeftEffectsImage = LoadImage(CardsDirPath, "left-monster");
         }
 
-        public override void DrawCard(Graphics graphics)
+        protected override void DrawCard(Graphics graphics)
         {
             base.DrawCard(graphics);
-            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 20, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedString(Defence.ToString(), font, Brushes.White, DefenceArea, FontsHelper.StringFormatCentered, 6);
-            using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 20, FontStyle.Regular, GraphicsUnit.Pixel))
+            using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
+                20, FontStyle.Regular, GraphicsUnit.Pixel))
+                graphics.DrawAdjustedString(Defence.ToString(), font, Brushes.White, DefendArea, FontsHelper.StringFormatCentered, 6);
+            using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
+                20, FontStyle.Regular, GraphicsUnit.Pixel))
                 graphics.DrawAdjustedString(HitPoints.ToString(), font, Brushes.White, HitPointsArea, FontsHelper.StringFormatCentered, 6);
         }
 
         private string LevelString()
         {
             if (Level < 0.19) return "1/8";
-            else if (Level < 0.28) return "1/4";
-            else if (Level < 0.41) return "1/3";
-            else if (Level < 0.58) return "1/2";
-            else if (Level < 0.70) return "2/3";
-            else if (Level < 0.81) return "3/4";
-            else if (Level < 0.93) return "7/8";
-            else if (Level < 1.12) return "1";
-            else if (Level < 1.38) return "5/4";
-            else if (Level < 1.62) return "3/2";
-            else if (Level < 1.87) return "7/4";
-            else if (Level < 2.75) return "5/2";
-            else return ((int)Math.Round(Level)).ToString();
+            if (Level < 0.28) return "1/4";
+            if (Level < 0.41) return "1/3";
+            if (Level < 0.58) return "1/2";
+            if (Level < 0.70) return "2/3";
+            if (Level < 0.81) return "3/4";
+            if (Level < 0.93) return "7/8";
+            if (Level < 1.12) return "1";
+            if (Level < 1.38) return "5/4";
+            if (Level < 1.62) return "3/2";
+            if (Level < 1.87) return "7/4";
+            if (Level < 2.75) return "5/2";
+            return ((int)Math.Round(Level)).ToString();
 
         }
     }
 
-    class PassiveAbility
+    public class PassiveAbility
     {
-        public string Name { get; set; }
-        public virtual string Description { get { return Name; } }
+        protected string Name { get; }
+        public virtual string Description => Name;
+
         public PassiveAbility(string name)
         {
             Name = name;
         }
     }
 
-    class ActiveAbility : PassiveAbility
+    public class ActiveAbility : PassiveAbility
     {
-        public string Type { get; set; }
-        public int Difficulty { get; set; }
-        public override string Description { get { return (string.IsNullOrWhiteSpace(Type) ? "" : Type + ": ") + Name + (Difficulty > 0 ? (" [" + Difficulty + "+]") : ""); } }
+        private string Type { get; }
+        private int Difficulty { get; }
+        public override string Description => (string.IsNullOrWhiteSpace(Type) ? "" : Type + ": ") + Name + (Difficulty > 0 ? (" [" + Difficulty + "+]") : "");
+
         public ActiveAbility(string type, string name, int difficulty) : base(name)
         {
             Type = type;

@@ -1,35 +1,27 @@
-﻿using MyWarCreator.Helpers;
-using MyWarCreator.Extensions;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
+using MyWarCreator.Extensions;
+using MyWarCreator.Helpers;
 
 namespace MyWarCreator.Models
 {
-    class Equipment : AttackAbilityCard
+    public sealed class Equipment : AttackAbilityCard
     {
-        public int Weight { get; set; }
-        public Image WeightImage { get; set; }
-        public Rectangle WeightImageArea { get; set; } = new Rectangle(300, 440, 40, 40);
-        public bool IsArmour
-        {
-            get
-            {
-                return Type == "Zbroja" || Type == "Hełm" || Type == "Buty" || Type == "Rękawice";
-            }
-        }
+        private int Weight { get; }
+        private Image WeightImage { get; }
+        private Rectangle WeightImageArea { get; } = new Rectangle(300, 440, 40, 40);
+        private bool IsArmour => Type == "Zbroja" || Type == "Hełm" || Type == "Buty" || Type == "Rękawice";
 
-        public override string DescriptionFull
+        protected override string DescriptionFull
         {
             get
             {
                 if (IsArmour)
                     return base.DescriptionFull;
 
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 if (!string.IsNullOrEmpty(Description))
                     sb.AppendFormat("{0}\n\n", Description);
                 if (Defence > 0)
@@ -41,7 +33,6 @@ namespace MyWarCreator.Models
 
         public Equipment(IList<string> row, string dirPath) : base(dirPath)
         {
-            int value;
             Type = row[0];
             Name = row[1];
             if (!string.IsNullOrEmpty(row[2]) ||
@@ -69,7 +60,7 @@ namespace MyWarCreator.Models
                 if (!string.IsNullOrEmpty(row[11])) RightEffects.Add((row[11] == "1" ? (row[29] == "TAK" ? "1" : "") : row[11]) + (row[29] == "TAK" ? "" : "k12")); else RightEffects.Add("");
             }
             ProcessRow(row.Skip(12).ToList());
-            int.TryParse(row[30], out value);
+            int.TryParse(row[30], out var value);
             Defence = value;
             if (IsArmour)
                 RightEffects.Add(Defence.ToString());
@@ -82,52 +73,50 @@ namespace MyWarCreator.Models
             CalculateTypeArea();
 
             MainImage = LoadImage(dirPath, Name);
-            LeftEffectsImage = LoadImage(cardsDirPath, "left-stats");
-            WeightImage = LoadImage(cardsDirPath, "weight");
+            LeftEffectsImage = LoadImage(CardsDirPath, "left-stats");
+            WeightImage = LoadImage(CardsDirPath, "weight");
             if (IsArmour)
-                RightEffectsImage = LoadImage(cardsDirPath, "right-armour");
+                RightEffectsImage = LoadImage(CardsDirPath, "right-armour");
         }
 
         protected override void CalculateTypeArea()
         {
             base.CalculateTypeArea();
-            if (Weight > 0)
-            {
-                if (Weight <= 5 - (Price > PriceLimit ? 2 : Price))
-                    TypeArea = new Rectangle(TypeArea.X, TypeArea.Y, TypeArea.Width - WeightImageArea.Width * Weight, TypeArea.Height);
-                else
-                    TypeArea = new Rectangle(TypeArea.X, TypeArea.Y, TypeArea.Width - WeightImageArea.Width * 2, TypeArea.Height);
-            }
+            if (Weight <= 0) return;
+            TypeArea = Weight <= 5 - (Price > PriceLimit ? 2 : Price)
+                ? new Rectangle(TypeArea.X, TypeArea.Y, TypeArea.Width - WeightImageArea.Width * Weight, TypeArea.Height)
+                : new Rectangle(TypeArea.X, TypeArea.Y, TypeArea.Width - WeightImageArea.Width * 2, TypeArea.Height);
         }
 
-        public override void DrawCard(Graphics graphics)
+        protected override void DrawCard(Graphics graphics)
         {
             base.DrawCard(graphics);
 
             if (WeightImage != null)
             {
-                if (Weight > 0)
+                if (Weight <= 0) return;
+
+                if (Weight <= 5 - (Price > PriceLimit ? 2 : Price))
                 {
-                    if (Weight <= 5 - (Price > PriceLimit ? 2 : Price))
+                    for (var i = 0; i < Weight; ++i)
                     {
-                        for (int i = 0; i < Weight; ++i)
-                        {
-                            Rectangle weightImageAreaI = new Rectangle(WeightImageArea.X - i * WeightImageArea.Width, WeightImageArea.Y, WeightImageArea.Width, WeightImageArea.Height);
-                            DrawingHelper.MapDrawing(graphics, WeightImage, weightImageAreaI);
-                        }
+                        var weightImageAreaI = new Rectangle(WeightImageArea.X - i * WeightImageArea.Width, WeightImageArea.Y, WeightImageArea.Width, WeightImageArea.Height);
+                        DrawingHelper.MapDrawing(graphics, WeightImage, weightImageAreaI);
                     }
-                    else
-                    {
-                        Rectangle weightImageAreaI = new Rectangle(WeightImageArea.X - WeightImageArea.Width + 5, WeightImageArea.Y, WeightImageArea.Width - 5, WeightImageArea.Height);
-                        using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Bold, GraphicsUnit.Pixel))
-                            graphics.DrawAdjustedString(Weight.ToString(), font, Brushes.White, weightImageAreaI, FontsHelper.StringFormatCentered, 6, 12, true, false);
-                        DrawingHelper.MapDrawing(graphics, WeightImage, WeightImageArea);
-                    }
+                }
+                else
+                {
+                    var weightImageAreaI = new Rectangle(WeightImageArea.X - WeightImageArea.Width + 5, WeightImageArea.Y, WeightImageArea.Width - 5, WeightImageArea.Height);
+                    using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
+                        12, FontStyle.Bold, GraphicsUnit.Pixel))
+                        graphics.DrawAdjustedString(Weight.ToString(), font, Brushes.White, weightImageAreaI, FontsHelper.StringFormatCentered, 6, 12, true, false);
+                    DrawingHelper.MapDrawing(graphics, WeightImage, WeightImageArea);
                 }
             }
             else
             {
-                using (Font font = new Font(FontsHelper.pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Bold, GraphicsUnit.Pixel))
+                using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
+                    12, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(Weight.ToString(), font, Brushes.White, WeightImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
             }
         }
