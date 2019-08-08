@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using MyWarCreator.Extensions;
 using MyWarCreator.Helpers;
 
@@ -18,7 +19,7 @@ namespace MyWarCreator.Models
         private Rectangle LvlArea { get; } = new Rectangle(70, 460, 220, 15);
         private string Critical { get; }
         private Image CriticalImage { get; }
-        private Rectangle CriticalArea { get; } = new Rectangle(70, 25, 50, 50);
+        private Rectangle CriticalArea { get; } = new Rectangle(5, 270, 50, 50);
         protected override string FileName => $"{Statistic} - {Attribute} {Lvl} - {Name}";
         private bool IsOffensive { get; }
         private string FirstType { get; }
@@ -94,10 +95,18 @@ namespace MyWarCreator.Models
                 graphics.DrawAdjustedString(DescriptionHelper.ToRoman(Lvl), font, Brushes.White, LvlArea, FontsHelper.StringFormatCentered, 6);
             using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
                 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedString($"{FirstType} {FirstDescription}", font, Brushes.White, FirstDescriptionArea, FontsHelper.StringFormatCentered, 6);
+                graphics.DrawAdjustedString(
+                    Regex.IsMatch(FirstType, "(?i)(pasywna)")
+                        ? $"{FirstDescription}"
+                        : $"{FirstType} {FirstDescription}",
+                    font, Brushes.White, FirstDescriptionArea, FontsHelper.StringFormatCentered, 6);
             using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
                 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedString($"{SecondType} {SecondDescription}", font, Brushes.White, SecondDescriptionArea, FontsHelper.StringFormatCentered, 6);
+                graphics.DrawAdjustedString(
+                    Regex.IsMatch(SecondType, "(?i)(pasywna)")
+                    ? $"{SecondDescription}"
+                    : $"{SecondType} {SecondDescription}",
+                    font, Brushes.White, SecondDescriptionArea, FontsHelper.StringFormatCentered, 6);
         }
     }
 }
