@@ -41,7 +41,7 @@ namespace MyWarCreator.Models
                 !string.IsNullOrEmpty(row[5]) ||
                 !string.IsNullOrEmpty(row[6]))
             {
-                if (!string.IsNullOrEmpty(row[2])) LeftEffects.Add(row[2] + "S"); else LeftEffects.Add("");
+                if (!string.IsNullOrEmpty(row[2])) LeftEffects.Add(row[2] + "B"); else LeftEffects.Add("");
                 if (!string.IsNullOrEmpty(row[3])) LeftEffects.Add(row[3] + "Z"); else LeftEffects.Add("");
                 if (!string.IsNullOrEmpty(row[4])) LeftEffects.Add(row[4] + "W"); else LeftEffects.Add("");
                 if (!string.IsNullOrEmpty(row[5])) LeftEffects.Add(row[5] + "M"); else LeftEffects.Add("");
