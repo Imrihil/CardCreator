@@ -84,9 +84,9 @@ namespace MyWarCreator.Models
         {
             base.DrawCard(graphics);
             using (var font = new Font(FontTrebuchetMs, 20, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedString(Defence.ToString(), font, Brushes.White, DefendArea, FontsHelper.StringFormatCentered, 6);
+                graphics.DrawAdjustedStringWithExtendedBorder(Defence.ToString(), font, Color.White, Color.Black, DefendArea, FontsHelper.StringFormatCentered, 6);
             using (var font = new Font(FontTrebuchetMs, 20, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedString(HitPoints.ToString(), font, Brushes.White, HitPointsArea, FontsHelper.StringFormatCentered, 6);
+                graphics.DrawAdjustedStringWithExtendedBorder(HitPoints.ToString(), font, Color.White, Color.Black, HitPointsArea, FontsHelper.StringFormatCentered, 6);
         }
 
         private string LevelString()

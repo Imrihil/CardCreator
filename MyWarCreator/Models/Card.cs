@@ -69,17 +69,17 @@ namespace MyWarCreator.Models
             if (Name != null)
             {
                 using (var font = new Font(fontAkvaleir, 24, FontStyle.Bold, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedString(Name.ToUpper(), font, Brushes.White, NameArea, FontsHelper.StringFormatCentered, 6);
+                    graphics.DrawAdjustedStringWithExtendedBorder(Name.ToUpper(), font, Color.White, Color.Black, NameArea, FontsHelper.StringFormatCentered, 6);
             }
             if (DescriptionFull != null)
             {
                 using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedString(DescriptionFull, font, Brushes.White, DescriptionArea, FontsHelper.StringFormatCentered);
+                    graphics.DrawAdjustedStringWithExtendedBorder(DescriptionFull, font, Color.White, Color.Black, DescriptionArea, FontsHelper.StringFormatCentered);
             }
             if (Type != null)
             {
                 using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedString(Type.ToUpper(), font, Brushes.White, TypeArea, FontsHelper.StringFormatCentered, 6);
+                    graphics.DrawAdjustedStringWithExtendedBorder(Type.ToUpper(), font, Color.White, Color.Black, TypeArea, FontsHelper.StringFormatCentered, 6);
             }
             float leftEffectsFont = 20;
             for (var i = 0; i < LeftEffects.Count && i < LeftEffectsArea.Count; ++i)
@@ -92,7 +92,7 @@ namespace MyWarCreator.Models
             for (var i = 0; i < LeftEffects.Count && i < LeftEffectsArea.Count; ++i)
             {
                 using (var font = new Font(FontTrebuchetMs, leftEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedString(LeftEffects[i], font, Brushes.White, LeftEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)leftEffectsFont, true, false);
+                    graphics.DrawAdjustedStringWithExtendedBorder(LeftEffects[i], font, Color.White, Color.Black, LeftEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)leftEffectsFont, true, false);
             }
             float rightEffectsFont = 20;
             for (var i = 0; i < RightEffects.Count && i < RightEffectsArea.Count; ++i)
@@ -105,7 +105,7 @@ namespace MyWarCreator.Models
             for (var i = 0; i < RightEffects.Count && i < RightEffectsArea.Count; ++i)
             {
                 using (var font = new Font(FontTrebuchetMs, rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedString(RightEffects[i], font, Brushes.White, RightEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)rightEffectsFont, true, false);
+                    graphics.DrawAdjustedStringWithExtendedBorder(RightEffects[i], font, Color.White, Color.Black, RightEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)rightEffectsFont, true, false);
             }
             if (PriceImage != null)
             {
@@ -123,7 +123,7 @@ namespace MyWarCreator.Models
                 {
                     var priceImageAreaI = new Rectangle(PriceImageArea.X + 5, PriceImageArea.Y, PriceImageArea.Width - 5, PriceImageArea.Height);
                     using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Bold, GraphicsUnit.Pixel))
-                        graphics.DrawAdjustedString(Price.ToString(), font, Brushes.White, priceImageAreaI, FontsHelper.StringFormatCentered, 6, 12, true, false);
+                        graphics.DrawAdjustedStringWithExtendedBorder(Price.ToString(), font, Color.White, Color.Black, priceImageAreaI, FontsHelper.StringFormatCentered, 6, 12, true, false);
                     priceImageAreaI = new Rectangle(PriceImageArea.X + PriceImageArea.Width, PriceImageArea.Y, PriceImageArea.Width, PriceImageArea.Height);
                     DrawingHelper.MapDrawing(graphics, PriceImage, priceImageAreaI);
                 }
@@ -131,7 +131,7 @@ namespace MyWarCreator.Models
             else
             {
                 using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Bold, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedString(Price.ToString(), font, Brushes.White, PriceImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
+                    graphics.DrawAdjustedStringWithExtendedBorder(Price.ToString(), font, Color.White, Color.Black, PriceImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
             }
         }
 
