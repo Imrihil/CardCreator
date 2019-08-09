@@ -43,6 +43,9 @@ namespace MyWarCreator.Models
         protected virtual string FileName => $"{Type} - {Name}";
         protected int PriceLimit { get; } = 3;
 
+        protected readonly FontFamily FontTrebuchetMs = FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif;
+        private readonly FontFamily fontAkvaleir = FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Akvaleir")) ?? FontFamily.GenericSansSerif;
+
         protected Card(string dirPath)
         {
             ResultsDirPath = dirPath + "/results";
@@ -65,20 +68,17 @@ namespace MyWarCreator.Models
                 DrawingHelper.MapDrawing(graphics, RightEffectsImage, RightEffectsImageArea);
             if (Name != null)
             {
-                using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Akvaleir")) ?? FontFamily.GenericSansSerif,
-                    24, FontStyle.Bold, GraphicsUnit.Pixel))
+                using (var font = new Font(fontAkvaleir, 24, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(Name.ToUpper(), font, Brushes.White, NameArea, FontsHelper.StringFormatCentered, 6);
             }
             if (DescriptionFull != null)
             {
-                using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                    12, FontStyle.Regular, GraphicsUnit.Pixel))
+                using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(DescriptionFull, font, Brushes.White, DescriptionArea, FontsHelper.StringFormatCentered);
             }
             if (Type != null)
             {
-                using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                    12, FontStyle.Regular, GraphicsUnit.Pixel))
+                using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(Type.ToUpper(), font, Brushes.White, TypeArea, FontsHelper.StringFormatCentered, 6);
             }
             float leftEffectsFont = 20;
@@ -86,14 +86,12 @@ namespace MyWarCreator.Models
             {
                 if (string.IsNullOrEmpty(LeftEffects[i])) continue;
 
-                using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                    leftEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
+                using (var font = new Font(FontTrebuchetMs, leftEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
                     leftEffectsFont = FontsHelper.GetAdjustedFont(graphics, LeftEffects[i], font, LeftEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)leftEffectsFont, true, false).Size;
             }
             for (var i = 0; i < LeftEffects.Count && i < LeftEffectsArea.Count; ++i)
             {
-                using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                    leftEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
+                using (var font = new Font(FontTrebuchetMs, leftEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(LeftEffects[i], font, Brushes.White, LeftEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)leftEffectsFont, true, false);
             }
             float rightEffectsFont = 20;
@@ -101,14 +99,12 @@ namespace MyWarCreator.Models
             {
                 if (string.IsNullOrEmpty(RightEffects[i])) continue;
 
-                using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                    rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
+                using (var font = new Font(FontTrebuchetMs, rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
                     rightEffectsFont = FontsHelper.GetAdjustedFont(graphics, RightEffects[i], font, RightEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)rightEffectsFont, true, false).Size;
             }
             for (var i = 0; i < RightEffects.Count && i < RightEffectsArea.Count; ++i)
             {
-                using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                    rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
+                using (var font = new Font(FontTrebuchetMs, rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(RightEffects[i], font, Brushes.White, RightEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)rightEffectsFont, true, false);
             }
             if (PriceImage != null)
@@ -126,7 +122,7 @@ namespace MyWarCreator.Models
                 else
                 {
                     var priceImageAreaI = new Rectangle(PriceImageArea.X + 5, PriceImageArea.Y, PriceImageArea.Width - 5, PriceImageArea.Height);
-                    using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Bold, GraphicsUnit.Pixel))
+                    using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Bold, GraphicsUnit.Pixel))
                         graphics.DrawAdjustedString(Price.ToString(), font, Brushes.White, priceImageAreaI, FontsHelper.StringFormatCentered, 6, 12, true, false);
                     priceImageAreaI = new Rectangle(PriceImageArea.X + PriceImageArea.Width, PriceImageArea.Y, PriceImageArea.Width, PriceImageArea.Height);
                     DrawingHelper.MapDrawing(graphics, PriceImage, priceImageAreaI);
@@ -134,7 +130,7 @@ namespace MyWarCreator.Models
             }
             else
             {
-                using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")), 12, FontStyle.Bold, GraphicsUnit.Pixel))
+                using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(Price.ToString(), font, Brushes.White, PriceImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
             }
         }
@@ -164,7 +160,7 @@ namespace MyWarCreator.Models
             }
         }
 
-        protected Image LoadImage(string dirPath, string name)
+        protected static Image LoadImage(string dirPath, string name)
         {
             var imagePath = dirPath + "/" + name + ".png";
             if (!File.Exists(imagePath))

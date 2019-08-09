@@ -19,7 +19,8 @@ namespace MyWarCreator.Models
         private Rectangle LvlArea { get; } = new Rectangle(70, 460, 220, 15);
         private string Critical { get; }
         private Image CriticalImage { get; }
-        private Rectangle CriticalArea { get; } = new Rectangle(5, 270, 50, 50);
+        private Rectangle CriticalArea { get; } = new Rectangle(10, 270, 50, 50);
+        private Rectangle CriticalNameArea { get; } = new Rectangle(10, 295, 50, 20);
         protected override string FileName => $"{Statistic} - {Attribute} {Lvl} - {Name}";
         private bool IsOffensive { get; }
         private string FirstType { get; }
@@ -77,30 +78,28 @@ namespace MyWarCreator.Models
             if (CriticalImage != null)
             {
                 DrawingHelper.MapDrawing(graphics, CriticalImage, CriticalArea);
+
+                using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
+                    graphics.DrawAdjustedStringWithBorder(Critical, font, Brushes.White, Brushes.Black, CriticalNameArea, FontsHelper.StringFormatCentered, 6);
             }
             else
             {
-                using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                    12, FontStyle.Regular, GraphicsUnit.Pixel))
+                using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(Critical, font, Brushes.White, CriticalArea, FontsHelper.StringFormatCentered, 6);
             }
-            using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                12, FontStyle.Regular, GraphicsUnit.Pixel))
+            using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
                 graphics.DrawAdjustedString(Statistic, font, Brushes.White, StatisticArea, FontsHelper.StringFormatLeft, 6);
-            using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                12, FontStyle.Regular, GraphicsUnit.Pixel))
+            using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
                 graphics.DrawAdjustedString(Attribute, font, Brushes.White, AttributeArea, FontsHelper.StringFormatRight, 6);
-            using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                12, FontStyle.Regular, GraphicsUnit.Pixel))
+            using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
                 graphics.DrawAdjustedString(DescriptionHelper.ToRoman(Lvl), font, Brushes.White, LvlArea, FontsHelper.StringFormatCentered, 6);
-            using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                12, FontStyle.Regular, GraphicsUnit.Pixel))
+            using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
                 graphics.DrawAdjustedString(
                     Regex.IsMatch(FirstType, "(?i)(pasywna)")
                         ? $"{FirstDescription}"
                         : $"{FirstType} {FirstDescription}",
                     font, Brushes.White, FirstDescriptionArea, FontsHelper.StringFormatCentered, 6);
-            using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
+            using (var font = new Font(FontTrebuchetMs,
                 12, FontStyle.Regular, GraphicsUnit.Pixel))
                 graphics.DrawAdjustedString(
                     Regex.IsMatch(SecondType, "(?i)(pasywna)")

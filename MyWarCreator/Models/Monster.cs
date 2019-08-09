@@ -83,11 +83,9 @@ namespace MyWarCreator.Models
         protected override void DrawCard(Graphics graphics)
         {
             base.DrawCard(graphics);
-            using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                20, FontStyle.Regular, GraphicsUnit.Pixel))
+            using (var font = new Font(FontTrebuchetMs, 20, FontStyle.Regular, GraphicsUnit.Pixel))
                 graphics.DrawAdjustedString(Defence.ToString(), font, Brushes.White, DefendArea, FontsHelper.StringFormatCentered, 6);
-            using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                20, FontStyle.Regular, GraphicsUnit.Pixel))
+            using (var font = new Font(FontTrebuchetMs, 20, FontStyle.Regular, GraphicsUnit.Pixel))
                 graphics.DrawAdjustedString(HitPoints.ToString(), font, Brushes.White, HitPointsArea, FontsHelper.StringFormatCentered, 6);
         }
 

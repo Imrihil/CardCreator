@@ -107,16 +107,14 @@ namespace MyWarCreator.Models
                 else
                 {
                     var weightImageAreaI = new Rectangle(WeightImageArea.X - WeightImageArea.Width + 5, WeightImageArea.Y, WeightImageArea.Width - 5, WeightImageArea.Height);
-                    using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                        12, FontStyle.Bold, GraphicsUnit.Pixel))
+                    using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Bold, GraphicsUnit.Pixel))
                         graphics.DrawAdjustedString(Weight.ToString(), font, Brushes.White, weightImageAreaI, FontsHelper.StringFormatCentered, 6, 12, true, false);
                     DrawingHelper.MapDrawing(graphics, WeightImage, WeightImageArea);
                 }
             }
             else
             {
-                using (var font = new Font(FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif,
-                    12, FontStyle.Bold, GraphicsUnit.Pixel))
+                using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedString(Weight.ToString(), font, Brushes.White, WeightImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
             }
         }
