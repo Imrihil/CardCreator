@@ -45,39 +45,68 @@ namespace MyWarCreator.Extensions
                 graphics.DrawString(s, usedFont, brush, layoutRectangle, format);
         }
 
+        private static readonly List<Point> CloseBorderModifiers = new List<Point>
+        {
+            new Point(-1, -1),
+            new Point(-1, 1),
+            new Point(1, -1),
+            new Point(1, 1)
+        };
+
+        private static readonly List<Point> ExtendedBorderModifiers = new List<Point>
+        {
+            new Point(-2, -2),
+            new Point(-3, 0),
+            new Point(-2, 2),
+            new Point(0, -3),
+            new Point(0, 3),
+            new Point(2, -2),
+            new Point(3, 0),
+            new Point(2, 2)
+        };
+
         public static void DrawAdjustedStringWithBorder(this Graphics graphics, string s, Font font, Brush brush, Brush brushBorder, RectangleF layoutRectangle, StringFormat format, int minFontSize = 0, int maxFontSize = int.MinValue, bool smallestOnFail = true, bool wordWrap = true)
         {
             if (maxFontSize == int.MinValue) maxFontSize = (int)font.Size;
-            var layoutRectangleTopLeft = new RectangleF(layoutRectangle.X - 1, layoutRectangle.Y - 1, layoutRectangle.Width, layoutRectangle.Height);
-            var layoutRectangleTopRight = new RectangleF(layoutRectangle.X - 1, layoutRectangle.Y + 1, layoutRectangle.Width, layoutRectangle.Height);
-            var layoutRectangleBottomLeft = new RectangleF(layoutRectangle.X + 1, layoutRectangle.Y - 1, layoutRectangle.Width, layoutRectangle.Height);
-            var layoutRectangleBottomRight = new RectangleF(layoutRectangle.X + 1, layoutRectangle.Y + 1, layoutRectangle.Width, layoutRectangle.Height);
             using (var usedFont = FontsHelper.GetAdjustedFont(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
             {
-                graphics.DrawString(s, usedFont, brushBorder, layoutRectangleTopLeft, format);
-                graphics.DrawString(s, usedFont, brushBorder, layoutRectangleTopRight, format);
-                graphics.DrawString(s, usedFont, brushBorder, layoutRectangleBottomLeft, format);
-                graphics.DrawString(s, usedFont, brushBorder, layoutRectangleBottomRight, format);
+                foreach (var offset in CloseBorderModifiers)
+                {
+                    var layoutRectangleModified = new RectangleF(layoutRectangle.X + offset.X, layoutRectangle.Y + offset.Y, layoutRectangle.Width, layoutRectangle.Height);
+                    graphics.DrawString(s, usedFont, brushBorder, layoutRectangleModified, format);
+                }
             }
             using (var usedFont = FontsHelper.GetAdjustedFont(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
                 graphics.DrawString(s, usedFont, brush, layoutRectangle, format);
         }
 
-        public static void DrawAdjustedStringWithExtendedBorder(this Graphics graphics, string s, Font font, Brush brush, Brush brushBorder, RectangleF layoutRectangle, StringFormat format, int minFontSize = 0, int maxFontSize = int.MinValue, bool smallestOnFail = true, bool wordWrap = true)
+        public static void DrawAdjustedStringWithExtendedBorder(this Graphics graphics, string s, Font font, Color color, Color colorBorder, RectangleF layoutRectangle, StringFormat format, int minFontSize = 0, int maxFontSize = int.MinValue, bool smallestOnFail = true, bool wordWrap = true)
         {
             if (maxFontSize == int.MinValue) maxFontSize = (int)font.Size;
-            var layoutRectangleTopLeft = new RectangleF(layoutRectangle.X - 1, layoutRectangle.Y - 1, layoutRectangle.Width, layoutRectangle.Height);
-            var layoutRectangleTopRight = new RectangleF(layoutRectangle.X - 1, layoutRectangle.Y + 1, layoutRectangle.Width, layoutRectangle.Height);
-            var layoutRectangleBottomLeft = new RectangleF(layoutRectangle.X + 1, layoutRectangle.Y - 1, layoutRectangle.Width, layoutRectangle.Height);
-            var layoutRectangleBottomRight = new RectangleF(layoutRectangle.X + 1, layoutRectangle.Y + 1, layoutRectangle.Width, layoutRectangle.Height);
             using (var usedFont = FontsHelper.GetAdjustedFont(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
             {
-                graphics.DrawString(s, usedFont, brushBorder, layoutRectangleTopLeft, format);
-                graphics.DrawString(s, usedFont, brushBorder, layoutRectangleTopRight, format);
-                graphics.DrawString(s, usedFont, brushBorder, layoutRectangleBottomLeft, format);
-                graphics.DrawString(s, usedFont, brushBorder, layoutRectangleBottomRight, format);
+                using (Brush brush = new SolidBrush(Color.FromArgb((int)((float)colorBorder.A * 4 / 5), colorBorder)))
+                {
+                    foreach (var offset in CloseBorderModifiers)
+                    {
+                        var layoutRectangleModified = new RectangleF(layoutRectangle.X + offset.X,
+                            layoutRectangle.Y + offset.Y, layoutRectangle.Width, layoutRectangle.Height);
+                        graphics.DrawString(s, usedFont, brush, layoutRectangleModified, format);
+                    }
+                }
+
+                using (Brush brush = new SolidBrush(Color.FromArgb((int)((float)colorBorder.A / 4), colorBorder)))
+                {
+                    foreach (var offset in ExtendedBorderModifiers)
+                    {
+                        var layoutRectangleModified = new RectangleF(layoutRectangle.X + offset.X,
+                            layoutRectangle.Y + offset.Y, layoutRectangle.Width, layoutRectangle.Height);
+                        graphics.DrawString(s, usedFont, brush, layoutRectangleModified, format);
+                    }
+                }
             }
             using (var usedFont = FontsHelper.GetAdjustedFont(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
+            using (Brush brush = new SolidBrush(color))
                 graphics.DrawString(s, usedFont, brush, layoutRectangle, format);
         }
     }

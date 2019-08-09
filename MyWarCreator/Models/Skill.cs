@@ -80,7 +80,7 @@ namespace MyWarCreator.Models
                 DrawingHelper.MapDrawing(graphics, CriticalImage, CriticalArea);
 
                 using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedStringWithBorder(Critical, font, Brushes.White, Brushes.Black, CriticalNameArea, FontsHelper.StringFormatCentered, 6);
+                    graphics.DrawAdjustedStringWithExtendedBorder(Critical, font, Color.White, Color.Black, CriticalNameArea, FontsHelper.StringFormatCentered, 6);
             }
             else
             {
