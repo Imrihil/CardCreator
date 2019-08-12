@@ -1,118 +1,126 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Text;
+using MyWarCreator.Extensions;
+using MyWarCreator.Helpers;
 
 namespace MyWarCreator.Models
 {
     public class AttackAbilityCard : Card
     {
-        private int Fatigue { get; set; }
-        private int FriendlyFire { get; set; }
-        private int Hit { get; set; }
-        private int Downturn { get; set; }
-        private int Weakness { get; set; }
-        private int Poison { get; set; }
-        private int Bleeding { get; set; }
-        private int AreaAttack { get; set; }
-        private int Blinding { get; set; }
-        private int Cleave { get; set; }
-        private int Fire { get; set; }
-        private int Calm { get; set; }
-        private int Stun { get; set; }
-        private int Knockdown { get; set; }
-        private int Hypnosis { get; set; }
-        private int Push { get; set; }
-        private int Terror { get; set; }
-        private int Crit { get; set; }
-        protected int Defence { get; set; }
+        protected int Defense { get; set; }
+
+        private List<AttackAbilityElement> Elements { get; }
+
+        private int ElementsWithValues => Elements.Count(e => e.Value > 0);
 
         protected AttackAbilityCard(string dirPath) : base(dirPath)
         {
+            Elements = new List<AttackAbilityElement>
+            {
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Zmęczenie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Swój"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Trafienie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Spowolnienie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Osłabienie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Zatrucie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Krwawienie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Atak obszarowy"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Oślepienie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Przebicie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Podpalenie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Wyciszenie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Ogłuszenie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Powalenie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Hipnoza"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Odepchnięcie"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Strach"),
+                new AttackAbilityElement($"{CardsDirPath}/atak", "Krytyk")
+            };
         }
 
         protected string AttackDescription()
         {
             var sb = new StringBuilder();
             var actual = 1;
-            if (Fatigue > 0)
-                sb.AppendLine(ChancesLine("Zmęczenie", Fatigue, ref actual));
-            if (FriendlyFire > 0)
-                sb.AppendLine(ChancesLine("Swój", FriendlyFire, ref actual));
-            if (Hit > 0)
-                ChancesLine("Trafienie", Hit, ref actual);
-            if (Downturn > 0)
-                sb.AppendLine(ChancesLine("Spowolnienie", Downturn, ref actual));
-            if (Weakness > 0)
-                sb.AppendLine(ChancesLine("Osłabienie", Weakness, ref actual));
-            if (Poison > 0)
-                sb.AppendLine(ChancesLine("Zatrucie", Poison, ref actual));
-            if (Bleeding > 0)
-                sb.AppendLine(ChancesLine("Krwawienie", Bleeding, ref actual));
-            if (AreaAttack > 0)
-                sb.AppendLine(ChancesLine("Atak obszarowy", AreaAttack, ref actual));
-            if (Blinding > 0)
-                sb.AppendLine(ChancesLine("Oślepienie", Blinding, ref actual));
-            if (Cleave > 0)
-                sb.AppendLine(ChancesLine("Przebicie", Cleave, ref actual));
-            if (Fire > 0)
-                sb.AppendLine(ChancesLine("Podpalenie", Fire, ref actual));
-            if (Calm > 0)
-                sb.AppendLine(ChancesLine("Wyciszenie", Calm, ref actual));
-            if (Stun > 0)
-                sb.AppendLine(ChancesLine("Ogłuszenie", Stun, ref actual));
-            if (Knockdown > 0)
-                sb.AppendLine(ChancesLine("Powalenie", Knockdown, ref actual));
-            if (Hypnosis > 0)
-                sb.AppendLine(ChancesLine("Hipnoza", Hypnosis, ref actual));
-            if (Push > 0)
-                sb.AppendLine(ChancesLine("Odepchnięcie", Push, ref actual));
-            if (Terror > 0)
-                sb.AppendLine(ChancesLine("Strach", Terror, ref actual));
-            if (Crit > 0)
-                sb.Append(ChancesLine("Krytyk", Crit, ref actual));
+            foreach (var element in Elements)
+            {
+                if (element.Value > 0)
+                    sb.AppendLine(ChancesLine(element.Name, element.Value, ref actual));
+            }
             return sb.ToString();
         }
 
         protected void ProcessRow(IList<string> row)
         {
-            int.TryParse(row[0], out var value);
-            Fatigue = value;
-            int.TryParse(row[1], out value);
-            FriendlyFire = value;
-            int.TryParse(row[2], out value);
-            Hit = value;
-            int.TryParse(row[3], out value);
-            Downturn = value;
-            int.TryParse(row[4], out value);
-            Weakness = value;
-            int.TryParse(row[5], out value);
-            Poison = value;
-            int.TryParse(row[6], out value);
-            Bleeding = value;
-            int.TryParse(row[7], out value);
-            AreaAttack = value;
-            int.TryParse(row[8], out value);
-            Blinding = value;
-            int.TryParse(row[9], out value);
-            Cleave = value;
-            int.TryParse(row[10], out value);
-            Fire = value;
-            int.TryParse(row[11], out value);
-            Calm = value;
-            int.TryParse(row[12], out value);
-            Stun = value;
-            int.TryParse(row[13], out value);
-            Knockdown = value;
-            int.TryParse(row[14], out value);
-            Hypnosis = value;
-            int.TryParse(row[15], out value);
-            Push = value;
-            int.TryParse(row[16], out value);
-            Terror = value;
-            int.TryParse(row[17], out value);
-            Crit = value;
+            for (var i = 0; i < Elements.Count; ++i)
+            {
+                int.TryParse(row[i], out var value);
+                Elements[i].Value = value;
+            }
         }
 
-        private string ChancesLine(string name, int hitChance, ref int actual)
+        protected override void DrawDescription(Graphics graphics)
+        {
+            if (ElementsWithValues > 0)
+            {
+                var elementArea = string.IsNullOrEmpty(Description)
+                    ? new Rectangle(DescriptionArea.X, DescriptionArea.Y, DescriptionArea.Width,
+                        DescriptionArea.Height / ElementsWithValues)
+                    : new Rectangle(DescriptionArea.X, DescriptionArea.Y,
+                        2 * Math.Min(DescriptionArea.Height / ElementsWithValues, 100),
+                        Math.Min(DescriptionArea.Height / ElementsWithValues, 100));
+                DescriptionArea = new Rectangle(DescriptionArea.X + elementArea.Width + 5, DescriptionArea.Y,
+                    DescriptionArea.Width - elementArea.Width - 5, DescriptionArea.Height);
+
+                var actual = 1;
+                foreach (var element in Elements)
+                {
+                    if (element.Value <= 0) continue;
+
+                    DrawChancesLine(graphics, element, elementArea, ref actual);
+                    elementArea = new Rectangle(elementArea.X, elementArea.Y + elementArea.Height,
+                        elementArea.Width, elementArea.Height);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(Description))
+            {
+                base.DrawDescription(graphics);
+            }
+
+        }
+
+        private void DrawChancesLine(Graphics graphics, AttackAbilityElement element, Rectangle elementArea, ref int actual)
+        {
+            if (element.Value <= 0) return;
+
+            string hits;
+            var min = actual;
+            actual += element.Value;
+            if (actual > 12)
+                hits = $"{min}+";
+            else if (min == 1)
+                hits = $"{element.Value}-";
+            else
+                hits = element.Value == 1 ? $"{min}" : $"{min}-{actual - 1}";
+
+            var chancesAreaLeft = new Rectangle(elementArea.X, elementArea.Y + 1, (int)(elementArea.Width / 2) - 1, elementArea.Height - 2);
+            var chancesAreaRight = new Rectangle(elementArea.X + (int)(elementArea.Width / 2) + 1, elementArea.Y + 1, (int)(elementArea.Width / 2) - 1, elementArea.Height - 2);
+
+            using (var font = new Font(FontTrebuchetMs, 24, FontStyle.Regular, GraphicsUnit.Pixel))
+            {
+                graphics.DrawAdjustedStringWithExtendedBorder(hits, font, Color.White, Color.Black, chancesAreaLeft, FontsHelper.StringFormatRight, wordWrap: false);
+                if (element.Image == null)
+                    graphics.DrawAdjustedStringWithExtendedBorder($": {element.Name}", font, Color.White, Color.Black, chancesAreaRight, FontsHelper.StringFormatLeft);
+            }
+            if (element.Image != null)
+                DrawingHelper.MapDrawing(graphics, element.Image, chancesAreaRight, center: false);
+        }
+
+        private static string ChancesLine(string name, int hitChance, ref int actual)
         {
             var min = actual;
             actual += hitChance;

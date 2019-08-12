@@ -24,9 +24,8 @@ namespace MyWarCreator.Models
                 var sb = new StringBuilder();
                 if (!string.IsNullOrEmpty(Description))
                     sb.AppendFormat("{0}\n\n", Description);
-                if (Defence > 0)
-                    sb.AppendFormat("Obrona: {0}\n\n", Defence.ToString());
-                sb.Append(AttackDescription());
+                if (Defense > 0)
+                    sb.AppendFormat("Obrona: {0}\n\n", Defense.ToString());
                 return sb.ToString();
             }
         }
@@ -61,9 +60,9 @@ namespace MyWarCreator.Models
             }
             ProcessRow(row.Skip(12).ToList());
             int.TryParse(row[30], out var value);
-            Defence = value;
+            Defense = value;
             if (IsArmour)
-                RightEffects.Add(Defence.ToString());
+                RightEffects.Add(Defense.ToString());
             int.TryParse(row[31], out value);
             Weight = value;
             Description = row[32];
@@ -72,11 +71,11 @@ namespace MyWarCreator.Models
 
             CalculateTypeArea();
 
-            MainImage = LoadImage(dirPath, Name);
-            LeftEffectsImage = LoadImage(CardsDirPath, "left-stats");
-            WeightImage = LoadImage(CardsDirPath, "weight");
+            MainImage = ImageHelper.LoadImage(dirPath, Name);
+            LeftEffectsImage = ImageHelper.LoadImage(CardsDirPath, "left-stats");
+            WeightImage = ImageHelper.LoadImage(CardsDirPath, "weight");
             if (IsArmour)
-                RightEffectsImage = LoadImage(CardsDirPath, "right-armour");
+                RightEffectsImage = ImageHelper.LoadImage(CardsDirPath, "right-armour");
         }
 
         protected override void CalculateTypeArea()

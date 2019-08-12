@@ -68,8 +68,8 @@ namespace MyWarCreator.Models
             if (!string.IsNullOrEmpty(SecondDescription))
                 FirstDescriptionArea = new Rectangle(30, 285, 300, 125);
 
-            MainImage = LoadImage(dirPath, Name);
-            CriticalImage = LoadImage(CardsDirPath, Critical.Trim('.'));
+            MainImage = ImageHelper.LoadImage(dirPath, Name);
+            CriticalImage = ImageHelper.LoadImage(CardsDirPath, Critical.Trim('.'));
         }
 
         protected override void DrawCard(Graphics graphics)

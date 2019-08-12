@@ -46,7 +46,7 @@ namespace MyWarCreator.Models
             LeftEffects.Add($"{Attack}k12");
             int.TryParse(row[3], out value);
             int.TryParse(row[4], out value);
-            Defence = value;
+            Defense = value;
             int.TryParse(row[5], out value);
             HitPoints = value;
             ProcessRow(row.Skip(6).ToList());
@@ -76,15 +76,15 @@ namespace MyWarCreator.Models
                 Type = Type + " " + LevelString();
             }
 
-            MainImage = LoadImage(dirPath, Name);
-            LeftEffectsImage = LoadImage(CardsDirPath, "left-monster");
+            MainImage = ImageHelper.LoadImage(dirPath, Name);
+            LeftEffectsImage = ImageHelper.LoadImage(CardsDirPath, "left-monster");
         }
 
         protected override void DrawCard(Graphics graphics)
         {
             base.DrawCard(graphics);
             using (var font = new Font(FontTrebuchetMs, 20, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedStringWithExtendedBorder(Defence.ToString(), font, Color.White, Color.Black, DefendArea, FontsHelper.StringFormatCentered, 6);
+                graphics.DrawAdjustedStringWithExtendedBorder(Defense.ToString(), font, Color.White, Color.Black, DefendArea, FontsHelper.StringFormatCentered, 6);
             using (var font = new Font(FontTrebuchetMs, 20, FontStyle.Regular, GraphicsUnit.Pixel))
                 graphics.DrawAdjustedStringWithExtendedBorder(HitPoints.ToString(), font, Color.White, Color.Black, HitPointsArea, FontsHelper.StringFormatCentered, 6);
         }

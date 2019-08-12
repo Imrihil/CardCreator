@@ -33,7 +33,7 @@ namespace MyWarCreator.Models
         private Rectangle PriceImageArea { get; } = new Rectangle(20, 440, 40, 40);
         protected string Description { get; set; }
         protected virtual string DescriptionFull => Description;
-        private Rectangle DescriptionArea { get; } = new Rectangle(30, 285, 300, 170);
+        protected Rectangle DescriptionArea { get; set; } = new Rectangle(30, 285, 300, 170);
         protected Image MainImage { get; set; }
         private Rectangle MainImageArea { get; } = new Rectangle(70, 25, 220, 220);
         private Image FrontImage { get; }
@@ -49,11 +49,11 @@ namespace MyWarCreator.Models
         protected Card(string dirPath)
         {
             ResultsDirPath = dirPath + "/results";
-            LeftEffectsImage = LoadImage(CardsDirPath, "left");
-            RightEffectsImage = LoadImage(CardsDirPath, "right");
-            PriceImage = LoadImage(CardsDirPath, "price");
-            FrontImage = LoadImage(CardsDirPath, "front");
-            BackgroundImage = LoadImage(CardsDirPath, "background");
+            LeftEffectsImage = ImageHelper.LoadImage(CardsDirPath, "left");
+            RightEffectsImage = ImageHelper.LoadImage(CardsDirPath, "right");
+            PriceImage = ImageHelper.LoadImage(CardsDirPath, "price");
+            FrontImage = ImageHelper.LoadImage(CardsDirPath, "front");
+            BackgroundImage = ImageHelper.LoadImage(CardsDirPath, "background");
         }
 
         protected virtual void DrawCard(Graphics graphics)
@@ -71,10 +71,9 @@ namespace MyWarCreator.Models
                 using (var font = new Font(fontAkvaleir, 24, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedStringWithExtendedBorder(Name.ToUpper(), font, Color.White, Color.Black, NameArea, FontsHelper.StringFormatCentered, 6);
             }
-            if (DescriptionFull != null)
+            if (Description != null)
             {
-                using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedStringWithExtendedBorder(DescriptionFull, font, Color.White, Color.Black, DescriptionArea, FontsHelper.StringFormatCentered);
+                DrawDescription(graphics);
             }
             if (Type != null)
             {
@@ -135,6 +134,12 @@ namespace MyWarCreator.Models
             }
         }
 
+        protected virtual void DrawDescription(Graphics graphics)
+        {
+            using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
+                graphics.DrawAdjustedStringWithExtendedBorder(DescriptionFull, font, Color.White, Color.Black, DescriptionArea, FontsHelper.StringFormatCentered);
+        }
+
         public string GenerateFile(string fileNamePrefix = "", string fileNameSuffix = "")
         {
             try
@@ -158,20 +163,6 @@ namespace MyWarCreator.Models
             {
                 return $"Podczas generowania karty {Name} wystąpił błąd: " + ex.Message;
             }
-        }
-
-        protected static Image LoadImage(string dirPath, string name)
-        {
-            var imagePath = dirPath + "/" + name + ".png";
-            if (!File.Exists(imagePath))
-                imagePath = dirPath + "/" + name + ".jpg";
-            if (!File.Exists(imagePath))
-                imagePath = dirPath + "/" + name.ToLower() + ".png";
-            if (!File.Exists(imagePath))
-                imagePath = dirPath + "/" + name.ToLower() + ".jpg";
-            return File.Exists(imagePath)
-                ? Image.FromFile(imagePath)
-                : null;
         }
 
         protected virtual void CalculateTypeArea()

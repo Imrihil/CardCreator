@@ -9,7 +9,7 @@ namespace MyWarCreator.Helpers
         // Map a drawing coordinate rectangle to
         // a graphics object rectangle.
         public static void MapDrawing(Graphics graphic, Image image,
-            Rectangle targetRect, bool stretch = false)
+            Rectangle targetRect, bool stretch = false, bool center = true)
         {
             // Scale.
             // Get scale factors for both directions.
@@ -25,8 +25,8 @@ namespace MyWarCreator.Helpers
 
             using (Image img = ResizeImage(image, (int)(image.Width * scaleX), (int)(image.Height * scaleY)))
             {
-                var translateX = (targetRect.Width - img.Width) / 2;
-                var translateY = (targetRect.Height - img.Height) / 2;
+                var translateX = center ? (targetRect.Width - img.Width) / 2 : 0;
+                var translateY = center ? (targetRect.Height - img.Height) / 2 : 0;
 
                 graphic.DrawImage(img, targetRect.X + translateX, targetRect.Y + translateY);
             }
@@ -40,7 +40,7 @@ namespace MyWarCreator.Helpers
         /// <param name="width">The width to resize to.</param>
         /// <param name="height">The height to resize to.</param>
         /// <returns>The resized image.</returns>
-        public static Bitmap ResizeImage(Image image, int width, int height)
+        private static Bitmap ResizeImage(Image image, int width, int height)
         {
             var destRect = new Rectangle(0, 0, width, height);
             var destImage = new Bitmap(width, height);
