@@ -68,10 +68,10 @@ namespace MyWarCreator.Models
             {
                 var elementArea = string.IsNullOrEmpty(Description)
                     ? new Rectangle(DescriptionArea.X, DescriptionArea.Y, DescriptionArea.Width,
-                        DescriptionArea.Height / ElementsWithValues)
+                        (DescriptionArea.Height - 10) / ElementsWithValues)
                     : new Rectangle(DescriptionArea.X, DescriptionArea.Y,
                         2 * Math.Min(DescriptionArea.Height / ElementsWithValues, 100),
-                        Math.Min(DescriptionArea.Height / ElementsWithValues, 100));
+                        Math.Min((DescriptionArea.Height - 10) / ElementsWithValues, 100));
                 DescriptionArea = new Rectangle(DescriptionArea.X + elementArea.Width + 5, DescriptionArea.Y,
                     DescriptionArea.Width - elementArea.Width - 5, DescriptionArea.Height);
 
@@ -107,8 +107,8 @@ namespace MyWarCreator.Models
             else
                 hits = element.Value == 1 ? $"{min}" : $"{min}-{actual - 1}";
 
-            var chancesAreaLeft = new Rectangle(elementArea.X, elementArea.Y + 1, (int)(elementArea.Width / 2) - 1, elementArea.Height - 2);
-            var chancesAreaRight = new Rectangle(elementArea.X + (int)(elementArea.Width / 2) + 1, elementArea.Y + 1, (int)(elementArea.Width / 2) - 1, elementArea.Height - 2);
+            var chancesAreaLeft = new Rectangle(elementArea.X, elementArea.Y + 1, elementArea.Width / 2 - 1, elementArea.Height - 2);
+            var chancesAreaRight = new Rectangle(elementArea.X + elementArea.Width / 2 + 1, elementArea.Y + 1, elementArea.Width / 2 - 1, elementArea.Height - 2);
 
             using (var font = new Font(FontTrebuchetMs, 24, FontStyle.Regular, GraphicsUnit.Pixel))
             {

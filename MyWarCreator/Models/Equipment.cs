@@ -34,30 +34,17 @@ namespace MyWarCreator.Models
         {
             Type = row[0];
             Name = row[1];
-            if (!string.IsNullOrEmpty(row[2]) ||
-                !string.IsNullOrEmpty(row[3]) ||
-                !string.IsNullOrEmpty(row[4]) ||
-                !string.IsNullOrEmpty(row[5]) ||
-                !string.IsNullOrEmpty(row[6]))
-            {
-                if (!string.IsNullOrEmpty(row[2])) LeftEffects.Add(row[2] + "B"); else LeftEffects.Add("");
-                if (!string.IsNullOrEmpty(row[3])) LeftEffects.Add(row[3] + "Z"); else LeftEffects.Add("");
-                if (!string.IsNullOrEmpty(row[4])) LeftEffects.Add(row[4] + "W"); else LeftEffects.Add("");
-                if (!string.IsNullOrEmpty(row[5])) LeftEffects.Add(row[5] + "M"); else LeftEffects.Add("");
-                if (!string.IsNullOrEmpty(row[6])) LeftEffects.Add(row[6] + "U"); else LeftEffects.Add("");
-            }
-            if (!string.IsNullOrEmpty(row[7]) ||
-                !string.IsNullOrEmpty(row[8]) ||
-                !string.IsNullOrEmpty(row[9]) ||
-                !string.IsNullOrEmpty(row[10]) ||
-                !string.IsNullOrEmpty(row[11]))
-            {
-                if (!string.IsNullOrEmpty(row[7])) RightEffects.Add((row[7] == "1" ? (row[29] == "TAK" ? "1" : "") : row[7]) + (row[29] == "TAK" ? "" : "k4")); else RightEffects.Add("");
-                if (!string.IsNullOrEmpty(row[8])) RightEffects.Add((row[8] == "1" ? (row[29] == "TAK" ? "1" : "") : row[8]) + (row[29] == "TAK" ? "" : "k6")); else RightEffects.Add("");
-                if (!string.IsNullOrEmpty(row[9])) RightEffects.Add((row[9] == "1" ? (row[29] == "TAK" ? "1" : "") : row[9]) + (row[29] == "TAK" ? "" : "k8")); else RightEffects.Add("");
-                if (!string.IsNullOrEmpty(row[10])) RightEffects.Add((row[10] == "1" ? (row[29] == "TAK" ? "1" : "") : row[10]) + (row[29] == "TAK" ? "" : "k10")); else RightEffects.Add("");
-                if (!string.IsNullOrEmpty(row[11])) RightEffects.Add((row[11] == "1" ? (row[29] == "TAK" ? "1" : "") : row[11]) + (row[29] == "TAK" ? "" : "k12")); else RightEffects.Add("");
-            }
+            if (!string.IsNullOrEmpty(row[2])) RightEffects.Add(row[2] + "B");
+            if (!string.IsNullOrEmpty(row[3])) RightEffects.Add(row[3] + "Z");
+            if (!string.IsNullOrEmpty(row[4])) RightEffects.Add(row[4] + "W");
+            if (!string.IsNullOrEmpty(row[5])) RightEffects.Add(row[5] + "M");
+            if (!string.IsNullOrEmpty(row[6])) RightEffects.Add(row[6] + "U");
+            if (!string.IsNullOrEmpty(row[7])) RightEffects.Add((row[7] == "1" ? "" : row[7]) + "k4");
+            if (!string.IsNullOrEmpty(row[8])) RightEffects.Add((row[8] == "1" ? "" : row[8]) + "k6");
+            if (!string.IsNullOrEmpty(row[9])) RightEffects.Add((row[9] == "1" ? "" : row[9]) + "k8");
+            if (!string.IsNullOrEmpty(row[10])) RightEffects.Add((row[10] == "1" ? "" : row[10]) + "k10");
+            if (!string.IsNullOrEmpty(row[11])) RightEffects.Add((row[11] == "1" ? "" : row[11]) + "k12");
+
             ProcessRow(row.Skip(12).ToList());
             int.TryParse(row[30], out var value);
             Defense = value;
@@ -75,7 +62,14 @@ namespace MyWarCreator.Models
             LeftEffectsImage = ImageHelper.LoadImage(CardsDirPath, "left-stats");
             WeightImage = ImageHelper.LoadImage(CardsDirPath, "weight");
             if (IsArmour)
+            {
                 RightEffectsImage = ImageHelper.LoadImage(CardsDirPath, "right-armour");
+            }
+            else
+            {
+                RightEffectsImage = ImageHelper.LoadImage(CardsDirPath, "circle");
+                RightEffectsImageArea = new Rectangle(280, 0, 80, 80);
+            }
         }
 
         protected override void CalculateTypeArea()
@@ -115,6 +109,15 @@ namespace MyWarCreator.Models
             {
                 using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedStringWithExtendedBorder(Weight.ToString(), font, Color.White, Color.Black, WeightImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
+            }
+        }
+
+        protected override void DrawRightEffectsBackground(Graphics graphics)
+        {
+            for (var i = 0; i < RightEffects.Count; ++i)
+            {
+                var effectArea = new Rectangle(RightEffectsImageArea.X + RightEffectsAreaShift.X * i, RightEffectsImageArea.Y + RightEffectsAreaShift.Y * i, RightEffectsImageArea.Width, RightEffectsImageArea.Height);
+                DrawingHelper.MapDrawing(graphics, RightEffectsImage, effectArea);
             }
         }
     }

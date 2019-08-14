@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using MyWarCreator.Extensions;
 using MyWarCreator.Helpers;
@@ -20,7 +19,7 @@ namespace MyWarCreator.Models
         private string Critical { get; }
         private Image CriticalImage { get; }
         private Rectangle CriticalArea { get; } = new Rectangle(17, 270, 50, 50);
-        private Rectangle CriticalNameArea { get; } = new Rectangle(17, 295, 50, 20);
+        // private Rectangle CriticalNameArea { get; } = new Rectangle(17, 295, 50, 20);
         protected override string FileName => $"{Statistic} - {Attribute} {Lvl} - {Name}";
         private bool IsOffensive { get; }
         private string FirstType { get; }

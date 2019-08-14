@@ -23,11 +23,13 @@ namespace MyWarCreator.Models
         protected List<string> LeftEffects { get; } = new List<string>();
         protected Image LeftEffectsImage { get; set; }
         private Rectangle LeftEffectsImageArea { get; } = new Rectangle(0, 0, 85, 280);
-        private List<Rectangle> LeftEffectsArea { get; } = new List<Rectangle> { new Rectangle(10, 20, 60, 40), new Rectangle(10, 70, 60, 40), new Rectangle(10, 120, 60, 40), new Rectangle(10, 170, 60, 40), new Rectangle(10, 220, 60, 40) };
+        private Rectangle LeftEffectsArea { get; } = new Rectangle(10, 20, 60, 40);
+        private Point LeftEffectsAreaShift { get; } = new Point(0, 50);
         protected List<string> RightEffects { get; } = new List<string>();
-        protected Image RightEffectsImage { private get; set; }
-        private Rectangle RightEffectsImageArea { get; } = new Rectangle(275, 0, 85, 280);
-        private List<Rectangle> RightEffectsArea { get; } = new List<Rectangle> { new Rectangle(290, 20, 60, 40), new Rectangle(290, 70, 60, 40), new Rectangle(290, 120, 60, 40), new Rectangle(290, 170, 60, 40), new Rectangle(290, 220, 60, 40) };
+        protected Image RightEffectsImage { get; set; }
+        protected Rectangle RightEffectsImageArea { get; set; } = new Rectangle(275, 0, 85, 280);
+        private Rectangle RightEffectsArea { get; } = new Rectangle(290, 20, 60, 40);
+        protected Point RightEffectsAreaShift { get; } = new Point(0, 50);
         protected int Price { get; set; }
         private Image PriceImage { get; }
         private Rectangle PriceImageArea { get; } = new Rectangle(20, 440, 40, 40);
@@ -62,10 +64,8 @@ namespace MyWarCreator.Models
                 DrawingHelper.MapDrawing(graphics, MainImage, MainImageArea);
             if (FrontImage != null)
                 DrawingHelper.MapDrawing(graphics, FrontImage, FrontImageArea);
-            if (LeftEffects.Any() && LeftEffectsImage != null)
-                DrawingHelper.MapDrawing(graphics, LeftEffectsImage, LeftEffectsImageArea);
-            if (RightEffects.Any() && RightEffectsImage != null)
-                DrawingHelper.MapDrawing(graphics, RightEffectsImage, RightEffectsImageArea);
+            DrawLeftEffectsBackground(graphics);
+            DrawRightEffectsBackground(graphics);
             if (Name != null)
             {
                 using (var font = new Font(fontAkvaleir, 24, FontStyle.Bold, GraphicsUnit.Pixel))
@@ -80,32 +80,8 @@ namespace MyWarCreator.Models
                 using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedStringWithExtendedBorder(Type.ToUpper(), font, Color.White, Color.Black, TypeArea, FontsHelper.StringFormatCentered, 6);
             }
-            float leftEffectsFont = 20;
-            for (var i = 0; i < LeftEffects.Count && i < LeftEffectsArea.Count; ++i)
-            {
-                if (string.IsNullOrEmpty(LeftEffects[i])) continue;
-
-                using (var font = new Font(FontTrebuchetMs, leftEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
-                    leftEffectsFont = FontsHelper.GetAdjustedFont(graphics, LeftEffects[i], font, LeftEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)leftEffectsFont, true, false).Size;
-            }
-            for (var i = 0; i < LeftEffects.Count && i < LeftEffectsArea.Count; ++i)
-            {
-                using (var font = new Font(FontTrebuchetMs, leftEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedStringWithExtendedBorder(LeftEffects[i], font, Color.White, Color.Black, LeftEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)leftEffectsFont, true, false);
-            }
-            float rightEffectsFont = 20;
-            for (var i = 0; i < RightEffects.Count && i < RightEffectsArea.Count; ++i)
-            {
-                if (string.IsNullOrEmpty(RightEffects[i])) continue;
-
-                using (var font = new Font(FontTrebuchetMs, rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
-                    rightEffectsFont = FontsHelper.GetAdjustedFont(graphics, RightEffects[i], font, RightEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)rightEffectsFont, true, false).Size;
-            }
-            for (var i = 0; i < RightEffects.Count && i < RightEffectsArea.Count; ++i)
-            {
-                using (var font = new Font(FontTrebuchetMs, rightEffectsFont, FontStyle.Bold, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedStringWithExtendedBorder(RightEffects[i], font, Color.White, Color.Black, RightEffectsArea[i], FontsHelper.StringFormatCentered, 6, (int)rightEffectsFont, true, false);
-            }
+            DrawLeftEffects(graphics);
+            DrawRightEffects(graphics);
             if (PriceImage != null)
             {
                 if (Price <= 0) return;
@@ -132,6 +108,54 @@ namespace MyWarCreator.Models
                 using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Bold, GraphicsUnit.Pixel))
                     graphics.DrawAdjustedStringWithExtendedBorder(Price.ToString(), font, Color.White, Color.Black, PriceImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
             }
+        }
+
+        protected virtual void DrawLeftEffectsBackground(Graphics graphics)
+        {
+            if (LeftEffects.Any() && LeftEffectsImage != null)
+                DrawingHelper.MapDrawing(graphics, LeftEffectsImage, LeftEffectsImageArea);
+        }
+
+        protected virtual void DrawLeftEffects(Graphics graphics)
+        {
+            var leftEffectsFontSize = GetEffectsFontSize(graphics, FontTrebuchetMs, LeftEffects, LeftEffectsArea);
+            for (var i = 0; i < LeftEffects.Count; ++i)
+            {
+                var effectArea = new Rectangle(LeftEffectsArea.X + LeftEffectsAreaShift.X * i, LeftEffectsArea.Y + LeftEffectsAreaShift.Y * i, LeftEffectsArea.Width, LeftEffectsArea.Height);
+                using (var font = new Font(FontTrebuchetMs, leftEffectsFontSize, FontStyle.Bold, GraphicsUnit.Pixel))
+                    graphics.DrawAdjustedStringWithExtendedBorder(LeftEffects[i], font, Color.White, Color.Black, effectArea, FontsHelper.StringFormatCentered, 6, (int)leftEffectsFontSize, true, false);
+            }
+        }
+
+        protected virtual void DrawRightEffectsBackground(Graphics graphics)
+        {
+            if (RightEffects.Any() && RightEffectsImage != null)
+                DrawingHelper.MapDrawing(graphics, RightEffectsImage, RightEffectsImageArea);
+        }
+
+        protected virtual void DrawRightEffects(Graphics graphics)
+        {
+            var rightEffectsFontSize = GetEffectsFontSize(graphics, FontTrebuchetMs, RightEffects, RightEffectsArea);
+            for (var i = 0; i < RightEffects.Count; ++i)
+            {
+                var effectArea = new Rectangle(RightEffectsArea.X + RightEffectsAreaShift.X * i, RightEffectsArea.Y + RightEffectsAreaShift.Y * i, RightEffectsArea.Width, RightEffectsArea.Height);
+                using (var font = new Font(FontTrebuchetMs, rightEffectsFontSize, FontStyle.Bold, GraphicsUnit.Pixel))
+                    graphics.DrawAdjustedStringWithExtendedBorder(RightEffects[i], font, Color.White, Color.Black, effectArea, FontsHelper.StringFormatCentered, 6, (int)rightEffectsFontSize, true, false);
+            }
+        }
+
+        protected static float GetEffectsFontSize(Graphics graphics, FontFamily fontFamily, List<string> effects, Rectangle effectArea)
+        {
+            float effectsFontSize = 20;
+            foreach (var effect in effects)
+            {
+                if (string.IsNullOrEmpty(effect)) continue;
+
+                using (var font = new Font(fontFamily, effectsFontSize, FontStyle.Bold, GraphicsUnit.Pixel))
+                    effectsFontSize = FontsHelper.GetAdjustedFont(graphics, effect, font, effectArea, FontsHelper.StringFormatCentered, 6, (int)effectsFontSize, true, false).Size;
+            }
+
+            return effectsFontSize;
         }
 
         protected virtual void DrawDescription(Graphics graphics)
