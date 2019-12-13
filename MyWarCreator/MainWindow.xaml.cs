@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -19,6 +20,10 @@ namespace MyWarCreator
     /// </summary>
     public partial class MainWindow
     {
+        private bool IsBlackAndWhiteChecked => BlackAndWhiteCheckbox.IsChecked ?? false;
+        private double CardWidth => double.TryParse(CardWidthTextBox.Text.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var dec) ? dec : 2.5;
+        private double CardHeight => double.TryParse(CardHeightTextBox.Text.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var dec) ? dec : 3.5;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -47,6 +52,35 @@ namespace MyWarCreator
             AppendTextBlockResultMessage($"Pobrano czcionkę {FontsHelper.Pfc.Families.LastOrDefault()?.Name}.");
         }
 
+        private void ButtonGenerateSimple_Click(object sender, RoutedEventArgs e)
+        {
+#if DEBUG
+            const string dirPath = @"../../AppData/simple";
+#else
+            const string dirPath = @"./simple";
+#endif
+            try
+            {
+                const string filePath = dirPath + "/simple.xlsx";
+                if (Directory.Exists(dirPath))
+                {
+                    var simpleSet = new SimpleSet();
+                    UpdateProgressBar(0);
+                    UpdateTextBlockResultMessage("");
+                    AppendTextBlockResultMessage(LoadCards(dirPath, filePath, simpleSet, 0, 50));
+                    AppendTextBlockResultMessage(GenerateCards(simpleSet, 50, 100));
+                }
+                else
+                {
+                    AppendTextBlockResultMessage("Nie znaleziono katalogu o nazwie simple!");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendTextBlockResultMessage("Podczas generowania prostych kart wystąpił błąd: " + ex.Message);
+            }
+        }
+
         private void ButtonGenerateWeapons_Click(object sender, RoutedEventArgs e)
         {
 #if DEBUG
@@ -56,7 +90,7 @@ namespace MyWarCreator
 #endif
             try
             {
-                var filePath = dirPath + "/equipment.xlsx";
+                const string filePath = dirPath + "/equipment.xlsx";
                 if (Directory.Exists(dirPath))
                 {
                     var equipmentSet = new EquipmentSet();
@@ -85,7 +119,7 @@ namespace MyWarCreator
 #endif
             try
             {
-                var filePath = dirPath + "/skills.xlsx";
+                const string filePath = dirPath + "/skills.xlsx";
                 if (Directory.Exists(dirPath))
                 {
                     var skillsSet = new SkillsSet();
@@ -140,7 +174,7 @@ namespace MyWarCreator
 #endif
             try
             {
-                var filePath = equipmentDirPath + "/equipment.xlsx";
+                const string filePath = equipmentDirPath + "/equipment.xlsx";
                 if (Directory.Exists(equipmentDirPath))
                 {
                     var equipmentSet = new EquipmentSet();
@@ -254,7 +288,7 @@ namespace MyWarCreator
                         finally
                         {
                             --extraI;
-                            UpdateProgressBar((double)(++i) * 100 / n);
+                            UpdateProgressBar((double)++i * 100 / n);
                         }
                     }
                     for (var j = 0; j < MonsterData.Headers.Count; ++j)
@@ -303,6 +337,19 @@ namespace MyWarCreator
             {
                 AppendTextBlockResultMessage("Podczas generowania kart potworów wystąpił błąd: " + ex.Message);
             }
+        }
+
+        private void ButtonSimplePdf_Click(object sender, RoutedEventArgs e)
+        {
+            // Equipment
+#if DEBUG
+            const string dirPath = @"../../AppData/simple";
+#else
+            const string dirPath = @"./simple";
+#endif
+            UpdateProgressBar(0);
+            UpdateTextBlockResultMessage("");
+            AppendTextBlockResultMessage(PreparePdf(dirPath + "/results", 0, 100));
         }
 
         private void ButtonWeaponsPdf_Click(object sender, RoutedEventArgs e)
@@ -440,11 +487,11 @@ namespace MyWarCreator
                     string result;
                     if (cardsNames.ContainsKey(card.Name))
                     {
-                        result = createDuplicates ? card.GenerateFile("", " " + (++cardsNames[card.Name])) : $"Nie stworzono duplikatu karty {card.Name}.";
+                        result = createDuplicates ? card.GenerateFile("", " " + ++cardsNames[card.Name], IsBlackAndWhiteChecked) : $"Nie stworzono duplikatu karty {card.Name}.";
                     }
                     else
                     {
-                        result = card.GenerateFile();
+                        result = card.GenerateFile(blackAndWhite: IsBlackAndWhiteChecked);
                         cardsNames.Add(card.Name, 1);
                     }
                     UpdateProgressBar(minProgressBar + (double)(i + 1) * (maxProgressBar - minProgressBar) / n);
@@ -475,6 +522,11 @@ namespace MyWarCreator
                     }
 
                     var nCard = 0;
+                    var cardWidth = (int)Math.Round(CardWidth * 73.5, 0);
+                    var cardHeight = (int) Math.Round(CardHeight * 73.5, 0);
+                    var cardsInRow = (int)((8.27 * 73.5 - 40) / (cardWidth + 1));
+                    var cardsInCol = (int)((11.69 * 73.5 - 40) / (cardHeight + 1));
+                    var cardsPerPage = cardsInRow * cardsInCol;
                     for (var i = 0; i < n; ++i)
                     {
                         var filePath = Path.GetFullPath(filesPath[i]);
@@ -487,9 +539,9 @@ namespace MyWarCreator
                             nToPrint = 1;
                         for (var j = 0; j < nToPrint; ++j)
                         {
-                            if (nCard % 9 == 0)
+                            if (nCard % cardsPerPage == 0)
                                 pdfPage = pdf.AddPage();
-                            var xRect = new XRect((nCard % 3) * 185 + 20, ((nCard % 9) / 3) * 258 + 20, 184, 257);
+                            var xRect = new XRect(nCard % cardsInRow * (cardWidth + 1) + 20, nCard % cardsPerPage / cardsInRow * (cardHeight + 1) + 20, cardWidth, cardHeight);
                             using (var xGraphics = XGraphics.FromPdfPage(pdfPage))
                             {
                                 using (var xImage = XImage.FromFile(filePath))
@@ -541,7 +593,7 @@ namespace MyWarCreator
             TextBoxResultMessage.Visibility = visibility;
             if (string.IsNullOrEmpty(text)) return;
 
-            TextBoxResultMessage.Text = (string.IsNullOrEmpty(TextBoxResultMessage.Text) ? "" : (TextBoxResultMessage.Text + "\n")) + text;
+            TextBoxResultMessage.Text = (string.IsNullOrEmpty(TextBoxResultMessage.Text) ? "" : TextBoxResultMessage.Text + "\n") + text;
             TextBoxResultMessage.ScrollToEnd();
             var time = DateTime.Now.Ticks;
             if (time - textBoxResultMessageLastRefresh <= 1000) return;

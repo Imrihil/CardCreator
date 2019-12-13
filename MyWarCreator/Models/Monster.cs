@@ -80,13 +80,13 @@ namespace MyWarCreator.Models
             LeftEffectsImage = ImageHelper.LoadImage(CardsDirPath, "left-monster");
         }
 
-        protected override void DrawCard(Graphics graphics)
+        protected override void DrawCard(Graphics graphics, bool blackAndWhite)
         {
-            base.DrawCard(graphics);
+            base.DrawCard(graphics, blackAndWhite);
             using (var font = new Font(FontTrebuchetMs, 20, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedStringWithExtendedBorder(Defense.ToString(), font, Color.White, Color.Black, DefendArea, FontsHelper.StringFormatCentered, 6);
+                graphics.DrawAdjustedStringWithExtendedBorder(Defense.ToString(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), DefendArea, FontsHelper.StringFormatCentered, 6);
             using (var font = new Font(FontTrebuchetMs, 20, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedStringWithExtendedBorder(HitPoints.ToString(), font, Color.White, Color.Black, HitPointsArea, FontsHelper.StringFormatCentered, 6);
+                graphics.DrawAdjustedStringWithExtendedBorder(HitPoints.ToString(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), HitPointsArea, FontsHelper.StringFormatCentered, 6);
         }
 
         private string LevelString()
@@ -123,7 +123,7 @@ namespace MyWarCreator.Models
     {
         private string Type { get; }
         private int Difficulty { get; }
-        public override string Description => (string.IsNullOrWhiteSpace(Type) ? "" : Type + ": ") + Name + (Difficulty > 0 ? (" [" + Difficulty + "+]") : "");
+        public override string Description => (string.IsNullOrWhiteSpace(Type) ? "" : Type + ": ") + Name + (Difficulty > 0 ? " [" + Difficulty + "+]" : "");
 
         public ActiveAbility(string type, string name, int difficulty) : base(name)
         {

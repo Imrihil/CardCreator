@@ -195,4 +195,13 @@ Wygenerowane karty zostaną umieszczone w folderach "results" w podkatalogach.</
   <data name="WeaponsPdf" xml:space="preserve">
     <value>Przygotuj pdf z ekwipunkiem</value>
   </data>
+  <data name="BlackAndWhiteSetting" xml:space="preserve">
+    <value>Generuj czarno-białe karty</value>
+  </data>
+  <data name="Simple" xml:space="preserve">
+    <value>Generuj proste karty</value>
+  </data>
+  <data name="SimplePdf" xml:space="preserve">
+    <value>Przygotuj pdf z prostymi kartami</value>
+  </data>
 </root>

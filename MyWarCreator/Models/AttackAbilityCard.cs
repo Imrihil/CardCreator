@@ -62,7 +62,7 @@ namespace MyWarCreator.Models
             }
         }
 
-        protected override void DrawDescription(Graphics graphics)
+        protected override void DrawDescription(Graphics graphics, bool blackAndWhite)
         {
             if (ElementsWithValues > 0)
             {
@@ -76,11 +76,9 @@ namespace MyWarCreator.Models
                     DescriptionArea.Width - elementArea.Width - 5, DescriptionArea.Height);
 
                 var actual = 1;
-                foreach (var element in Elements)
+                foreach (var element in Elements.Where(element => element.Value > 0))
                 {
-                    if (element.Value <= 0) continue;
-
-                    DrawChancesLine(graphics, element, elementArea, ref actual);
+                    DrawChancesLine(graphics, element, elementArea, ref actual, blackAndWhite);
                     elementArea = new Rectangle(elementArea.X, elementArea.Y + elementArea.Height,
                         elementArea.Width, elementArea.Height);
                 }
@@ -88,12 +86,12 @@ namespace MyWarCreator.Models
 
             if (!string.IsNullOrWhiteSpace(Description))
             {
-                base.DrawDescription(graphics);
+                base.DrawDescription(graphics, blackAndWhite);
             }
 
         }
 
-        private void DrawChancesLine(Graphics graphics, AttackAbilityElement element, Rectangle elementArea, ref int actual)
+        private void DrawChancesLine(Graphics graphics, AttackAbilityElement element, Rectangle elementArea, ref int actual, bool blackAndWhite)
         {
             if (element.Value <= 0) return;
 
@@ -112,9 +110,9 @@ namespace MyWarCreator.Models
 
             using (var font = new Font(FontTrebuchetMs, 24, FontStyle.Regular, GraphicsUnit.Pixel))
             {
-                graphics.DrawAdjustedStringWithExtendedBorder(hits, font, Color.White, Color.Black, chancesAreaLeft, FontsHelper.StringFormatRight, wordWrap: false);
+                graphics.DrawAdjustedStringWithExtendedBorder(hits, font, GetColor(blackAndWhite), GetColor(!blackAndWhite), chancesAreaLeft, FontsHelper.StringFormatRight, wordWrap: false);
                 if (element.Image == null)
-                    graphics.DrawAdjustedStringWithExtendedBorder($": {element.Name}", font, Color.White, Color.Black, chancesAreaRight, FontsHelper.StringFormatLeft);
+                    graphics.DrawAdjustedStringWithExtendedBorder($": {element.Name}", font, GetColor(blackAndWhite), GetColor(!blackAndWhite), chancesAreaRight, FontsHelper.StringFormatLeft);
             }
             if (element.Image != null)
                 DrawingHelper.MapDrawing(graphics, element.Image, chancesAreaRight, center: false);

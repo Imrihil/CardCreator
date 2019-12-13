@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="Crawler\CrawlerCore.cs" />
     <Compile Include="DataSet\MonstersSet.cs" />
+    <Compile Include="DataSet\SimpleSet.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Helpers\DescriptionHelper.cs" />
     <Compile Include="Helpers\DiceHelper.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Equipment.cs" />
     <Compile Include="Models\Monster.cs" />
+    <Compile Include="Models\Simple.cs" />
     <Compile Include="Models\Skill.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

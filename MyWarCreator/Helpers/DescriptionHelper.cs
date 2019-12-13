@@ -7,7 +7,7 @@ namespace MyWarCreator.Helpers
         // https://stackoverflow.com/a/11749642/8278651
         public static string ToRoman(int number)
         {
-            if ((number < 0) || (number > 3999)) throw new ArgumentOutOfRangeException(nameof(number));
+            if (number < 0 || number > 3999) throw new ArgumentOutOfRangeException(nameof(number));
             if (number < 1) return string.Empty;
             if (number >= 1000) return "M" + ToRoman(number - 1000);
             if (number >= 900) return "CM" + ToRoman(number - 900);

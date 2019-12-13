@@ -71,39 +71,39 @@ namespace MyWarCreator.Models
             CriticalImage = ImageHelper.LoadImage(CardsDirPath, Critical.Trim('.'));
         }
 
-        protected override void DrawCard(Graphics graphics)
+        protected override void DrawCard(Graphics graphics, bool blackAndWhite)
         {
-            base.DrawCard(graphics);
+            base.DrawCard(graphics, blackAndWhite);
             if (CriticalImage != null)
             {
                 DrawingHelper.MapDrawing(graphics, CriticalImage, CriticalArea);
                 //using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                //    graphics.DrawAdjustedStringWithExtendedBorder(Critical, font, Color.White, Color.Black, CriticalNameArea, FontsHelper.StringFormatCentered, 6);
+                //    graphics.DrawAdjustedStringWithExtendedBorder(Critical, font, GetColor(blackAndWhite), GetColor(!blackAndWhite), CriticalNameArea, FontsHelper.StringFormatCentered, 6);
             }
             else
             {
                 using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedStringWithExtendedBorder(Critical, font, Color.White, Color.Black, CriticalArea, FontsHelper.StringFormatCentered, 6);
+                    graphics.DrawAdjustedStringWithExtendedBorder(Critical, font, GetColor(blackAndWhite), GetColor(!blackAndWhite), CriticalArea, FontsHelper.StringFormatCentered, 6);
             }
             using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedStringWithExtendedBorder(Statistic, font, Color.White, Color.Black, StatisticArea, FontsHelper.StringFormatLeft, 6);
+                graphics.DrawAdjustedStringWithExtendedBorder(Statistic, font, GetColor(blackAndWhite), GetColor(!blackAndWhite), StatisticArea, FontsHelper.StringFormatLeft, 6);
             using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedStringWithExtendedBorder(Attribute, font, Color.White, Color.Black, AttributeArea, FontsHelper.StringFormatRight, 6);
+                graphics.DrawAdjustedStringWithExtendedBorder(Attribute, font, GetColor(blackAndWhite), GetColor(!blackAndWhite), AttributeArea, FontsHelper.StringFormatRight, 6);
             using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedStringWithExtendedBorder(DescriptionHelper.ToRoman(Lvl), font, Color.White, Color.Black, LvlArea, FontsHelper.StringFormatCentered, 6);
+                graphics.DrawAdjustedStringWithExtendedBorder(DescriptionHelper.ToRoman(Lvl), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), LvlArea, FontsHelper.StringFormatCentered, 6);
             using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
                 graphics.DrawAdjustedStringWithExtendedBorder(
                     Regex.IsMatch(FirstType, "(?i)(pasywna)")
                         ? $"{FirstDescription}"
                         : $"{FirstType} {FirstDescription}",
-                    font, Color.White, Color.Black, FirstDescriptionArea, FontsHelper.StringFormatCentered, 6);
+                    font, GetColor(blackAndWhite), GetColor(!blackAndWhite), FirstDescriptionArea, FontsHelper.StringFormatCentered, 6);
             using (var font = new Font(FontTrebuchetMs,
                 12, FontStyle.Regular, GraphicsUnit.Pixel))
                 graphics.DrawAdjustedStringWithExtendedBorder(
                     Regex.IsMatch(SecondType, "(?i)(pasywna)")
                     ? $"{SecondDescription}"
                     : $"{SecondType} {SecondDescription}",
-                    font, Color.White, Color.Black, SecondDescriptionArea, FontsHelper.StringFormatCentered, 6);
+                    font, GetColor(blackAndWhite), GetColor(!blackAndWhite), SecondDescriptionArea, FontsHelper.StringFormatCentered, 6);
         }
     }
 }

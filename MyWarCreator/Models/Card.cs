@@ -19,7 +19,7 @@ namespace MyWarCreator.Models
         protected string Type { get; set; }
         protected Rectangle TypeArea { get; set; } = new Rectangle(25, 460, 310, 15);
         public string Name { get; protected set; }
-        private Rectangle NameArea { get; } = new Rectangle(70, 245, 220, 40);
+        protected Rectangle NameArea { get; set; } = new Rectangle(70, 245, 220, 40);
         protected List<string> LeftEffects { get; } = new List<string>();
         protected Image LeftEffectsImage { get; set; }
         private Rectangle LeftEffectsImageArea { get; } = new Rectangle(0, 0, 85, 280);
@@ -42,7 +42,7 @@ namespace MyWarCreator.Models
         private Rectangle FrontImageArea { get; } = new Rectangle(0, 0, 360, 500);
         private Image BackgroundImage { get; }
         private string ResultsDirPath { get; }
-        protected virtual string FileName => $"{Type} - {Name}";
+        protected virtual string FileName => string.IsNullOrEmpty(Type) ? $"{Name}" : $"{Type} - {Name}";
         protected int PriceLimit { get; } = 3;
 
         protected readonly FontFamily FontTrebuchetMs = FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif;
@@ -58,30 +58,30 @@ namespace MyWarCreator.Models
             BackgroundImage = ImageHelper.LoadImage(CardsDirPath, "background");
         }
 
-        protected virtual void DrawCard(Graphics graphics)
+        protected virtual void DrawCard(Graphics graphics, bool blackAndWhite)
         {
             if (MainImage != null)
                 DrawingHelper.MapDrawing(graphics, MainImage, MainImageArea);
-            if (FrontImage != null)
+            if (FrontImage != null && blackAndWhite == false)
                 DrawingHelper.MapDrawing(graphics, FrontImage, FrontImageArea);
             DrawLeftEffectsBackground(graphics);
             DrawRightEffectsBackground(graphics);
             if (Name != null)
             {
                 using (var font = new Font(fontAkvaleir, 24, FontStyle.Bold, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedStringWithExtendedBorder(Name.ToUpper(), font, Color.White, Color.Black, NameArea, FontsHelper.StringFormatCentered, 6);
+                    graphics.DrawAdjustedStringWithExtendedBorder(Name.ToUpper(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), NameArea, FontsHelper.StringFormatCentered, 6);
             }
             if (Description != null)
             {
-                DrawDescription(graphics);
+                DrawDescription(graphics, blackAndWhite);
             }
             if (Type != null)
             {
                 using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedStringWithExtendedBorder(Type.ToUpper(), font, Color.White, Color.Black, TypeArea, FontsHelper.StringFormatCentered, 6);
+                    graphics.DrawAdjustedStringWithExtendedBorder(Type.ToUpper(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), TypeArea, FontsHelper.StringFormatCentered, 6);
             }
-            DrawLeftEffects(graphics);
-            DrawRightEffects(graphics);
+            DrawLeftEffects(graphics, blackAndWhite);
+            DrawRightEffects(graphics, blackAndWhite);
             if (PriceImage != null)
             {
                 if (Price <= 0) return;
@@ -98,7 +98,7 @@ namespace MyWarCreator.Models
                 {
                     var priceImageAreaI = new Rectangle(PriceImageArea.X + 5, PriceImageArea.Y, PriceImageArea.Width - 5, PriceImageArea.Height);
                     using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Bold, GraphicsUnit.Pixel))
-                        graphics.DrawAdjustedStringWithExtendedBorder(Price.ToString(), font, Color.White, Color.Black, priceImageAreaI, FontsHelper.StringFormatCentered, 6, 12, true, false);
+                        graphics.DrawAdjustedStringWithExtendedBorder(Price.ToString(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), priceImageAreaI, FontsHelper.StringFormatCentered, 6, 12, true, false);
                     priceImageAreaI = new Rectangle(PriceImageArea.X + PriceImageArea.Width, PriceImageArea.Y, PriceImageArea.Width, PriceImageArea.Height);
                     DrawingHelper.MapDrawing(graphics, PriceImage, priceImageAreaI);
                 }
@@ -106,7 +106,7 @@ namespace MyWarCreator.Models
             else
             {
                 using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Bold, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedStringWithExtendedBorder(Price.ToString(), font, Color.White, Color.Black, PriceImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
+                    graphics.DrawAdjustedStringWithExtendedBorder(Price.ToString(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), PriceImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
             }
         }
 
@@ -116,14 +116,14 @@ namespace MyWarCreator.Models
                 DrawingHelper.MapDrawing(graphics, LeftEffectsImage, LeftEffectsImageArea);
         }
 
-        protected virtual void DrawLeftEffects(Graphics graphics)
+        protected virtual void DrawLeftEffects(Graphics graphics, bool blackAndWhite)
         {
             var leftEffectsFontSize = GetEffectsFontSize(graphics, FontTrebuchetMs, LeftEffects, LeftEffectsArea);
             for (var i = 0; i < LeftEffects.Count; ++i)
             {
                 var effectArea = new Rectangle(LeftEffectsArea.X + LeftEffectsAreaShift.X * i, LeftEffectsArea.Y + LeftEffectsAreaShift.Y * i, LeftEffectsArea.Width, LeftEffectsArea.Height);
                 using (var font = new Font(FontTrebuchetMs, leftEffectsFontSize, FontStyle.Bold, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedStringWithExtendedBorder(LeftEffects[i], font, Color.White, Color.Black, effectArea, FontsHelper.StringFormatCentered, 6, (int)leftEffectsFontSize, true, false);
+                    graphics.DrawAdjustedStringWithExtendedBorder(LeftEffects[i], font, GetColor(blackAndWhite), GetColor(!blackAndWhite), effectArea, FontsHelper.StringFormatCentered, 6, (int)leftEffectsFontSize, true, false);
             }
         }
 
@@ -133,18 +133,18 @@ namespace MyWarCreator.Models
                 DrawingHelper.MapDrawing(graphics, RightEffectsImage, RightEffectsImageArea);
         }
 
-        protected virtual void DrawRightEffects(Graphics graphics)
+        protected virtual void DrawRightEffects(Graphics graphics, bool blackAndWhite)
         {
             var rightEffectsFontSize = GetEffectsFontSize(graphics, FontTrebuchetMs, RightEffects, RightEffectsArea);
             for (var i = 0; i < RightEffects.Count; ++i)
             {
                 var effectArea = new Rectangle(RightEffectsArea.X + RightEffectsAreaShift.X * i, RightEffectsArea.Y + RightEffectsAreaShift.Y * i, RightEffectsArea.Width, RightEffectsArea.Height);
                 using (var font = new Font(FontTrebuchetMs, rightEffectsFontSize, FontStyle.Bold, GraphicsUnit.Pixel))
-                    graphics.DrawAdjustedStringWithExtendedBorder(RightEffects[i], font, Color.White, Color.Black, effectArea, FontsHelper.StringFormatCentered, 6, (int)rightEffectsFontSize, true, false);
+                    graphics.DrawAdjustedStringWithExtendedBorder(RightEffects[i], font, GetColor(blackAndWhite), GetColor(!blackAndWhite), effectArea, FontsHelper.StringFormatCentered, 6, (int)rightEffectsFontSize, true, false);
             }
         }
 
-        protected static float GetEffectsFontSize(Graphics graphics, FontFamily fontFamily, List<string> effects, Rectangle effectArea)
+        protected static float GetEffectsFontSize(Graphics graphics, FontFamily fontFamily, IEnumerable<string> effects, Rectangle effectArea)
         {
             float effectsFontSize = 20;
             foreach (var effect in effects)
@@ -158,13 +158,13 @@ namespace MyWarCreator.Models
             return effectsFontSize;
         }
 
-        protected virtual void DrawDescription(Graphics graphics)
+        protected virtual void DrawDescription(Graphics graphics, bool blackAndWhite)
         {
             using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                graphics.DrawAdjustedStringWithExtendedBorder(DescriptionFull, font, Color.White, Color.Black, DescriptionArea, FontsHelper.StringFormatCentered);
+                graphics.DrawAdjustedStringWithExtendedBorder(DescriptionFull, font, GetColor(blackAndWhite), GetColor(!blackAndWhite), DescriptionArea, FontsHelper.StringFormatCentered);
         }
 
-        public string GenerateFile(string fileNamePrefix = "", string fileNameSuffix = "")
+        public string GenerateFile(string fileNamePrefix = "", string fileNameSuffix = "", bool blackAndWhite = false)
         {
             try
             {
@@ -173,14 +173,22 @@ namespace MyWarCreator.Models
                     Directory.CreateDirectory(ResultsDirPath);
                 }
                 var savePath = Path.GetFullPath(ResultsDirPath + "/" + fileNamePrefix + FileName + fileNameSuffix + ".png");
-                using (Image bitmap = new Bitmap(BackgroundImage))
+                using (Image bitmap = blackAndWhite ?
+                    new Bitmap(BackgroundImage.Width, BackgroundImage.Height) :
+                    new Bitmap(BackgroundImage))
                 {
                     using (var graphics = Graphics.FromImage(bitmap))
                     {
-                        DrawCard(graphics);
+                        if (blackAndWhite)
+                        {
+                            graphics.FillRectangle(Brushes.White, 0, 0, BackgroundImage.Width, BackgroundImage.Height);
+                            graphics.DrawRectangle(Pens.Black, 0, 0, BackgroundImage.Width - 2, BackgroundImage.Height - 2);
+                        }
+                        DrawCard(graphics, blackAndWhite);
                         bitmap.Save(savePath, ImageFormat.Png);
                     }
                 }
+
                 return $"Pomyślnie wygenerowano kartę {Name}.";
             }
             catch (Exception ex)
@@ -197,5 +205,7 @@ namespace MyWarCreator.Models
                 ? new Rectangle(TypeArea.X + PriceImageArea.Width * Price, TypeArea.Y, TypeArea.Width - PriceImageArea.Width * Price, TypeArea.Height)
                 : new Rectangle(TypeArea.X + PriceImageArea.Width * 2, TypeArea.Y, TypeArea.Width - PriceImageArea.Width * 2, TypeArea.Height);
         }
+
+        protected static Color GetColor(bool blackAndWhite) => blackAndWhite ? Color.Black : Color.White;
     }
 }
