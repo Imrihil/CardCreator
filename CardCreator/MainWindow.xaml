@@ -1,0 +1,33 @@
+﻿<Window x:Class="CardCreator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:p="clr-namespace:CardCreator.Properties"
+        mc:Ignorable="d"
+        Title="MyWarCreator v.3.0" Width="600" Height="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="5"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="{x:Static p:Resources.Hello}" Margin="10,5,10,5" TextWrapping="Wrap" Grid.ColumnSpan="4" Grid.Row="1" />
+        <TextBlock Text="{x:Static p:Resources.Description}" Margin="10,5,10,5" TextWrapping="Wrap" Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Column="0" Grid.ColumnSpan="4" />
+        <Label Content="{x:Static p:Resources.SourceFile}" Margin="10, 0, 10, 0" Grid.Row="3" Grid.Column="0" />
+        <Button Content="{x:Static p:Resources.ChooseFile}" Margin="5,5,10,5" Click="ButtonChooseFile_Click" Grid.Row="3" Grid.Column="1" />
+        <Label Name="Directory_Label" Margin="10,0,10,0" FontStyle="Italic" Grid.Row="3" Grid.Column="2"  Grid.ColumnSpan="2" />
+        <Button Content="{x:Static p:Resources.GenerateCards}" Margin="10,5,5,5" Click="ButtonGenerateCards_Click" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" />
+        <Button Content="{x:Static p:Resources.PreparePdf}" Margin="10,5,10,5" Click="ButtonPreparePdf_Click" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" />
+    </Grid>
+</Window>

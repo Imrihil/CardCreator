@@ -3,7 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-MyWarCreator/AppData
+AppData
 
 # User-specific files
 *.rsuser
@@ -19,6 +19,19 @@ MyWarCreator/AppData
 mono_crash.*
 
 # Build results
+CardCreator/[Dd]ebug/
+CardCreator/[Dd]ebugPublic/
+CardCreator/[Rr]elease/
+CardCreator/[Rr]eleases/
+CardCreator/x64/
+CardCreator/x86/
+CardCreator/[Aa][Rr][Mm]/
+CardCreator/[Aa][Rr][Mm]64/
+CardCreator/bld/
+CardCreator/[Bb]in/
+CardCreator/[Oo]bj/
+CardCreator/[Ll]og/
+CardCreator/[Ll]ogs/
 MyWarCreator/[Dd]ebug/
 MyWarCreator/[Dd]ebugPublic/
 MyWarCreator/[Rr]elease/
