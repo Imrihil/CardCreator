@@ -19,7 +19,7 @@ namespace MyWarCreator.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -80,21 +80,21 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Anuluj.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         public static byte[] colonna_mt {
             get {
                 object obj = ResourceManager.GetObject("colonna_mt", resourceCulture);
                 return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Przygotuj pdf z wybranych plików.
-        /// </summary>
-        public static string CustomPdf {
-            get {
-                return ResourceManager.GetString("CustomPdf", resourceCulture);
             }
         }
         
@@ -106,15 +106,6 @@ namespace MyWarCreator.Properties {
         public static string Description {
             get {
                 return ResourceManager.GetString("Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pobierz statystyki potworów.
-        /// </summary>
-        public static string DownloadMonsters {
-            get {
-                return ResourceManager.GetString("DownloadMonsters", resourceCulture);
             }
         }
         
@@ -139,20 +130,11 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generuj wszystko.
+        ///   Looks up a localized string similar to Generuj karty.
         /// </summary>
-        public static string GenerateAll {
+        public static string GenerateCards {
             get {
-                return ResourceManager.GetString("GenerateAll", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Generuj karty potworów.
-        /// </summary>
-        public static string GenerateMonsters {
-            get {
-                return ResourceManager.GetString("GenerateMonsters", resourceCulture);
+                return ResourceManager.GetString("GenerateCards", resourceCulture);
             }
         }
         
@@ -167,7 +149,7 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Witaj w kreatorze kart do systemu RPG - MyWar!.
+        ///   Looks up a localized string similar to Witaj w kreatorze kart!.
         /// </summary>
         public static string Hello {
             get {
@@ -186,21 +168,21 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Przygotuj pdf z potworami.
-        /// </summary>
-        public static string MonstersPdf {
-            get {
-                return ResourceManager.GetString("MonstersPdf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         public static byte[] Neverwinter {
             get {
                 object obj = ResourceManager.GetObject("Neverwinter", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ok.
+        /// </summary>
+        public static string Ok {
+            get {
+                return ResourceManager.GetString("Ok", resourceCulture);
             }
         }
         
@@ -230,42 +212,6 @@ namespace MyWarCreator.Properties {
             get {
                 object obj = ResourceManager.GetObject("runic_altno", resourceCulture);
                 return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Generuj proste karty.
-        /// </summary>
-        public static string Simple {
-            get {
-                return ResourceManager.GetString("Simple", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Przygotuj pdf z prostymi kartami.
-        /// </summary>
-        public static string SimplePdf {
-            get {
-                return ResourceManager.GetString("SimplePdf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Generuj karty umiejętności.
-        /// </summary>
-        public static string Skills {
-            get {
-                return ResourceManager.GetString("Skills", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Przygotuj pdf z umiejętnościami.
-        /// </summary>
-        public static string SkillsPdf {
-            get {
-                return ResourceManager.GetString("SkillsPdf", resourceCulture);
             }
         }
         
@@ -306,24 +252,6 @@ namespace MyWarCreator.Properties {
             get {
                 object obj = ResourceManager.GetObject("trebucit", resourceCulture);
                 return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Generuj karty ekwipunku.
-        /// </summary>
-        public static string Weapons {
-            get {
-                return ResourceManager.GetString("Weapons", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Przygotuj pdf z ekwipunkiem.
-        /// </summary>
-        public static string WeaponsPdf {
-            get {
-                return ResourceManager.GetString("WeaponsPdf", resourceCulture);
             }
         }
     }

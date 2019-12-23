@@ -162,46 +162,22 @@
 Dodatkowo, jeśli w katalogu znajdują się jakieś obrazki, zostaną wykorzystane do utworzenia kart, gdy nazwa obrazka będzie odpowiadać nazwie karty w arkuszu. Jeśli w folderze istnieje obrazek o nazwie "background.png", zostanie on użyty jako tło do wszystkich kart.
 Wygenerowane karty zostaną umieszczone w folderach "results" w podkatalogach.</value>
   </data>
-  <data name="DownloadMonsters" xml:space="preserve">
-    <value>Pobierz statystyki potworów</value>
-  </data>
-  <data name="GenerateMonsters" xml:space="preserve">
-    <value>Generuj karty potworów</value>
-  </data>
   <data name="Hello" xml:space="preserve">
-    <value>Witaj w kreatorze kart do systemu RPG - MyWar!</value>
+    <value>Witaj w kreatorze kart!</value>
   </data>
   <data name="PreparePdf" xml:space="preserve">
     <value>Przygotuj pdfy do druku</value>
   </data>
-  <data name="Skills" xml:space="preserve">
-    <value>Generuj karty umiejętności</value>
-  </data>
-  <data name="Weapons" xml:space="preserve">
-    <value>Generuj karty ekwipunku</value>
-  </data>
-  <data name="CustomPdf" xml:space="preserve">
-    <value>Przygotuj pdf z wybranych plików</value>
-  </data>
-  <data name="GenerateAll" xml:space="preserve">
-    <value>Generuj wszystko</value>
-  </data>
-  <data name="MonstersPdf" xml:space="preserve">
-    <value>Przygotuj pdf z potworami</value>
-  </data>
-  <data name="SkillsPdf" xml:space="preserve">
-    <value>Przygotuj pdf z umiejętnościami</value>
-  </data>
-  <data name="WeaponsPdf" xml:space="preserve">
-    <value>Przygotuj pdf z ekwipunkiem</value>
-  </data>
   <data name="BlackAndWhiteSetting" xml:space="preserve">
     <value>Generuj czarno-białe karty</value>
   </data>
-  <data name="Simple" xml:space="preserve">
-    <value>Generuj proste karty</value>
+  <data name="GenerateCards" xml:space="preserve">
+    <value>Generuj karty</value>
   </data>
-  <data name="SimplePdf" xml:space="preserve">
-    <value>Przygotuj pdf z prostymi kartami</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>Ok</value>
   </data>
 </root>

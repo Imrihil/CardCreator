@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:MyWarCreator.Properties"
         mc:Ignorable="d"
-        Title="MyWarCreator v.2.8" Height="800" Width="600">
+        Title="MyWarCreator v.3.0" Width="600" Height="270">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -13,44 +13,26 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="130"/>
+            <RowDefinition Height="5"/>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
-        <TextBlock Margin="10,10,10,10" TextWrapping="Wrap" Grid.ColumnSpan="3">
+        <TextBlock Margin="10,5,10,5" TextWrapping="Wrap" Grid.ColumnSpan="3" Grid.Row="1" >
             <Run Text="{x:Static p:Resources.Hello}"/>
         </TextBlock>
-        <TextBlock Margin="10,10,10,10" TextWrapping="Wrap" FontStyle="Italic" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="3" Grid.Column="0">
+        <TextBlock Margin="10,5,10,5" TextWrapping="Wrap" FontStyle="Italic" Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="3" Grid.Column="0">
             <Run Text="{x:Static p:Resources.Description}"/>
         </TextBlock>
-        <CheckBox Content="{x:Static p:Resources.BlackAndWhiteSetting}"  Margin="10,5,5,5" x:Name="BlackAndWhiteCheckbox" Grid.Row="2" Grid.Column="0" />
-        <TextBox Margin="5,5,115,5" Width="30" Name="CardWidthTextBox" Text="2.5" Grid.Row="2" Grid.Column="1" />
-        <Label Margin="40, 0, 0, 0" Content="Width (in inches)" Grid.Row="2" Grid.Column="1" />
-        <TextBox Margin="5,5,115,5" Width="30" Name="CardHeightTextBox" Text="3.5" Grid.Row="2" Grid.Column="2" />
-        <Label Margin="40, 0, 0, 0" Content="Height (in inches)" Grid.Row="2" Grid.Column="2" />
-        <Button Content="{x:Static p:Resources.Simple}" Margin="10,5,5,5" Click="ButtonGenerateSimple_Click" Grid.Row="3" Grid.Column="0" />
-        <Button Content="{x:Static p:Resources.SimplePdf}" Margin="5,5,10,5" Click="ButtonSimplePdf_Click" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" />
-        <Button Content="{x:Static p:Resources.Weapons}" Margin="10,5,5,5" Click="ButtonGenerateWeapons_Click" Grid.Row="4" Grid.Column="0" />
-        <Button Content="{x:Static p:Resources.WeaponsPdf}" Margin="5,5,10,5" Click="ButtonWeaponsPdf_Click" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"/>
-        <Button Content="{x:Static p:Resources.Skills}" Margin="10,5,5,5" Click="ButtonGenerateSkills_Click" Grid.Row="5" Grid.Column="0" />
-        <Button Content="{x:Static p:Resources.SkillsPdf}" Margin="5,5,10,5" Click="ButtonSkillsPdf_Click" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"/>
-        <Button Content="{x:Static p:Resources.DownloadMonsters}" Margin="10,5,10,5" Click="ButtonDownloadMonsters_Click" Grid.Row="6" Grid.ColumnSpan="3" Grid.Column="0" />
-        <Button Content="{x:Static p:Resources.GenerateMonsters}" Margin="10,5,5,5" Click="ButtonGenerateMonsters_Click" Grid.Row="7" Grid.Column="0" />
-        <Button Content="{x:Static p:Resources.MonstersPdf}" Margin="5,5,10,5" Click="ButtonMonstersPdf_Click" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2"/>
-        <Button Content="{x:Static p:Resources.GenerateAll}" Margin="10,5,5,5" Click="ButtonGenerateAll_Click" Grid.Row="8" Grid.Column="0" />
-        <Button Content="{x:Static p:Resources.PreparePdf}" Margin="5,5,10,5" Click="ButtonGeneratePdf_Click" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2"/>
-        <Button Content="{x:Static p:Resources.CustomPdf}" Margin="10,5,10,5" Click="ButtonCustomPdf_Click" Grid.Row="9" Grid.ColumnSpan="3" Grid.Column="0" />
-        <ProgressBar x:Name="ProgressBar" Margin="10,10,10,10" IsHitTestVisible="True" Grid.Row="10" Grid.ColumnSpan="3" Grid.Column="0" />
-        <TextBlock x:Name="ProgressBarText" Margin="10,0,10,0" Text="{Binding ElementName=ProgressBar, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="3" />
-        <TextBox x:Name="TextBoxResultMessage" Margin="10,10,10,10" Grid.Row="11" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="Logi." Grid.ColumnSpan="3" Grid.Column="0" />
+        <CheckBox Content="{x:Static p:Resources.BlackAndWhiteSetting}"  Margin="10,5,5,5" x:Name="BlackAndWhiteCheckbox" Grid.Row="3" Grid.Column="0" />
+        <TextBox Margin="5,5,115,5" Width="30" Name="CardWidthTextBox" Text="2.5" Grid.Row="3" Grid.Column="1" />
+        <Label Margin="40, 0, 0, 0" Content="Width (in inches)" Grid.Row="3" Grid.Column="1" />
+        <TextBox Margin="5,5,115,5" Width="30" Name="CardHeightTextBox" Text="3.5" Grid.Row="3" Grid.Column="2" />
+        <Label Margin="40, 0, 0, 0" Content="Height (in inches)" Grid.Row="3" Grid.Column="2" />
+        <Button Content="{x:Static p:Resources.GenerateCards}" Margin="10,5,5,5" Click="ButtonGenerateCards_Click" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" />
+        <Button Content="{x:Static p:Resources.PreparePdf}" Margin="10,5,10,5" Click="ButtonPreparePdf_Click" Grid.Row="5" Grid.ColumnSpan="3" Grid.Column="0" />
     </Grid>
 </Window>
