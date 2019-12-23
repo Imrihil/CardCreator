@@ -5,6 +5,8 @@ using CardCreator.Features.Cards;
 using CardCreator.Features.Drawing;
 using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
+using MediatR;
+using System;
 
 namespace CardCreator
 {
@@ -14,6 +16,7 @@ namespace CardCreator
     /// </summary>
     public partial class MainWindow
     {
+        private readonly IMediator mediator;
         private readonly IFontProvider fontProvider;
         private readonly IImageProvider imageProvider;
         private readonly IPainter painter;
@@ -21,8 +24,9 @@ namespace CardCreator
 
         private OpenFileDialog ChooseFileDialog { get; }
 
-        public MainWindow(IFontProvider fontProvider, IImageProvider imageProvider, IPainter painter, ICardBuilder cardBuilder)
+        public MainWindow(IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, IPainter painter, ICardBuilder cardBuilder)
         {
+            this.mediator = mediator;
             this.fontProvider = fontProvider;
             this.imageProvider = imageProvider;
             this.painter = painter;
@@ -58,7 +62,10 @@ namespace CardCreator
         }
 
         private void ButtonGenerateCards_Click(object sender, RoutedEventArgs e)
-        { }
+        {
+            var result = mediator.Send(new CardGeneratingCommand()).GetAwaiter().GetResult();
+            Console.WriteLine(result);
+        }
 
         private void ButtonPreparePdf_Click(object sender, RoutedEventArgs e)
         { }

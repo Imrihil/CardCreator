@@ -2,7 +2,7 @@
 
 namespace CardCreator.Features.Cards
 {
-    public class CardGeneratingCommand : IRequest
+    public class CardGeneratingCommand : IRequest<bool>
     {
 
     }
