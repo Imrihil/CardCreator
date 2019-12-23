@@ -89,6 +89,15 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wybierz plik.
+        /// </summary>
+        public static string ChooseFile {
+            get {
+                return ResourceManager.GetString("ChooseFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         public static byte[] colonna_mt {
@@ -99,9 +108,9 @@ namespace MyWarCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Aby kreator zadziałał prawidłowo - w folderze z plikiem wykonywalnym .exe muszą znajdować się foldery o nazwach &quot;equipment&quot;, &quot;skills&quot; i &quot;monsters&quot;, a w nim arkusze kalkulacyjne o takich samych nazwach.
-        ///Dodatkowo, jeśli w katalogu znajdują się jakieś obrazki, zostaną wykorzystane do utworzenia kart, gdy nazwa obrazka będzie odpowiadać nazwie karty w arkuszu. Jeśli w folderze istnieje obrazek o nazwie &quot;background.png&quot;, zostanie on użyty jako tło do wszystkich kart.
-        ///Wygenerowane karty zostaną umieszczone w f [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to Aby wygenerować karty wskaż plik z danymi.
+        ///Wygenerowane karty zostaną umieszczone w folderze &quot;cards&quot; utworzonym w tym samym katalogu, w którym znajduje się wskazany plik.
+        ///Wygenerowany plik pdf zostanie umieszczony w folderze &quot;prints&quot; utworzonym w tym samym katalogu, w którym znajduje się wskazany plik..
         /// </summary>
         public static string Description {
             get {
@@ -212,6 +221,15 @@ namespace MyWarCreator.Properties {
             get {
                 object obj = ResourceManager.GetObject("runic_altno", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Plik z danymi:.
+        /// </summary>
+        public static string SourceFile {
+            get {
+                return ResourceManager.GetString("SourceFile", resourceCulture);
             }
         }
         
