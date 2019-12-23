@@ -1,19 +1,12 @@
-﻿using MyWarCreator.Features.Fonts;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
+using MyWarCreator.Helpers;
 
-namespace MyWarCreator.Features.Drawing
+namespace MyWarCreator.Extensions
 {
-    public class Painter : IPainter
+    public static class GraphicsExtensions
     {
-        private readonly IFontProvider fontProvider;
-
-        public Painter(IFontProvider fontProvider)
-        {
-            this.fontProvider = fontProvider;
-        }
-
-        public void DrawStringWithShadow(Graphics graphics, string s, Font font, Color color, RectangleF layoutRectangle, int shadowSize)
+        public static void DrawStringWithShadow(this Graphics graphics, string s, Font font, Color color, RectangleF layoutRectangle, int shadowSize)
         {
             for (var offset = 0; offset <= shadowSize; ++offset)
             {
@@ -25,7 +18,7 @@ namespace MyWarCreator.Features.Drawing
             }
         }
 
-        public void DrawStringWithShadow(Graphics graphics, string s, Font font, Color color, RectangleF layoutRectangle, StringFormat format, int shadowSize)
+        public static void DrawStringWithShadow(this Graphics graphics, string s, Font font, Color color, RectangleF layoutRectangle, StringFormat format, int shadowSize)
         {
             for (var offset = 0; offset <= shadowSize; ++offset)
             {
@@ -37,21 +30,21 @@ namespace MyWarCreator.Features.Drawing
             }
         }
 
-        public void DrawAdjustedString(Graphics graphics, string s, Font font, Brush brush, RectangleF layoutRectangle, int minFontSize = 0, int maxFontSize = int.MinValue, bool smallestOnFail = true, bool wordWrap = true)
+        public static void DrawAdjustedString(this Graphics graphics, string s, Font font, Brush brush, RectangleF layoutRectangle, int minFontSize = 0, int maxFontSize = int.MinValue, bool smallestOnFail = true, bool wordWrap = true)
         {
             if (maxFontSize == int.MinValue) maxFontSize = (int)font.Size;
-            using (var usedFont = fontProvider.GetAdjusted(graphics, s, font, layoutRectangle, new StringFormat(), minFontSize, maxFontSize, smallestOnFail, wordWrap))
+            using (var usedFont = FontsHelper.GetAdjustedFont(graphics, s, font, layoutRectangle, new StringFormat(), minFontSize, maxFontSize, smallestOnFail, wordWrap))
                 graphics.DrawString(s, usedFont, brush, layoutRectangle);
         }
 
-        public void DrawAdjustedString(Graphics graphics, string s, Font font, Brush brush, RectangleF layoutRectangle, StringFormat format, int minFontSize = 0, int maxFontSize = int.MinValue, bool smallestOnFail = true, bool wordWrap = true)
+        public static void DrawAdjustedString(this Graphics graphics, string s, Font font, Brush brush, RectangleF layoutRectangle, StringFormat format, int minFontSize = 0, int maxFontSize = int.MinValue, bool smallestOnFail = true, bool wordWrap = true)
         {
             if (maxFontSize == int.MinValue) maxFontSize = (int)font.Size;
-            using (var usedFont = fontProvider.GetAdjusted(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
+            using (var usedFont = FontsHelper.GetAdjustedFont(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
                 graphics.DrawString(s, usedFont, brush, layoutRectangle, format);
         }
 
-        private readonly List<Point> closeBorderModifiers = new List<Point>
+        private static readonly List<Point> CloseBorderModifiers = new List<Point>
         {
             new Point(-1, -1),
             new Point(-1, 1),
@@ -59,7 +52,7 @@ namespace MyWarCreator.Features.Drawing
             new Point(1, 1)
         };
 
-        private readonly List<Point> extendedBorderModifiers = new List<Point>
+        private static readonly List<Point> ExtendedBorderModifiers = new List<Point>
         {
             new Point(-2, -2),
             new Point(-3, 0),
@@ -71,29 +64,29 @@ namespace MyWarCreator.Features.Drawing
             new Point(2, 2)
         };
 
-        public void DrawAdjustedStringWithBorder(Graphics graphics, string s, Font font, Brush brush, Brush brushBorder, RectangleF layoutRectangle, StringFormat format, int minFontSize = 0, int maxFontSize = int.MinValue, bool smallestOnFail = true, bool wordWrap = true)
+        public static void DrawAdjustedStringWithBorder(this Graphics graphics, string s, Font font, Brush brush, Brush brushBorder, RectangleF layoutRectangle, StringFormat format, int minFontSize = 0, int maxFontSize = int.MinValue, bool smallestOnFail = true, bool wordWrap = true)
         {
             if (maxFontSize == int.MinValue) maxFontSize = (int)font.Size;
-            using (var usedFont = fontProvider.GetAdjusted(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
+            using (var usedFont = FontsHelper.GetAdjustedFont(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
             {
-                foreach (var offset in closeBorderModifiers)
+                foreach (var offset in CloseBorderModifiers)
                 {
                     var layoutRectangleModified = new RectangleF(layoutRectangle.X + offset.X, layoutRectangle.Y + offset.Y, layoutRectangle.Width, layoutRectangle.Height);
                     graphics.DrawString(s, usedFont, brushBorder, layoutRectangleModified, format);
                 }
             }
-            using (var usedFont = fontProvider.GetAdjusted(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
+            using (var usedFont = FontsHelper.GetAdjustedFont(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
                 graphics.DrawString(s, usedFont, brush, layoutRectangle, format);
         }
 
-        public void DrawAdjustedStringWithExtendedBorder(Graphics graphics, string s, Font font, Color color, Color colorBorder, RectangleF layoutRectangle, StringFormat format, int minFontSize = 0, int maxFontSize = int.MinValue, bool smallestOnFail = true, bool wordWrap = true)
+        public static void DrawAdjustedStringWithExtendedBorder(this Graphics graphics, string s, Font font, Color color, Color colorBorder, RectangleF layoutRectangle, StringFormat format, int minFontSize = 0, int maxFontSize = int.MinValue, bool smallestOnFail = true, bool wordWrap = true)
         {
             if (maxFontSize == int.MinValue) maxFontSize = (int)font.Size;
-            using (var usedFont = fontProvider.GetAdjusted(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
+            using (var usedFont = FontsHelper.GetAdjustedFont(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
             {
                 using (Brush brush = new SolidBrush(Color.FromArgb((int)((float)colorBorder.A * 4 / 5), colorBorder)))
                 {
-                    foreach (var offset in closeBorderModifiers)
+                    foreach (var offset in CloseBorderModifiers)
                     {
                         var layoutRectangleModified = new RectangleF(layoutRectangle.X + offset.X,
                             layoutRectangle.Y + offset.Y, layoutRectangle.Width, layoutRectangle.Height);
@@ -103,7 +96,7 @@ namespace MyWarCreator.Features.Drawing
 
                 using (Brush brush = new SolidBrush(Color.FromArgb((int)((float)colorBorder.A / 4), colorBorder)))
                 {
-                    foreach (var offset in extendedBorderModifiers)
+                    foreach (var offset in ExtendedBorderModifiers)
                     {
                         var layoutRectangleModified = new RectangleF(layoutRectangle.X + offset.X,
                             layoutRectangle.Y + offset.Y, layoutRectangle.Width, layoutRectangle.Height);
@@ -111,7 +104,7 @@ namespace MyWarCreator.Features.Drawing
                     }
                 }
             }
-            using (var usedFont = fontProvider.GetAdjusted(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
+            using (var usedFont = FontsHelper.GetAdjustedFont(graphics, s, font, layoutRectangle, format, minFontSize, maxFontSize, smallestOnFail, wordWrap))
             using (Brush brush = new SolidBrush(color))
                 graphics.DrawString(s, usedFont, brush, layoutRectangle, format);
         }

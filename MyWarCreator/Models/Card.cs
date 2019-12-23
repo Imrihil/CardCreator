@@ -5,8 +5,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using MyWarCreator.Extensions;
-using MyWarCreator.Features.Drawing;
-using MyWarCreator.Features.Fonts;
 using MyWarCreator.Helpers;
 
 namespace MyWarCreator.Models
@@ -47,19 +45,11 @@ namespace MyWarCreator.Models
         protected virtual string FileName => string.IsNullOrEmpty(Type) ? $"{Name}" : $"{Type} - {Name}";
         protected int PriceLimit { get; } = 3;
 
-        protected readonly FontFamily FontTrebuchetMs;
-        private readonly FontFamily fontAkvaleir;
+        protected readonly FontFamily FontTrebuchetMs = FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Trebuchet MS")) ?? FontFamily.GenericSansSerif;
+        private readonly FontFamily fontAkvaleir = FontsHelper.Pfc.Families.FirstOrDefault(x => x.Name.Contains("Akvaleir")) ?? FontFamily.GenericSansSerif;
 
-        private readonly IFontProvider fontProvider;
-        private readonly IPainter painter;
-
-        protected Card(IFontProvider fontProvider, IPainter painter, string dirPath)
+        protected Card(string dirPath)
         {
-            this.fontProvider = fontProvider;
-            this.painter = painter;
-            FontTrebuchetMs = fontProvider.Get("Trebuchet MS");
-            fontAkvaleir = fontProvider.Get("Akvaleir");
-
             ResultsDirPath = dirPath + "/results";
             LeftEffectsImage = ImageHelper.LoadImage(CardsDirPath, "left");
             RightEffectsImage = ImageHelper.LoadImage(CardsDirPath, "right");
@@ -79,7 +69,7 @@ namespace MyWarCreator.Models
             if (Name != null)
             {
                 using (var font = new Font(fontAkvaleir, 24, FontStyle.Bold, GraphicsUnit.Pixel))
-                    painter.DrawAdjustedStringWithExtendedBorder(graphics, Name.ToUpper(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), NameArea, FontConsts.StringFormatCentered, 6);
+                    graphics.DrawAdjustedStringWithExtendedBorder(Name.ToUpper(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), NameArea, FontsHelper.StringFormatCentered, 6);
             }
             if (Description != null)
             {
@@ -88,7 +78,7 @@ namespace MyWarCreator.Models
             if (Type != null)
             {
                 using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                    painter.DrawAdjustedStringWithExtendedBorder(graphics, Type.ToUpper(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), TypeArea, FontConsts.StringFormatCentered, 6);
+                    graphics.DrawAdjustedStringWithExtendedBorder(Type.ToUpper(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), TypeArea, FontsHelper.StringFormatCentered, 6);
             }
             DrawLeftEffects(graphics, blackAndWhite);
             DrawRightEffects(graphics, blackAndWhite);
@@ -108,7 +98,7 @@ namespace MyWarCreator.Models
                 {
                     var priceImageAreaI = new Rectangle(PriceImageArea.X + 5, PriceImageArea.Y, PriceImageArea.Width - 5, PriceImageArea.Height);
                     using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Bold, GraphicsUnit.Pixel))
-                        painter.DrawAdjustedStringWithExtendedBorder(graphics, Price.ToString(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), priceImageAreaI, FontConsts.StringFormatCentered, 6, 12, true, false);
+                        graphics.DrawAdjustedStringWithExtendedBorder(Price.ToString(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), priceImageAreaI, FontsHelper.StringFormatCentered, 6, 12, true, false);
                     priceImageAreaI = new Rectangle(PriceImageArea.X + PriceImageArea.Width, PriceImageArea.Y, PriceImageArea.Width, PriceImageArea.Height);
                     DrawingHelper.MapDrawing(graphics, PriceImage, priceImageAreaI);
                 }
@@ -116,7 +106,7 @@ namespace MyWarCreator.Models
             else
             {
                 using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Bold, GraphicsUnit.Pixel))
-                    painter.DrawAdjustedStringWithExtendedBorder(graphics, Price.ToString(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), PriceImageArea, FontConsts.StringFormatCentered, 6, 12, true, false);
+                    graphics.DrawAdjustedStringWithExtendedBorder(Price.ToString(), font, GetColor(blackAndWhite), GetColor(!blackAndWhite), PriceImageArea, FontsHelper.StringFormatCentered, 6, 12, true, false);
             }
         }
 
@@ -133,7 +123,7 @@ namespace MyWarCreator.Models
             {
                 var effectArea = new Rectangle(LeftEffectsArea.X + LeftEffectsAreaShift.X * i, LeftEffectsArea.Y + LeftEffectsAreaShift.Y * i, LeftEffectsArea.Width, LeftEffectsArea.Height);
                 using (var font = new Font(FontTrebuchetMs, leftEffectsFontSize, FontStyle.Bold, GraphicsUnit.Pixel))
-                    painter.DrawAdjustedStringWithExtendedBorder(graphics, LeftEffects[i], font, GetColor(blackAndWhite), GetColor(!blackAndWhite), effectArea, FontConsts.StringFormatCentered, 6, (int)leftEffectsFontSize, true, false);
+                    graphics.DrawAdjustedStringWithExtendedBorder(LeftEffects[i], font, GetColor(blackAndWhite), GetColor(!blackAndWhite), effectArea, FontsHelper.StringFormatCentered, 6, (int)leftEffectsFontSize, true, false);
             }
         }
 
@@ -150,11 +140,11 @@ namespace MyWarCreator.Models
             {
                 var effectArea = new Rectangle(RightEffectsArea.X + RightEffectsAreaShift.X * i, RightEffectsArea.Y + RightEffectsAreaShift.Y * i, RightEffectsArea.Width, RightEffectsArea.Height);
                 using (var font = new Font(FontTrebuchetMs, rightEffectsFontSize, FontStyle.Bold, GraphicsUnit.Pixel))
-                    painter.DrawAdjustedStringWithExtendedBorder(graphics, RightEffects[i], font, GetColor(blackAndWhite), GetColor(!blackAndWhite), effectArea, FontConsts.StringFormatCentered, 6, (int)rightEffectsFontSize, true, false);
+                    graphics.DrawAdjustedStringWithExtendedBorder(RightEffects[i], font, GetColor(blackAndWhite), GetColor(!blackAndWhite), effectArea, FontsHelper.StringFormatCentered, 6, (int)rightEffectsFontSize, true, false);
             }
         }
 
-        protected float GetEffectsFontSize(Graphics graphics, FontFamily fontFamily, IEnumerable<string> effects, Rectangle effectArea)
+        protected static float GetEffectsFontSize(Graphics graphics, FontFamily fontFamily, IEnumerable<string> effects, Rectangle effectArea)
         {
             float effectsFontSize = 20;
             foreach (var effect in effects)
@@ -162,7 +152,7 @@ namespace MyWarCreator.Models
                 if (string.IsNullOrEmpty(effect)) continue;
 
                 using (var font = new Font(fontFamily, effectsFontSize, FontStyle.Bold, GraphicsUnit.Pixel))
-                    effectsFontSize = fontProvider.GetAdjusted(graphics, effect, font, effectArea, FontConsts.StringFormatCentered, 6, (int)effectsFontSize, true, false).Size;
+                    effectsFontSize = FontsHelper.GetAdjustedFont(graphics, effect, font, effectArea, FontsHelper.StringFormatCentered, 6, (int)effectsFontSize, true, false).Size;
             }
 
             return effectsFontSize;
@@ -171,7 +161,7 @@ namespace MyWarCreator.Models
         protected virtual void DrawDescription(Graphics graphics, bool blackAndWhite)
         {
             using (var font = new Font(FontTrebuchetMs, 12, FontStyle.Regular, GraphicsUnit.Pixel))
-                painter.DrawAdjustedStringWithExtendedBorder(graphics, DescriptionFull, font, GetColor(blackAndWhite), GetColor(!blackAndWhite), DescriptionArea, FontConsts.StringFormatCentered);
+                graphics.DrawAdjustedStringWithExtendedBorder(DescriptionFull, font, GetColor(blackAndWhite), GetColor(!blackAndWhite), DescriptionArea, FontsHelper.StringFormatCentered);
         }
 
         public string GenerateFile(string fileNamePrefix = "", string fileNameSuffix = "", bool blackAndWhite = false)

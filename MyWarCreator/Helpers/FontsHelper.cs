@@ -4,14 +4,32 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace MyWarCreator.Features.Fonts
+namespace MyWarCreator.Helpers
 {
-    public class FontProvider : IFontProvider
+    public class FontsHelper
     {
-        private readonly PrivateFontCollection pfc = new PrivateFontCollection();
-        private readonly InstalledFontCollection ifc = new InstalledFontCollection();
+        static FontsHelper()
+        {
+            StringFormatLeft = new StringFormat
+            {
+                Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center
+            };
+            StringFormatCentered = new StringFormat
+            {
+                Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center
+            };
+            StringFormatRight = new StringFormat
+            {
+                Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center
+            };
+        }
+        public static PrivateFontCollection Pfc { get; } = new PrivateFontCollection();
 
-        public void Register(byte[] font)
+        public static StringFormat StringFormatLeft { get; }
+        public static StringFormat StringFormatCentered { get; }
+        public static StringFormat StringFormatRight { get; }
+
+        public static void AddFont(byte[] font)
         {
             //Select your font from the resources.
             var fontLength = font.Length;
@@ -22,10 +40,10 @@ namespace MyWarCreator.Features.Fonts
             // copy the bytes to the unsafe memory block
             Marshal.Copy(fontData, 0, data, fontLength);
             // pass the font to the font collection
-            pfc.AddMemoryFont(data, fontLength);
+            Pfc.AddMemoryFont(data, fontLength);
         }
 
-        public Font GetAdjusted(Graphics graphicRef, string graphicString, Font originalFont, RectangleF container, StringFormat stringFormat, int minFontSize, int maxFontSize, bool smallestOnFail = true, bool wordWrap = true)
+        public static Font GetAdjustedFont(Graphics graphicRef, string graphicString, Font originalFont, RectangleF container, StringFormat stringFormat, int minFontSize, int maxFontSize, bool smallestOnFail = true, bool wordWrap = true)
         {
             // We utilize MeasureString which we get via a control instance           
             for (var adjustedSize = maxFontSize; adjustedSize >= minFontSize; adjustedSize--)
@@ -48,10 +66,5 @@ namespace MyWarCreator.Features.Fonts
                 ? new Font(originalFont.Name, minFontSize, originalFont.Style)
                 : originalFont;
         }
-
-        public FontFamily Get(string name) =>
-            pfc.Families.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) ??
-            ifc.Families.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) ??
-            FontFamily.GenericSansSerif;
     }
 }
