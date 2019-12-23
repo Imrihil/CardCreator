@@ -1,8 +1,6 @@
 ﻿using System;
-using MyWarCreator.Features.Cards;
 using MyWarCreator.Features.Drawing;
 using MyWarCreator.Features.Fonts;
-using MyWarCreator.Features.Images;
 using SimpleInjector;
 
 namespace MyWarCreator
@@ -14,20 +12,20 @@ namespace MyWarCreator
         {
             var container = Bootstrap();
 
+            // Any additional other configuration, e.g. of your desired MVVM toolkit.
+
             RunApplication(container);
         }
 
         private static Container Bootstrap()
         {
+            // Create the container as usual.
             var container = new Container();
 
+            // Register your windows and view models:
             container.Register<MainWindow>();
             container.RegisterSingleton<IFontProvider, FontProvider>();
-            container.RegisterSingleton<IImageProvider, ImageProvider>();
-
             container.RegisterSingleton<IPainter, Painter>();
-
-            container.RegisterSingleton<ICardBuilder, CardBuilder>();
 
             container.Verify();
 

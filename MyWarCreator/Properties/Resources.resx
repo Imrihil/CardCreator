@@ -158,9 +158,9 @@
     <value>..\Resources\trebucit.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Description" xml:space="preserve">
-    <value>Aby wygenerować karty wskaż plik z danymi.
-Wygenerowane karty zostaną umieszczone w folderze "cards" utworzonym w tym samym katalogu, w którym znajduje się wskazany plik.
-Wygenerowany plik pdf zostanie umieszczony w folderze "prints" utworzonym w tym samym katalogu, w którym znajduje się wskazany plik.</value>
+    <value>Aby kreator zadziałał prawidłowo - w folderze z plikiem wykonywalnym .exe muszą znajdować się foldery o nazwach "equipment", "skills" i "monsters", a w nim arkusze kalkulacyjne o takich samych nazwach.
+Dodatkowo, jeśli w katalogu znajdują się jakieś obrazki, zostaną wykorzystane do utworzenia kart, gdy nazwa obrazka będzie odpowiadać nazwie karty w arkuszu. Jeśli w folderze istnieje obrazek o nazwie "background.png", zostanie on użyty jako tło do wszystkich kart.
+Wygenerowane karty zostaną umieszczone w folderach "results" w podkatalogach.</value>
   </data>
   <data name="Hello" xml:space="preserve">
     <value>Witaj w kreatorze kart!</value>
@@ -179,11 +179,5 @@ Wygenerowany plik pdf zostanie umieszczony w folderze "prints" utworzonym w tym 
   </data>
   <data name="Ok" xml:space="preserve">
     <value>Ok</value>
-  </data>
-  <data name="SourceFile" xml:space="preserve">
-    <value>Plik z danymi:</value>
-  </data>
-  <data name="ChooseFile" xml:space="preserve">
-    <value>Wybierz plik</value>
   </data>
 </root>

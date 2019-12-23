@@ -5,11 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:MyWarCreator.Properties"
         mc:Ignorable="d"
-        Title="MyWarCreator v.3.0" Width="600" Height="300">
+        Title="MyWarCreator v.3.0" Width="600" Height="270">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -22,12 +21,18 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="{x:Static p:Resources.Hello}" Margin="10,5,10,5" TextWrapping="Wrap" Grid.ColumnSpan="4" Grid.Row="1" />
-        <TextBlock Text="{x:Static p:Resources.Description}" Margin="10,5,10,5" TextWrapping="Wrap" Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Column="0" Grid.ColumnSpan="4" />
-        <Label Content="{x:Static p:Resources.SourceFile}" Margin="10, 0, 10, 0" Grid.Row="3" Grid.Column="0" />
-        <Button Content="{x:Static p:Resources.ChooseFile}" Margin="5,5,10,5" Click="ButtonChooseFile_Click" Grid.Row="3" Grid.Column="1" />
-        <Label Name="Directory_Label" Margin="10,0,10,0" FontStyle="Italic" Grid.Row="3" Grid.Column="2"  Grid.ColumnSpan="2" />
-        <Button Content="{x:Static p:Resources.GenerateCards}" Margin="10,5,5,5" Click="ButtonGenerateCards_Click" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" />
-        <Button Content="{x:Static p:Resources.PreparePdf}" Margin="10,5,10,5" Click="ButtonPreparePdf_Click" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" />
+        <TextBlock Margin="10,5,10,5" TextWrapping="Wrap" Grid.ColumnSpan="3" Grid.Row="1" >
+            <Run Text="{x:Static p:Resources.Hello}"/>
+        </TextBlock>
+        <TextBlock Margin="10,5,10,5" TextWrapping="Wrap" FontStyle="Italic" Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="3" Grid.Column="0">
+            <Run Text="{x:Static p:Resources.Description}"/>
+        </TextBlock>
+        <CheckBox Content="{x:Static p:Resources.BlackAndWhiteSetting}"  Margin="10,5,5,5" x:Name="BlackAndWhiteCheckbox" Grid.Row="3" Grid.Column="0" />
+        <TextBox Margin="5,5,115,5" Width="30" Name="CardWidthTextBox" Text="2.5" Grid.Row="3" Grid.Column="1" />
+        <Label Margin="40, 0, 0, 0" Content="Width (in inches)" Grid.Row="3" Grid.Column="1" />
+        <TextBox Margin="5,5,115,5" Width="30" Name="CardHeightTextBox" Text="3.5" Grid.Row="3" Grid.Column="2" />
+        <Label Margin="40, 0, 0, 0" Content="Height (in inches)" Grid.Row="3" Grid.Column="2" />
+        <Button Content="{x:Static p:Resources.GenerateCards}" Margin="10,5,5,5" Click="ButtonGenerateCards_Click" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" />
+        <Button Content="{x:Static p:Resources.PreparePdf}" Margin="10,5,10,5" Click="ButtonPreparePdf_Click" Grid.Row="5" Grid.ColumnSpan="3" Grid.Column="0" />
     </Grid>
 </Window>

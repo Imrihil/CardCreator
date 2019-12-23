@@ -9,7 +9,7 @@ namespace MyWarCreator
     {
         internal void InitializeComponent()
         {
-            // Nothing
+            throw new NotImplementedException();
         }
     }
 }

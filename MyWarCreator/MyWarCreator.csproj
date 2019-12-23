@@ -101,15 +101,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Features\Cards\CardBuilder.cs" />
-    <Compile Include="Features\Cards\ICardBuilder.cs" />
     <Compile Include="Features\Fonts\FontConsts.cs" />
     <Compile Include="Features\Fonts\FontProvider.cs" />
     <Compile Include="Features\Fonts\IFontProvider.cs" />
     <Compile Include="Features\Drawing\IPainter.cs" />
     <Compile Include="Features\Drawing\Painter.cs" />
-    <Compile Include="Features\Images\IImageProvider.cs" />
-    <Compile Include="Features\Images\ImageProvider.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Helpers\DescriptionHelper.cs" />
     <Compile Include="Helpers\DiceHelper.cs" />
@@ -127,9 +123,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Card.cs" />
-    <Compile Include="Models\CardSchema.cs" />
-    <Compile Include="Models\Element.cs" />
-    <Compile Include="Models\ElementSchema.cs" />
     <Compile Include="Processing\ProcessWindow.xaml.cs">
       <DependentUpon>ProcessWindow.xaml</DependentUpon>
     </Compile>

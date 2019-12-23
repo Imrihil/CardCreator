@@ -1,11 +1,6 @@
 ﻿using System.Globalization;
-using System.IO;
 using System.Windows;
-using Microsoft.Win32;
-using MyWarCreator.Features.Cards;
-using MyWarCreator.Features.Drawing;
 using MyWarCreator.Features.Fonts;
-using MyWarCreator.Features.Images;
 
 namespace MyWarCreator
 {
@@ -15,35 +10,18 @@ namespace MyWarCreator
     /// </summary>
     public partial class MainWindow
     {
-        private readonly IFontProvider fontProvider;
-        private readonly IImageProvider imageProvider;
-        private readonly IPainter painter;
-        private readonly ICardBuilder cardBuilder;
+        private IFontProvider fontProvider;
 
-        private OpenFileDialog ChooseFileDialog { get; }
+        private bool IsBlackAndWhiteChecked => BlackAndWhiteCheckbox.IsChecked ?? false;
+        private double CardWidth => double.TryParse(CardWidthTextBox.Text.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var dec) ? dec : 2.5;
+        private double CardHeight => double.TryParse(CardHeightTextBox.Text.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var dec) ? dec : 3.5;
 
-        public MainWindow(IFontProvider fontProvider, IImageProvider imageProvider, IPainter painter, ICardBuilder cardBuilder)
+        public MainWindow(IFontProvider fontProvider)
         {
             this.fontProvider = fontProvider;
-            this.imageProvider = imageProvider;
-            this.painter = painter;
-            this.cardBuilder = cardBuilder;
 
-            ChooseFileDialog = InitializeChooseFileDialog();
             InitializeComponent();
             InitializeFonts();
-        }
-
-        private OpenFileDialog InitializeChooseFileDialog()
-        {
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Excel files (*.xls;*xlsx)|*.xls;*xlsx";
-#if DEBUG
-            openFileDialog.InitialDirectory = Path.GetFullPath(Directory.GetCurrentDirectory() + "../../../AppData");
-#else
-            openFileDialog.InitialDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
-#endif
-            return openFileDialog;
         }
 
         private void InitializeFonts()
@@ -63,15 +41,5 @@ namespace MyWarCreator
 
         private void ButtonPreparePdf_Click(object sender, RoutedEventArgs e)
         { }
-
-        private void ButtonChooseFile_Click(object sender, RoutedEventArgs e)
-        {
-            if (ChooseFileDialog.ShowDialog() == true)
-            {
-                FileInfo fileInfo = new FileInfo(ChooseFileDialog.FileName);
-                Directory_Label.Content = fileInfo.Name;
-                ChooseFileDialog.InitialDirectory = fileInfo.Directory.FullName;
-            }
-        }
     }
 }
