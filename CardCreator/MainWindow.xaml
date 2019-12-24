@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:CardCreator.Properties"
         mc:Ignorable="d"
-        Title="MyWarCreator v.3.0" Width="600" Height="300">
+        Title="MyWarCreator v.3.0" Width="400" Height="300">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -19,15 +19,14 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
             <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
         <TextBlock Text="{x:Static p:Resources.Hello}" Margin="10,5,10,5" TextWrapping="Wrap" Grid.ColumnSpan="4" Grid.Row="1" />
         <TextBlock Text="{x:Static p:Resources.Description}" Margin="10,5,10,5" TextWrapping="Wrap" Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Column="0" Grid.ColumnSpan="4" />
         <Label Content="{x:Static p:Resources.SourceFile}" Margin="10, 0, 10, 0" Grid.Row="3" Grid.Column="0" />
-        <Button Content="{x:Static p:Resources.ChooseFile}" Margin="5,5,10,5" Click="ButtonChooseFile_Click" Grid.Row="3" Grid.Column="1" />
+        <Button Name="ChooseFile_Button" Content="{x:Static p:Resources.ChooseFile}" Margin="5,5,5,5" Click="ChooseFile_Button_Click" Grid.Row="3" Grid.Column="1" />
         <Label Name="Directory_Label" Margin="10,0,10,0" FontStyle="Italic" Grid.Row="3" Grid.Column="2"  Grid.ColumnSpan="2" />
-        <Button Content="{x:Static p:Resources.GenerateCards}" Margin="10,5,5,5" Click="ButtonGenerateCards_Click" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" />
-        <Button Content="{x:Static p:Resources.PreparePdf}" Margin="10,5,10,5" Click="ButtonPreparePdf_Click" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" />
+        <Button Name="GenerateCards_Button" Content="{x:Static p:Resources.GenerateCards}" Margin="10,5,5,5" Click="GenerateCards_Button_Click" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" />
+        <Button Name="PreparePdf_Button" Content="{x:Static p:Resources.PreparePdf}" Margin="5,5,10,5" Click="PreparePdf_Button_Click" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" />
     </Grid>
 </Window>

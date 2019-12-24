@@ -7,6 +7,9 @@ using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
 using MediatR;
 using System;
+using CardCreator.View;
+using System.ComponentModel;
+using System.Threading;
 
 namespace CardCreator
 {
@@ -32,9 +35,11 @@ namespace CardCreator
             this.painter = painter;
             this.cardBuilder = cardBuilder;
 
-            ChooseFileDialog = InitializeChooseFileDialog();
             InitializeComponent();
+
+            ChooseFileDialog = InitializeChooseFileDialog();
             InitializeFonts();
+            InitializeControls();
         }
 
         private OpenFileDialog InitializeChooseFileDialog()
@@ -61,23 +66,41 @@ namespace CardCreator
             fontProvider.Register(Properties.Resources.trebucit);
         }
 
-        private void ButtonGenerateCards_Click(object sender, RoutedEventArgs e)
+        private void InitializeControls()
         {
-            var result = mediator.Send(new CardGeneratingCommand()).GetAwaiter().GetResult();
-            Console.WriteLine(result);
+            GenerateCards_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
+            PreparePdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
         }
 
-        private void ButtonPreparePdf_Click(object sender, RoutedEventArgs e)
-        { }
-
-        private void ButtonChooseFile_Click(object sender, RoutedEventArgs e)
+        private void ChooseFile_Button_Click(object sender, RoutedEventArgs e)
         {
             if (ChooseFileDialog.ShowDialog() == true)
             {
                 FileInfo fileInfo = new FileInfo(ChooseFileDialog.FileName);
                 Directory_Label.Content = fileInfo.Name;
                 ChooseFileDialog.InitialDirectory = fileInfo.Directory.FullName;
+
+                GenerateCards_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
+                PreparePdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
             }
+        }
+
+        private void GenerateCards_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var processWindow = new ProcessWindow();
+            var cts = new CancellationTokenSource();
+            var result = mediator.Send(new CardGeneratingCommand(ChooseFileDialog.FileName, cts), cts.Token).GetAwaiter().GetResult();
+            Console.WriteLine(result);
+        }
+
+        private void PreparePdf_Button_Click(object sender, RoutedEventArgs e)
+        { }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            Environment.Exit(0);
         }
     }
 }

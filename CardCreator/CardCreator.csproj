@@ -37,7 +37,7 @@
       <SubType>Code</SubType>
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Processing\ProcessWindow.xaml.cs">
+    <Compile Update="View\ProcessWindow.xaml.cs">
       <DependentUpon>ProcessWindow.xaml</DependentUpon>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -59,7 +59,7 @@
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Processing\ProcessWindow.xaml">
+    <Page Update="View\ProcessWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
