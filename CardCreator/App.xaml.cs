@@ -2,11 +2,13 @@
 using CardCreator.Features.Drawing;
 using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
+using CardCreator.Settings;
 using CardCreator.View;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Configuration;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -26,7 +28,11 @@ namespace CardCreator
         {
             var builder = new ConfigurationBuilder()
              .SetBasePath(Directory.GetCurrentDirectory())
+#if DEBUG
+             .AddJsonFile("appsettings.debug.json", optional: false, reloadOnChange: true);
+#else
              .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+#endif
 
             Configuration = builder.Build();
 
@@ -41,8 +47,10 @@ namespace CardCreator
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient(typeof(MainWindow));
-            services.AddTransient(typeof(ProcessWindow));
+            services.Configure<AppSettings>(Configuration);
+
+            services.AddTransient<MainWindow>();
+            services.AddTransient<ProcessWindow>();
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
 

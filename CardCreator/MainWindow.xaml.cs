@@ -10,6 +10,10 @@ using System;
 using CardCreator.View;
 using System.ComponentModel;
 using System.Threading;
+using System.Configuration;
+using CardCreator.Settings;
+using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 
 namespace CardCreator
 {
@@ -19,6 +23,7 @@ namespace CardCreator
     /// </summary>
     public partial class MainWindow
     {
+        private readonly AppSettings settings;
         private readonly IMediator mediator;
         private readonly IFontProvider fontProvider;
         private readonly IImageProvider imageProvider;
@@ -27,8 +32,9 @@ namespace CardCreator
 
         private OpenFileDialog ChooseFileDialog { get; }
 
-        public MainWindow(IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, IPainter painter, ICardBuilder cardBuilder)
+        public MainWindow(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, IPainter painter, ICardBuilder cardBuilder)
         {
+            this.settings = settings.Value;
             this.mediator = mediator;
             this.fontProvider = fontProvider;
             this.imageProvider = imageProvider;
@@ -40,6 +46,7 @@ namespace CardCreator
             ChooseFileDialog = InitializeChooseFileDialog();
             InitializeFonts();
             InitializeControls();
+            InitializeButtons();
         }
 
         private OpenFileDialog InitializeChooseFileDialog()
@@ -72,11 +79,21 @@ namespace CardCreator
             PreparePdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
         }
 
+        private void InitializeButtons()
+        {
+            var currentRow = MainGrid.RowDefinitions.Count - 1;
+            ISet<string> actionsInRow = new HashSet<string>();
+            foreach (var button in settings.Buttons)
+            {
+
+            }
+        }
+
         private void ChooseFile_Button_Click(object sender, RoutedEventArgs e)
         {
             if (ChooseFileDialog.ShowDialog() == true)
             {
-                FileInfo fileInfo = new FileInfo(ChooseFileDialog.FileName);
+                var fileInfo = new FileInfo(ChooseFileDialog.FileName);
                 Directory_Label.Content = fileInfo.Name;
                 ChooseFileDialog.InitialDirectory = fileInfo.Directory.FullName;
 
@@ -87,14 +104,27 @@ namespace CardCreator
 
         private void GenerateCards_Button_Click(object sender, RoutedEventArgs e)
         {
-            var processWindow = new ProcessWindow();
-            var cts = new CancellationTokenSource();
-            var result = mediator.Send(new CardGeneratingCommand(ChooseFileDialog.FileName, cts), cts.Token).GetAwaiter().GetResult();
-            Console.WriteLine(result);
+            GenerateCard(ChooseFileDialog.FileName);
         }
 
         private void PreparePdf_Button_Click(object sender, RoutedEventArgs e)
-        { }
+        {
+            PreparePdf(ChooseFileDialog.FileName);
+        }
+
+        private void GenerateCard(string fileName)
+        {
+            var cts = new CancellationTokenSource();
+            var result = mediator.Send(new CardGeneratingCommand(fileName, cts), cts.Token).GetAwaiter().GetResult();
+            Console.WriteLine(result);
+        }
+
+        private void PreparePdf(string fileName)
+        {
+            var cts = new CancellationTokenSource();
+            var result = mediator.Send(new PdfPreparingCommand(fileName, cts), cts.Token).GetAwaiter().GetResult();
+            Console.WriteLine(result);
+        }
 
         protected override void OnClosing(CancelEventArgs e)
         {
