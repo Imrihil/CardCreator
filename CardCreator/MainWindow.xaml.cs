@@ -14,6 +14,7 @@ using System.Configuration;
 using CardCreator.Settings;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace CardCreator
 {
@@ -81,12 +82,57 @@ namespace CardCreator
 
         private void InitializeButtons()
         {
-            var currentRow = MainGrid.RowDefinitions.Count - 1;
-            ISet<string> actionsInRow = new HashSet<string>();
+            var currentRow = NewButtonRow(MainGrid.RowDefinitions.Count - 2);
+            ISet<ButtonAction> actionsInRow = new HashSet<ButtonAction>();
             foreach (var button in settings.Buttons)
             {
+                if (actionsInRow.Contains(button.Action))
+                {
+                    currentRow = NewButtonRow(currentRow);
+                    actionsInRow.Clear();
+                }
+                actionsInRow.Add(button.Action);
 
+                var control = new Button
+                {
+                    Content = button.Name,
+                    Margin = new Thickness(5, 5, 5, 5)
+                };
+
+                control.Click += GetAction(button);
+
+                Grid.SetRow(control, currentRow);
+                Grid.SetColumn(control, GetColumnNumber(button.Action));
+                Grid.SetColumnSpan(control, 2);
+
+                MainGrid.Children.Add(control);
             }
+        }
+
+        private int NewButtonRow(int currentRow)
+        {
+            MainGrid.RowDefinitions.Insert(currentRow, new RowDefinition { Height = new GridLength(30) });
+            return currentRow + 1;
+        }
+
+        private int GetColumnNumber(ButtonAction action)
+        {
+            switch (action)
+            {
+                case ButtonAction.Generate: return 1;
+                case ButtonAction.Pdf: return 3;
+            }
+            return 0;
+        }
+
+        private RoutedEventHandler GetAction(ButtonSettings button)
+        {
+            switch (button.Action)
+            {
+                case ButtonAction.Generate: return new RoutedEventHandler((sender, e) => GenerateCard(button.File));
+                case ButtonAction.Pdf: return new RoutedEventHandler((sender, e) => PreparePdf(button.File));
+            }
+            return null;
         }
 
         private void ChooseFile_Button_Click(object sender, RoutedEventArgs e)
