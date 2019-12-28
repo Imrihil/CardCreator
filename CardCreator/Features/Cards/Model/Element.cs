@@ -1,7 +1,7 @@
 ﻿using CardCreator.Features.Images;
 using System.Drawing;
 
-namespace CardCreator.Models
+namespace CardCreator.Features.Cards.Model
 {
     public class Element
     {

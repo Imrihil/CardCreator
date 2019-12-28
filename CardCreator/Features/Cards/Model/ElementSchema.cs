@@ -1,10 +1,12 @@
 ﻿using CardCreator.Features.Fonts;
 using System.Drawing;
 
-namespace CardCreator.Models
+namespace CardCreator.Features.Cards.Model
 {
     public class ElementSchema
     {
+        public const int HeaderRows = 9;
+
         public string Name { get; }
         public Rectangle Area { get; }
         public FontFamily Font { get; }

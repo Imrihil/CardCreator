@@ -1,4 +1,5 @@
 ﻿using CardCreator.Extensions;
+using CardCreator.Features.Logging;
 using System;
 using System.ComponentModel;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace CardCreator.View
     /// <summary>
     /// Interaction logic for ProcessWindow.xaml
     /// </summary>
-    public partial class ProcessWindow : Window
+    public partial class ProcessWindow : Window, ILogger
     {
         private CancellationTokenSource Cts { get; set; }
 
@@ -39,10 +40,8 @@ namespace CardCreator.View
             Close();
         }
 
-        public void UpdateProgressBar(double value, Visibility visibility = Visibility.Visible)
+        public void SetProgress(double value)
         {
-            ProgressBar.Visibility = visibility;
-            ProgressBarText.Visibility = visibility;
             ProgressBar.Value = value;
 
             if (value >= 100)
@@ -52,20 +51,9 @@ namespace CardCreator.View
             ProgressBarText.Refresh();
         }
 
-        public void UpdateTextBlockResultMessage(string text, Visibility visibility = Visibility.Visible)
+        public void LogMessage(object message)
         {
-            TextBoxResultMessage.Visibility = visibility;
-            TextBoxResultMessage.Text = text;
-
-            TextBoxResultMessage.Refresh();
-        }
-
-        public void AppendTextBlockResultMessage(string text, Visibility visibility = Visibility.Visible)
-        {
-            TextBoxResultMessage.Visibility = visibility;
-            if (string.IsNullOrEmpty(text)) return;
-
-            TextBoxResultMessage.Text = (string.IsNullOrEmpty(TextBoxResultMessage.Text) ? "" : TextBoxResultMessage.Text + "\n") + text;
+            TextBoxResultMessage.Text = (string.IsNullOrEmpty(TextBoxResultMessage.Text) ? "" : TextBoxResultMessage.Text + "\n") + message;
             TextBoxResultMessage.ScrollToEnd();
 
             TextBoxResultMessage.Refresh();

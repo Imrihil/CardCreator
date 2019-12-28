@@ -7,13 +7,10 @@ using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
 using MediatR;
 using System;
-using CardCreator.View;
 using System.ComponentModel;
 using System.Threading;
-using System.Configuration;
 using CardCreator.Settings;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
 using System.Windows.Controls;
 
 namespace CardCreator
@@ -24,6 +21,8 @@ namespace CardCreator
     /// </summary>
     public partial class MainWindow
     {
+        private const int RowHeight = 30;
+
         private readonly AppSettings settings;
         private readonly IMediator mediator;
         private readonly IFontProvider fontProvider;
@@ -82,36 +81,40 @@ namespace CardCreator
 
         private void InitializeButtons()
         {
-            var currentRow = NewButtonRow(MainGrid.RowDefinitions.Count - 2);
-            ISet<ButtonAction> actionsInRow = new HashSet<ButtonAction>();
+            var currentRow = MainGrid.RowDefinitions.Count - 2;
             foreach (var button in settings.Buttons)
             {
-                if (actionsInRow.Contains(button.Action))
-                {
-                    currentRow = NewButtonRow(currentRow);
-                    actionsInRow.Clear();
-                }
-                actionsInRow.Add(button.Action);
+                currentRow = NewButtonRow(currentRow);
 
-                var control = new Button
-                {
-                    Content = button.Name,
-                    Margin = new Thickness(5, 5, 5, 5)
-                };
-
-                control.Click += GetAction(button);
-
-                Grid.SetRow(control, currentRow);
-                Grid.SetColumn(control, GetColumnNumber(button.Action));
-                Grid.SetColumnSpan(control, 2);
-
-                MainGrid.Children.Add(control);
+                if (!string.IsNullOrEmpty(button.Generate))
+                    InitializeButton(button, ButtonAction.Generate, button.Generate, currentRow);
+                if (!string.IsNullOrEmpty(button.Pdf))
+                    InitializeButton(button, ButtonAction.Pdf, button.Pdf, currentRow);
             }
+        }
+
+        private void InitializeButton(ButtonSettings button, ButtonAction action, string content, int row)
+        {
+            var control = new Button
+            {
+                Content = content,
+                Margin = new Thickness(5, 5, 5, 5),
+                IsEnabled = File.Exists(button.File)
+            };
+
+            control.Click += GetAction(button, action);
+
+            Grid.SetRow(control, row);
+            Grid.SetColumn(control, GetColumnNumber(action));
+            Grid.SetColumnSpan(control, 2);
+
+            MainGrid.Children.Add(control);
         }
 
         private int NewButtonRow(int currentRow)
         {
-            MainGrid.RowDefinitions.Insert(currentRow, new RowDefinition { Height = new GridLength(30) });
+            Application.Current.MainWindow.Height += RowHeight;
+            MainGrid.RowDefinitions.Insert(currentRow, new RowDefinition { Height = new GridLength(RowHeight) });
             return currentRow + 1;
         }
 
@@ -125,9 +128,9 @@ namespace CardCreator
             return 0;
         }
 
-        private RoutedEventHandler GetAction(ButtonSettings button)
+        private RoutedEventHandler GetAction(ButtonSettings button, ButtonAction action)
         {
-            switch (button.Action)
+            switch (action)
             {
                 case ButtonAction.Generate: return new RoutedEventHandler((sender, e) => GenerateCard(button.File));
                 case ButtonAction.Pdf: return new RoutedEventHandler((sender, e) => PreparePdf(button.File));

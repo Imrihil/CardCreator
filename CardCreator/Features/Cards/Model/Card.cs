@@ -3,7 +3,7 @@ using CardCreator.Features.Drawing;
 using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
 
-namespace CardCreator.Models
+namespace CardCreator.Features.Cards.Model
 {
     public class Card
     {

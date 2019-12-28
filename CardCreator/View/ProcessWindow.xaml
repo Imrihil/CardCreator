@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
         <ProgressBar Name="ProgressBar" Margin="10,10,10,5" IsHitTestVisible="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
         <TextBlock Name="ProgressBarText" Margin="10,0,10,0" Text="{Binding ElementName=ProgressBar, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"  Grid.ColumnSpan="2" />
-        <TextBox Name="TextBoxResultMessage" Margin="10,5,10,5" Grid.Row="1" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="Logi." IsReadOnly="True" Grid.Column="0"  Grid.ColumnSpan="2" />
+        <TextBox Name="TextBoxResultMessage" Margin="10,5,10,5" Grid.Row="1" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" IsReadOnly="True" Grid.Column="0"  Grid.ColumnSpan="2" />
         <Button Name="Ok_Button" Content="{x:Static p:Resources.Ok}" Margin="10,5,5,10" Click="Ok_Button_Click" Grid.Row="2" Grid.Column="0" />
         <Button Name="Cancel_Button" Content="{x:Static p:Resources.Cancel}" Margin="5,5,10,10" Click="Cancel_Button_Click" Grid.Row="2" Grid.Column="1" />
     </Grid>

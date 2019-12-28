@@ -55,7 +55,7 @@ namespace MyWarCreator
         private void ButtonGenerateSimple_Click(object sender, RoutedEventArgs e)
         {
 #if DEBUG
-            const string dirPath = @"../../AppData/simple";
+            const string dirPath = @"../../../AppData/simple";
 #else
             const string dirPath = @"./simple";
 #endif
@@ -84,7 +84,7 @@ namespace MyWarCreator
         private void ButtonGenerateWeapons_Click(object sender, RoutedEventArgs e)
         {
 #if DEBUG
-            const string dirPath = @"../../AppData/equipment";
+            const string dirPath = @"../../../AppData/equipment";
 #else
             const string dirPath = @"./equipment";
 #endif
@@ -113,7 +113,7 @@ namespace MyWarCreator
         private void ButtonGenerateSkills_Click(object sender, RoutedEventArgs e)
         {
 #if DEBUG
-            const string dirPath = @"../../AppData/skills";
+            const string dirPath = @"../../../AppData/skills";
 #else
             const string dirPath = @"./skills";
 #endif
@@ -142,7 +142,7 @@ namespace MyWarCreator
         private void ButtonDownloadMonsters_Click(object sender, RoutedEventArgs e)
         {
 #if DEBUG
-            const string dirPath = @"../../AppData/monsters";
+            const string dirPath = @"../../../AppData/monsters";
 #else
             const string dirPath = @"./monsters";
 #endif
@@ -168,7 +168,7 @@ namespace MyWarCreator
         private void ButtonGenerateAll_Click(object sender, RoutedEventArgs e)
         {
 #if DEBUG
-            const string equipmentDirPath = @"../../AppData/equipment";
+            const string equipmentDirPath = @"../../../AppData/equipment";
 #else
             const string equipmentDirPath = @"./equipment";
 #endif
@@ -194,7 +194,7 @@ namespace MyWarCreator
             }
 
 #if DEBUG
-            const string skillsDirPath = @"../../AppData/skills";
+            const string skillsDirPath = @"../../../AppData/skills";
 #else
             const string skillsDirPath = @"./skills";
 #endif
@@ -218,7 +218,7 @@ namespace MyWarCreator
             }
 
 #if DEBUG
-            const string monstersDirPath = @"../../AppData/monsters";
+            const string monstersDirPath = @"../../../AppData/monsters";
 #else
             const string monstersDirPath = @"./monsters";
 #endif
@@ -313,7 +313,7 @@ namespace MyWarCreator
         private void ButtonGenerateMonsters_Click(object sender, RoutedEventArgs e)
         {
 #if DEBUG
-            const string dirPath = @"../../AppData/monsters";
+            const string dirPath = @"../../../AppData/monsters";
 #else
             const string dirPath = @"./monsters";
 #endif
@@ -343,7 +343,7 @@ namespace MyWarCreator
         {
             // Equipment
 #if DEBUG
-            const string dirPath = @"../../AppData/simple";
+            const string dirPath = @"../../../AppData/simple";
 #else
             const string dirPath = @"./simple";
 #endif
@@ -356,7 +356,7 @@ namespace MyWarCreator
         {
             // Equipment
 #if DEBUG
-            const string dirPath = @"../../AppData/equipment";
+            const string dirPath = @"../../../AppData/equipment";
 #else
             const string dirPath = @"./equipment";
 #endif
@@ -369,7 +369,7 @@ namespace MyWarCreator
         {
             // Skills
 #if DEBUG
-            const string dirPath = @"../../AppData/skills";
+            const string dirPath = @"../../../AppData/skills";
 #else
             const string dirPath = @"./skills";
 #endif
@@ -382,7 +382,7 @@ namespace MyWarCreator
         {
             // Skills
 #if DEBUG
-            const string dirPath = @"../../AppData/monsters";
+            const string dirPath = @"../../../AppData/monsters";
 #else
             const string dirPath = @"./monsters";
 #endif
@@ -395,7 +395,7 @@ namespace MyWarCreator
         {
             // Equipment
 #if DEBUG
-            const string equipmentDirPath = @"../../AppData/equipment";
+            const string equipmentDirPath = @"../../../AppData/equipment";
 #else
             const string equipmentDirPath = @"./equipment";
 #endif
@@ -405,7 +405,7 @@ namespace MyWarCreator
 
             // Skills
 #if DEBUG
-            const string skillsDirPath = @"../../AppData/skills";
+            const string skillsDirPath = @"../../../AppData/skills";
 #else
             const string skillsDirPath = @"./skills";
 #endif
@@ -413,7 +413,7 @@ namespace MyWarCreator
 
             // Monsters
 #if DEBUG
-            const string monstersDirPath = @"../../AppData/monsters";
+            const string monstersDirPath = @"../../../AppData/monsters";
 #else
             const string monstersDirPath = @"./monsters";
 #endif
@@ -424,7 +424,7 @@ namespace MyWarCreator
         {
             // Custom
 #if DEBUG
-            const string dirPath = @"../../AppData/custom";
+            const string dirPath = @"../../../AppData/custom";
 #else
             const string dirPath = @"./custom";
 #endif

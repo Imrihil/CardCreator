@@ -6,8 +6,8 @@ namespace CardCreator.Settings
 {
     public class ButtonSettings
     {
-        public string Name { get; set; }
         public string File { get; set; }
-        public ButtonAction Action { get; set; }
+        public string Generate { get; set; }
+        public string Pdf { get; set; }
     }
 }
