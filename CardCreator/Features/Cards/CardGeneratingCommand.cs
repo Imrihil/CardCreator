@@ -47,7 +47,6 @@ namespace CardCreator.Features.Cards
             try
             {
                 var readCardFile = await mediator.Send(new ReadCardFileCommand(processWindow, request.FilePath));
-                var 
                 var cardSchema = new CardSchema(processWindow, imageProvider, readCardFile.CardSchemaParams);
             }
             catch (Exception)
