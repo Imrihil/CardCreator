@@ -1,8 +1,6 @@
 ﻿using CardCreator.Features.Cards.Model;
-using CardCreator.View;
 using MediatR;
 using OfficeOpenXml;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,12 +11,10 @@ namespace CardCreator.Features.Cards
 {
     public class ReadCardFileCommand : IRequest<ReadCardFileResults>
     {
-        public ProcessWindow ProcessWindow { get; set; }
         public string FilePath { get; set; }
 
-        public ReadCardFileCommand(ProcessWindow processWindow, string filePath)
+        public ReadCardFileCommand(string filePath)
         {
-            ProcessWindow = processWindow;
             FilePath = filePath;
         }
     }
@@ -29,25 +25,15 @@ namespace CardCreator.Features.Cards
         {
             var results = new ReadCardFileResults();
 
-            try
-            {
-                using var xlPackage = new ExcelPackage(new FileInfo(request.FilePath));
+            using var xlPackage = new ExcelPackage(new FileInfo(request.FilePath));
 
-                var worksheet = xlPackage.Workbook.Worksheets.First();
-                var totalColumns = worksheet.Dimension.End.Column;
-                var totalRows = worksheet.Dimension.End.Row;
+            var worksheet = xlPackage.Workbook.Worksheets.First();
+            var totalColumns = worksheet.Dimension.End.Column;
+            var totalRows = worksheet.Dimension.End.Row;
 
-                results.CardSchemaParams = ListFromRange(worksheet, 1, 1, CardSchema.ParamsNumber, 1, true).First();
-                results.ElementSchemasParams = ListFromRange(worksheet, 1, 2, ElementSchema.ParamsNumber, totalColumns, true);
-                results.CardsElements = ListFromRange(worksheet, ElementSchema.ParamsNumber + 1, 2, totalRows, totalColumns);
-            }
-            catch (Exception ex)
-            {
-                request.ProcessWindow.LogMessage(ex.ToString());
-                throw;
-            }
-
-            request.ProcessWindow.LogMessage($"Plik {request.FilePath} został odczytany.");
+            results.CardSchemaParams = ListFromRange(worksheet, 1, 1, CardSchema.ParamsNumber, 1, true).First();
+            results.ElementSchemasParams = ListFromRange(worksheet, 1, 2, ElementSchema.ParamsNumber, totalColumns, true);
+            results.CardsElements = ListFromRange(worksheet, ElementSchema.ParamsNumber + 1, 2, totalRows, totalColumns);
 
             return await Task.FromResult(results);
         }

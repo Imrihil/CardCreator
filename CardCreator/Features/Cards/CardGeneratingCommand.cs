@@ -47,17 +47,43 @@ namespace CardCreator.Features.Cards
                 processWindow.LogMessage($"File {request.FilePath} not exists, so action cannot be processed.");
             }
 
+            processWindow.LogMessage($"Reading {request.FilePath} ...");
+            ReadCardFileResults readCardFile;
             try
             {
-                var readCardFile = await mediator.Send(new ReadCardFileCommand(processWindow, request.FilePath));
-                var cardSchema = new CardSchema(processWindow, fontProvider, imageProvider, readCardFile.CardSchemaParams, readCardFile.ElementSchemasParams);
+                readCardFile = await mediator.Send(new ReadCardFileCommand(request.FilePath));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                processWindow.LogMessage(ex);
                 return false;
             }
+            processWindow.LogMessage($"... done.");
+            processWindow.SetProgress(100.0 / (1.0 + Math.Max(CardSchema.ParamsNumber, ElementSchema.ParamsNumber) + readCardFile.CardsElements.Count));
+
+            processWindow.LogMessage($"Initializing card schemas ...");
+            CardSchema cardSchema;
+            try
+            {
+                cardSchema = new CardSchema(processWindow, fontProvider, imageProvider, readCardFile.CardSchemaParams, readCardFile.ElementSchemasParams);
+            }
+            catch (ArgumentException ex)
+            {
+                processWindow.LogMessage(ex.Message);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                processWindow.LogMessage(ex);
+                return false;
+            }
+            processWindow.LogMessage($"... done.");
+            processWindow.SetProgress(GetProgress(0, readCardFile.CardsElements.Count));
 
             return await Task.FromResult(false);
         }
+
+        private double GetProgress(int generatedCardsNumber, int allCardsNumber) =>
+            100.0 * (1.0 + Math.Max(CardSchema.ParamsNumber, ElementSchema.ParamsNumber) + generatedCardsNumber) / (1.0 + Math.Max(CardSchema.ParamsNumber, ElementSchema.ParamsNumber) + allCardsNumber);
     }
 }
