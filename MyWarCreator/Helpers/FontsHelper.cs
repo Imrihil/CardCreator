@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace MyWarCreator.Helpers
 {
-    public class FontsHelper
+    public static class FontsHelper
     {
         static FontsHelper()
         {

@@ -2,22 +2,22 @@
 
 namespace CardCreator.Features.Fonts
 {
-    public class FontConsts
+    public static class FontConsts
     {
 
-        public static readonly StringFormat StringFormatLeft = new StringFormat
+        public static readonly StringFormat LeftFormat = new StringFormat
         {
             Alignment = StringAlignment.Near,
             LineAlignment = StringAlignment.Center
         };
 
-        public static readonly StringFormat StringFormatCentered = new StringFormat
+        public static readonly StringFormat CenteredFormat = new StringFormat
         {
             Alignment = StringAlignment.Center,
             LineAlignment = StringAlignment.Center
         };
 
-        public static readonly StringFormat StringFormatRight = new StringFormat
+        public static readonly StringFormat RightFormat = new StringFormat
         {
             Alignment = StringAlignment.Far,
             LineAlignment = StringAlignment.Center

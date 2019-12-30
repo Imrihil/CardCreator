@@ -1,4 +1,5 @@
 ﻿using CardCreator.Features.Cards.Model;
+using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
 using CardCreator.View;
 using MediatR;
@@ -25,11 +26,13 @@ namespace CardCreator.Features.Cards
     {
         private readonly IMediator mediator;
         private readonly IImageProvider imageProvider;
+        private readonly IFontProvider fontProvider;
         private readonly ProcessWindow processWindow;
 
-        public CardGeneratingHandler(IMediator mediator, IImageProvider imageProvider, ProcessWindow processWindow)
+        public CardGeneratingHandler(IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, ProcessWindow processWindow)
         {
             this.mediator = mediator;
+            this.fontProvider = fontProvider;
             this.imageProvider = imageProvider;
             this.processWindow = processWindow;
         }
@@ -47,7 +50,7 @@ namespace CardCreator.Features.Cards
             try
             {
                 var readCardFile = await mediator.Send(new ReadCardFileCommand(processWindow, request.FilePath));
-                var cardSchema = new CardSchema(processWindow, imageProvider, readCardFile.CardSchemaParams);
+                var cardSchema = new CardSchema(processWindow, fontProvider, imageProvider, readCardFile.CardSchemaParams, readCardFile.ElementSchemasParams);
             }
             catch (Exception)
             {

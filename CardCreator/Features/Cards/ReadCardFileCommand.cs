@@ -37,9 +37,9 @@ namespace CardCreator.Features.Cards
                 var totalColumns = worksheet.Dimension.End.Column;
                 var totalRows = worksheet.Dimension.End.Row;
 
-                results.CardSchemaParams = ListFromRange(worksheet, 1, 1, CardSchema.HeaderRows, 1, true).First();
-                results.ElementSchemasParams = ListFromRange(worksheet, 1, 2, ElementSchema.HeaderRows, totalColumns, true);
-                results.CardsElements = ListFromRange(worksheet, ElementSchema.HeaderRows + 1, 2, totalRows, totalColumns);
+                results.CardSchemaParams = ListFromRange(worksheet, 1, 1, CardSchema.ParamsNumber, 1, true).First();
+                results.ElementSchemasParams = ListFromRange(worksheet, 1, 2, ElementSchema.ParamsNumber, totalColumns, true);
+                results.CardsElements = ListFromRange(worksheet, ElementSchema.ParamsNumber + 1, 2, totalRows, totalColumns);
             }
             catch (Exception ex)
             {
