@@ -5,6 +5,7 @@ using CardCreator.View;
 using MediatR;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -79,6 +80,10 @@ namespace CardCreator.Features.Cards
             }
             processWindow.LogMessage($"... done.");
             processWindow.SetProgress(GetProgress(0, readCardFile.CardsElements.Count));
+
+            var cards = readCardFile.CardsElements.Select(cardElements => new Card(imageProvider, cardSchema, cardElements));
+
+
 
             return await Task.FromResult(false);
         }

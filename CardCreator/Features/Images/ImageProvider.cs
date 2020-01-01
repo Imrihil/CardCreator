@@ -20,6 +20,14 @@ namespace CardCreator.Features.Images
 
         public Image Get(string name)
         {
+            return TryGet(name) ?? throw new FileNotFoundException($"File with path {name} not exists.");
+        }
+
+        public Image TryGet(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return null;
+
             if (cacheCollection.TryGetValue(name, out var imageWithStats) && imageWithStats.Timestamp >= ValidTime)
             {
                 return imageWithStats.GetImage();

@@ -6,6 +6,7 @@ namespace CardCreator.Features.Fonts
     {
         void Register(byte[] font);
         FontFamily Get(string name);
+        FontFamily TryGet(string name);
         Font GetAdjusted(Graphics graphicRef, string graphicString, Font originalFont, RectangleF container, StringFormat stringFormat, int minFontSize, int maxFontSize, bool smallestOnFail = true, bool wordWrap = true);
     }
 }

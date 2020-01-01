@@ -27,19 +27,15 @@ namespace CardCreator
         private readonly IMediator mediator;
         private readonly IFontProvider fontProvider;
         private readonly IImageProvider imageProvider;
-        private readonly IPainter painter;
-        private readonly ICardBuilder cardBuilder;
 
         private OpenFileDialog ChooseFileDialog { get; }
 
-        public MainWindow(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, IPainter painter, ICardBuilder cardBuilder)
+        public MainWindow(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider)
         {
             this.settings = settings.Value;
             this.mediator = mediator;
             this.fontProvider = fontProvider;
             this.imageProvider = imageProvider;
-            this.painter = painter;
-            this.cardBuilder = cardBuilder;
 
             InitializeComponent();
 

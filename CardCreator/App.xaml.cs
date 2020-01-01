@@ -56,10 +56,6 @@ namespace CardCreator
 
             services.AddSingleton<IFontProvider, FontProvider>();
             services.AddSingleton<IImageProvider, ImageProvider>();
-
-            services.AddSingleton<IPainter, Painter>();
-
-            services.AddSingleton<ICardBuilder, CardBuilder>();
         }
     }
 }

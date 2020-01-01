@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
@@ -50,6 +51,11 @@ namespace CardCreator.Features.Fonts
         }
 
         public FontFamily Get(string name) =>
+            pfc.Families.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) ??
+            ifc.Families.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) ??
+            throw new KeyNotFoundException($"Font with name {name} was not found in collections.");
+
+        public FontFamily TryGet(string name) =>
             pfc.Families.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) ??
             ifc.Families.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) ??
             FontFamily.GenericSansSerif;

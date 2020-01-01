@@ -1,25 +1,32 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using CardCreator.Features.Drawing;
-using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
 
 namespace CardCreator.Features.Cards.Model
 {
-    public class Card
+    public class Card : List<Element>, IDrawable
     {
-        private readonly IFontProvider fontProvider;
-        private readonly IPainter painter;
-        private readonly IImageProvider imageProvider;
+        public CardSchema CardSchema { get; }
 
-        protected Card(IFontProvider fontProvider, IPainter painter, IImageProvider imageProvider, string dirPath)
+        public Card(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements) : base(new List<Element>())
         {
-            this.fontProvider = fontProvider;
-            this.painter = painter;
-            this.imageProvider = imageProvider;
+            CardSchema = cardSchema;
+
+            foreach (var element in cardSchema.Zip(cardElements, (elementSchema, content) => new Element(imageProvider, content, elementSchema)))
+            {
+                Add(element);
+            }
         }
 
-        protected virtual void DrawCard(Graphics graphics)
+        public void Draw(Graphics graphics)
         {
+            if (CardSchema.Background != null)
+                graphics.DrawImage(CardSchema.Background, new Rectangle(0, 0, CardSchema.WidthPx, CardSchema.HeightPx));
+
+            ForEach(element => element.Draw(graphics));
         }
     }
 }
+

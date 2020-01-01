@@ -9,7 +9,7 @@ namespace CardCreator.Features.Cards.Model
 {
     public class ElementSchema
     {
-        public const int ParamsNumber = 9;
+        public const int ParamsNumber = 10;
 
         private const int NameIdx = 0;
         private const int BackgroundIdx = 1;
@@ -45,7 +45,7 @@ namespace CardCreator.Features.Cards.Model
         public ElementSchema(ILogger logger, IImageProvider imageProvider, IFontProvider fontProvider, List<string> parameters) :
             this(
                 parameters[NameIdx],
-                imageProvider.Get(parameters[BackgroundIdx]),
+                imageProvider.TryGet(parameters[BackgroundIdx]),
                 Parser<int>.Parse(logger, parameters[XIdx], (param) => int.Parse(param), (val) => val >= 0,
                 $"{XIdx + 1}rd parameter must be a nonnegative integer, but \"{parameters[XIdx]}\" is not."),
                 Parser<int>.Parse(logger, parameters[YIdx], (param) => int.Parse(param), (val) => val >= 0,
@@ -54,7 +54,7 @@ namespace CardCreator.Features.Cards.Model
                 $"{WidthIdx + 1}th parameter must be a positive integer, but \"{parameters[WidthIdx]}\" is not."),
                 Parser<int>.Parse(logger, parameters[HeightIdx], (param) => int.Parse(param), (val) => val > 0,
                 $"{HeightIdx + 1}th parameter must be a positive integer, but \"{parameters[HeightIdx]}\" is not."),
-                fontProvider.Get(parameters[FontIdx]),
+                fontProvider.TryGet(parameters[FontIdx]),
                 Parser<int>.Parse(logger, parameters[MaxSizeIdx], (param) => int.Parse(param), (val) => val >= 0,
                 $"{MaxSizeIdx + 1}th parameter must be a nonnegative integer, but \"{parameters[MaxSizeIdx]}\" is not."),
                 GetStringFormat(parameters[StringFormatIdx])

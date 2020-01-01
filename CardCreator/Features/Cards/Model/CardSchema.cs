@@ -38,7 +38,7 @@ namespace CardCreator.Features.Cards.Model
         public CardSchema(ILogger logger, IFontProvider fontProvider, IImageProvider imageProvider, IList<string> parameters, List<List<string>> elementSchemasParams) :
             this(
                 parameters[NameIdx],
-                string.IsNullOrEmpty(parameters[BackgroundIdx]) ? null : imageProvider.Get(parameters[BackgroundIdx]),
+                imageProvider.TryGet(parameters[BackgroundIdx]),
                 Parser<int>.Parse(logger, parameters[WidthPxIdx], (param) => int.Parse(param), (val) => val > 0,
                 $"{WidthPxIdx + 1}rd parameter must be a positive integer, but \"{parameters[WidthPxIdx]}\" is not."),
                 Parser<int>.Parse(logger, parameters[HeightPxIdx], (param) => int.Parse(param), (val) => val > 0,
