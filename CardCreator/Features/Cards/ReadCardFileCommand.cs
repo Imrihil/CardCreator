@@ -11,11 +11,11 @@ namespace CardCreator.Features.Cards
 {
     public class ReadCardFileCommand : IRequest<ReadCardFileResults>
     {
-        public string FilePath { get; set; }
+        public FileInfo File { get; set; }
 
-        public ReadCardFileCommand(string filePath)
+        public ReadCardFileCommand(FileInfo file)
         {
-            FilePath = filePath;
+            File = file;
         }
     }
 
@@ -25,7 +25,7 @@ namespace CardCreator.Features.Cards
         {
             var results = new ReadCardFileResults();
 
-            using var xlPackage = new ExcelPackage(new FileInfo(request.FilePath));
+            using var xlPackage = new ExcelPackage(request.File);
 
             var worksheet = xlPackage.Workbook.Worksheets.First();
             var totalColumns = worksheet.Dimension.End.Column;

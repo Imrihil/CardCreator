@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CardCreator.Features.Cards
 {
-    public class CardGeneratingCommand : IRequest<bool>
+    public class CardGeneratingCommand : IRequest<int>
     {
         public string FilePath { get; }
         public CancellationTokenSource Cts { get; }
@@ -23,7 +23,7 @@ namespace CardCreator.Features.Cards
         }
     }
 
-    public class CardGeneratingHandler : IRequestHandler<CardGeneratingCommand, bool>
+    public class CardGeneratingHandler : IRequestHandler<CardGeneratingCommand, int>
     {
         private readonly IMediator mediator;
         private readonly IImageProvider imageProvider;
@@ -38,26 +38,27 @@ namespace CardCreator.Features.Cards
             this.processWindow = processWindow;
         }
 
-        public async Task<bool> Handle(CardGeneratingCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CardGeneratingCommand request, CancellationToken cancellationToken)
         {
             processWindow.RegisterCancelationToken(request.Cts);
             processWindow.Show();
 
-            if (!File.Exists(request.FilePath))
+            var file = new FileInfo(request.FilePath);
+            if (!file.Exists)
             {
-                processWindow.LogMessage($"File {request.FilePath} not exists, so action cannot be processed.");
+                processWindow.LogMessage($"File {file.Name} not exists, so action cannot be processed.");
             }
 
-            processWindow.LogMessage($"Reading {request.FilePath} ...");
+            processWindow.LogMessage($"Reading {file.Name} ...");
             ReadCardFileResults readCardFile;
             try
             {
-                readCardFile = await mediator.Send(new ReadCardFileCommand(request.FilePath));
+                readCardFile = await mediator.Send(new ReadCardFileCommand(file));
             }
             catch (Exception ex)
             {
                 processWindow.LogMessage(ex);
-                return false;
+                return 0;
             }
             processWindow.LogMessage($"... done.");
             processWindow.SetProgress(100.0 / (1.0 + Math.Max(CardSchema.ParamsNumber, ElementSchema.ParamsNumber) + readCardFile.CardsElements.Count));
@@ -71,21 +72,42 @@ namespace CardCreator.Features.Cards
             catch (ArgumentException ex)
             {
                 processWindow.LogMessage(ex.Message);
-                return false;
+                return 0;
             }
             catch (Exception ex)
             {
                 processWindow.LogMessage(ex);
-                return false;
+                return 0;
             }
             processWindow.LogMessage($"... done.");
             processWindow.SetProgress(GetProgress(0, readCardFile.CardsElements.Count));
 
-            var cards = readCardFile.CardsElements.Select(cardElements => new Card(imageProvider, cardSchema, cardElements));
+            var i = 0;
+            var successes = 0;
+            foreach (var cardElements in readCardFile.CardsElements)
+            {
+                try
+                {
+                    ++i;
+                    var card = new Card(imageProvider, cardSchema, cardElements);
+                    try
+                    {
+                        await mediator.Send(new CardPrintingCommand(card, file.Directory.FullName, i));
+                        processWindow.SetProgress(GetProgress(i, readCardFile.CardsElements.Count));
+                        ++successes;
+                    }
+                    catch (Exception ex)
+                    {
+                        processWindow.LogMessage($"An error occured while processing {i}th card {card.Name}: {ex}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    processWindow.LogMessage($"An error occured while processing {i}th card: {ex}");
+                }
+            }
 
-
-
-            return await Task.FromResult(false);
+            return successes;
         }
 
         private double GetProgress(int generatedCardsNumber, int allCardsNumber) =>
