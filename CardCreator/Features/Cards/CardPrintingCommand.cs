@@ -1,10 +1,8 @@
 ﻿using CardCreator.Features.Cards.Model;
 using MediatR;
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,13 +36,16 @@ namespace CardCreator.Features.Cards
             graphics.FillRectangle(Brushes.White, 0, 0, width, height);
             graphics.DrawRectangle(Pens.Black, 0, 0, width - 2, height - 2);
             request.Card.Draw(graphics);
-            bitmap.Save(Path.Combine(request.DirectoryPath, cards, GetFileName(request)), ImageFormat.Png);
+
+            var directory = Path.Combine(request.DirectoryPath, cards);
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+            bitmap.Save(Path.Combine(directory, GetFileName(request)), ImageFormat.Png);
 
             return await Task.FromResult(true);
         }
 
         private string GetFileName(CardPrintingCommand request)
             => (request.Card.Name ?? request.Number?.ToString() ?? "card") + ".png";
-
     }
 }

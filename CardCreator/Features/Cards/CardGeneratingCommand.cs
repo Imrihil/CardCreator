@@ -1,11 +1,11 @@
 ﻿using CardCreator.Features.Cards.Model;
 using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
+using CardCreator.Features.System;
 using CardCreator.View;
 using MediatR;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -50,38 +50,57 @@ namespace CardCreator.Features.Cards
             }
 
             processWindow.LogMessage($"Reading {file.Name} ...");
-            ReadCardFileResults readCardFile;
-            try
-            {
-                readCardFile = await mediator.Send(new ReadCardFileCommand(file));
-            }
-            catch (Exception ex)
-            {
-                processWindow.LogMessage(ex);
-                return 0;
-            }
+            var readCardFile = await ReadCardFile(file);
+            if (readCardFile == null) return 0;
             processWindow.LogMessage($"... done.");
             processWindow.SetProgress(100.0 / (1.0 + Math.Max(CardSchema.ParamsNumber, ElementSchema.ParamsNumber) + readCardFile.CardsElements.Count));
 
             processWindow.LogMessage($"Initializing card schemas ...");
-            CardSchema cardSchema;
+            var cardSchema = await GetCardSchema(readCardFile);
+            if (cardSchema == null) return 0;
+            processWindow.LogMessage($"... done.");
+            processWindow.SetProgress(GetProgress(0, readCardFile.CardsElements.Count));
+
+            processWindow.LogMessage($"Generating cards ...");
+            var successes = await GenerateCards(readCardFile, cardSchema, file);
+            processWindow.LogMessage($"... done.");
+
+            return successes;
+        }
+
+        private async Task<ReadCardFileResults> ReadCardFile(FileInfo file)
+        {
             try
             {
-                cardSchema = new CardSchema(processWindow, fontProvider, imageProvider, readCardFile.CardSchemaParams, readCardFile.ElementSchemasParams);
-            }
-            catch (ArgumentException ex)
-            {
-                processWindow.LogMessage(ex.Message);
-                return 0;
+                return await mediator.Send(new ReadCardFileCommand(file));
             }
             catch (Exception ex)
             {
                 processWindow.LogMessage(ex);
-                return 0;
+                return null;
             }
-            processWindow.LogMessage($"... done.");
-            processWindow.SetProgress(GetProgress(0, readCardFile.CardsElements.Count));
+        }
 
+        private async Task<CardSchema> GetCardSchema(ReadCardFileResults readCardFile)
+        {
+            try
+            {
+                return await Task.FromResult(new CardSchema(processWindow, fontProvider, imageProvider, readCardFile.CardSchemaParams, readCardFile.ElementSchemasParams));
+            }
+            catch (ArgumentException ex)
+            {
+                processWindow.LogMessage(ex.Message);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                processWindow.LogMessage(ex);
+                return null;
+            }
+        }
+
+        private async Task<int> GenerateCards(ReadCardFileResults readCardFile, CardSchema cardSchema, FileInfo file)
+        {
             var i = 0;
             var successes = 0;
             foreach (var cardElements in readCardFile.CardsElements)
@@ -93,20 +112,20 @@ namespace CardCreator.Features.Cards
                     try
                     {
                         await mediator.Send(new CardPrintingCommand(card, file.Directory.FullName, i));
-                        processWindow.SetProgress(GetProgress(i, readCardFile.CardsElements.Count));
                         ++successes;
+                        processWindow.SetProgress(GetProgress(i, readCardFile.CardsElements.Count));
+                        processWindow.LogMessage($"{i.ToOrdinal()} card saved: {card.Name}.");
                     }
                     catch (Exception ex)
                     {
-                        processWindow.LogMessage($"An error occured while processing {i}th card {card.Name}: {ex}");
+                        processWindow.LogMessage($"An error occured while processing {i.ToOrdinal()} card {card.Name}: {ex}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    processWindow.LogMessage($"An error occured while processing {i}th card: {ex}");
+                    processWindow.LogMessage($"An error occured while processing {i.ToOrdinal()} card: {ex}");
                 }
             }
-
             return successes;
         }
 

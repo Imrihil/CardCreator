@@ -1,6 +1,7 @@
 ﻿using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
 using CardCreator.Features.Logging;
+using CardCreator.Features.System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -40,13 +41,13 @@ namespace CardCreator.Features.Cards.Model
                 parameters[NameIdx],
                 imageProvider.TryGet(parameters[BackgroundIdx]),
                 Parser<int>.Parse(logger, parameters[WidthPxIdx], (param) => int.Parse(param), (val) => val > 0,
-                $"{WidthPxIdx + 1}rd parameter must be a positive integer, but \"{parameters[WidthPxIdx]}\" is not."),
+                $"{(WidthPxIdx + 1).ToOrdinal()} parameter must be a positive integer, but \"{parameters[WidthPxIdx]}\" is not."),
                 Parser<int>.Parse(logger, parameters[HeightPxIdx], (param) => int.Parse(param), (val) => val > 0,
-                $"{HeightPxIdx + 1}th parameter must be a positive integer, but \"{parameters[HeightPxIdx]}\" is not."),
+                $"{(HeightPxIdx + 1).ToOrdinal()} parameter must be a positive integer, but \"{parameters[HeightPxIdx]}\" is not."),
                 Parser<double>.Parse(logger, parameters[WidthInchIdx], (param) => double.Parse(param.Replace(',', '.'), CultureInfo.InvariantCulture), (val) => val > 0,
-                $"{WidthInchIdx + 1}th parameter must be a positive number, but \"{parameters[WidthInchIdx]}\" is not."),
+                $"{(WidthInchIdx + 1).ToOrdinal()} parameter must be a positive number, but \"{parameters[WidthInchIdx]}\" is not."),
                 Parser<double>.Parse(logger, parameters[HeightInchIdx], (param) => double.Parse(param.Replace(',', '.'), CultureInfo.InvariantCulture), (val) => val > 0,
-                $"{HeightInchIdx + 1}th parameter must be a positive number, but \"{parameters[HeightInchIdx]}\" is not."),
+                $"{(HeightInchIdx + 1).ToOrdinal()} parameter must be a positive number, but \"{parameters[HeightInchIdx]}\" is not."),
                 InitElementSchemas(logger, fontProvider, imageProvider, elementSchemasParams)
             )
         { }

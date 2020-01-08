@@ -1,6 +1,7 @@
 ﻿using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
 using CardCreator.Features.Logging;
+using CardCreator.Features.System;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -47,16 +48,16 @@ namespace CardCreator.Features.Cards.Model
                 parameters[NameIdx],
                 imageProvider.TryGet(parameters[BackgroundIdx]),
                 Parser<int>.Parse(logger, parameters[XIdx], (param) => int.Parse(param), (val) => val >= 0,
-                $"{XIdx + 1}rd parameter must be a nonnegative integer, but \"{parameters[XIdx]}\" is not."),
+                $"{(XIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[XIdx]}\" is not."),
                 Parser<int>.Parse(logger, parameters[YIdx], (param) => int.Parse(param), (val) => val >= 0,
-                $"{YIdx + 1}th parameter must be a nonnegative integer, but \"{parameters[YIdx]}\" is not."),
+                $"{(YIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[YIdx]}\" is not."),
                 Parser<int>.Parse(logger, parameters[WidthIdx], (param) => int.Parse(param), (val) => val > 0,
-                $"{WidthIdx + 1}th parameter must be a positive integer, but \"{parameters[WidthIdx]}\" is not."),
+                $"{(WidthIdx + 1).ToOrdinal()} parameter must be a positive integer, but \"{parameters[WidthIdx]}\" is not."),
                 Parser<int>.Parse(logger, parameters[HeightIdx], (param) => int.Parse(param), (val) => val > 0,
-                $"{HeightIdx + 1}th parameter must be a positive integer, but \"{parameters[HeightIdx]}\" is not."),
+                $"{(HeightIdx + 1).ToOrdinal()} parameter must be a positive integer, but \"{parameters[HeightIdx]}\" is not."),
                 fontProvider.TryGet(parameters[FontIdx]),
                 Parser<int>.Parse(logger, parameters[MaxSizeIdx], (param) => int.Parse(param), (val) => val >= 0,
-                $"{MaxSizeIdx + 1}th parameter must be a nonnegative integer, but \"{parameters[MaxSizeIdx]}\" is not."),
+                $"{(MaxSizeIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[MaxSizeIdx]}\" is not."),
                 GetStringFormat(parameters[StringFormatIdx])
             )
         { }
