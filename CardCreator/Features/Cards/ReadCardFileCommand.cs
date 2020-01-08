@@ -34,6 +34,7 @@ namespace CardCreator.Features.Cards
             results.CardSchemaParams = ListFromRange(worksheet, 1, 1, CardSchema.ParamsNumber, 1, true).First();
             results.ElementSchemasParams = ListFromRange(worksheet, 1, 2, ElementSchema.ParamsNumber, totalColumns, true);
             results.CardsElements = ListFromRange(worksheet, ElementSchema.ParamsNumber + 1, 2, totalRows, totalColumns);
+            results.CardsRepetitions = ListFromRange(worksheet, ElementSchema.ParamsNumber + 1, 1, totalRows, 1, true).First().Select(x => int.TryParse(x, out var n) ? n : 1).ToList();
 
             return await Task.FromResult(results);
         }

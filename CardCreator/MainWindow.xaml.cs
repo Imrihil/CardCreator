@@ -167,7 +167,7 @@ namespace CardCreator
         private void PreparePdf(string fileName)
         {
             var cts = new CancellationTokenSource();
-            var result = mediator.Send(new PdfPreparingCommand(fileName, cts), cts.Token).GetAwaiter().GetResult();
+            var result = mediator.Send(new PdfGeneratingCommand(fileName, cts), cts.Token).GetAwaiter().GetResult();
             Console.WriteLine(result);
         }
 

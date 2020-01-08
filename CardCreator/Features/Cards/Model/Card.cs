@@ -10,6 +10,7 @@ namespace CardCreator.Features.Cards.Model
     {
         public CardSchema CardSchema { get; }
         public string Name => this.FirstOrDefault(element => IsNameElement(element))?.Content;
+        public int Repetitions { get; set; }
         private Image Image { get; set; }
 
         public Card(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements) : base(new List<Element>())
@@ -38,7 +39,7 @@ namespace CardCreator.Features.Cards.Model
 
             using var graphics = Graphics.FromImage(Image);
             graphics.FillRectangle(Brushes.White, 0, 0, CardSchema.WidthPx, CardSchema.HeightPx);
-            graphics.DrawRectangle(Pens.Black, 0, 0, CardSchema.WidthPx - 2, CardSchema.HeightPx - 2);
+            graphics.DrawRectangle(Pens.Black, 0, 0, CardSchema.WidthPx - 1, CardSchema.HeightPx - 1);
             Draw(graphics);
 
             return Image;

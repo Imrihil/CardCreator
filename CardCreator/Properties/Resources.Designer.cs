@@ -71,15 +71,6 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generuj czarno-białe karty.
-        /// </summary>
-        public static string BlackAndWhiteSetting {
-            get {
-                return ResourceManager.GetString("BlackAndWhiteSetting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Anuluj.
         /// </summary>
         public static string Cancel {
@@ -110,7 +101,7 @@ namespace CardCreator.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Aby wygenerować karty wskaż plik z danymi.
         ///Wygenerowane karty zostaną umieszczone w folderze &quot;cards&quot; utworzonym w tym samym katalogu, w którym znajduje się wskazany plik.
-        ///Wygenerowany plik pdf zostanie umieszczony w folderze &quot;prints&quot; utworzonym w tym samym katalogu, w którym znajduje się wskazany plik..
+        ///Wygenerowany plik pdf zostanie umieszczony w folderze z wybranym plikiem i będzie miał taką samą nazwę..
         /// </summary>
         public static string Description {
             get {

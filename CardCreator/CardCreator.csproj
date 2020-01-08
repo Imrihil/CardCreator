@@ -29,7 +29,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.0" />
-    <PackageReference Include="PDFsharp-MigraDoc-WPF" Version="1.50.5147" />
+    <PackageReference Include="PDFsharp-MigraDoc-GDI" Version="1.50.5147" />
   </ItemGroup>
 
   <ItemGroup>

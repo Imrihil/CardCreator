@@ -160,16 +160,13 @@
   <data name="Description" xml:space="preserve">
     <value>Aby wygenerować karty wskaż plik z danymi.
 Wygenerowane karty zostaną umieszczone w folderze "cards" utworzonym w tym samym katalogu, w którym znajduje się wskazany plik.
-Wygenerowany plik pdf zostanie umieszczony w folderze "prints" utworzonym w tym samym katalogu, w którym znajduje się wskazany plik.</value>
+Wygenerowany plik pdf zostanie umieszczony w folderze z wybranym plikiem i będzie miał taką samą nazwę.</value>
   </data>
   <data name="Hello" xml:space="preserve">
     <value>Witaj w kreatorze kart!</value>
   </data>
   <data name="PreparePdf" xml:space="preserve">
     <value>Przygotuj pdfy do druku</value>
-  </data>
-  <data name="BlackAndWhiteSetting" xml:space="preserve">
-    <value>Generuj czarno-białe karty</value>
   </data>
   <data name="GenerateCards" xml:space="preserve">
     <value>Generuj karty</value>
