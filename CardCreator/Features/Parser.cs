@@ -7,14 +7,21 @@ namespace CardCreator.Features
     {
         public static T Parse(ILogger logger, string value, Func<string, T> parse, Func<T, bool> validate, string errorMessage)
         {
-            var result = parse(value);
-            if (!validate(result))
+            try
             {
-                logger.LogMessage(errorMessage);
+                var result = parse(value);
+                if (!validate(result))
+                {
+                    logger.LogMessage(errorMessage);
+                    throw new ArgumentException(errorMessage);
+                }
+
+                return result;
+            }
+            catch
+            {
                 throw new ArgumentException(errorMessage);
             }
-
-            return result;
         }
     }
 }

@@ -2,6 +2,7 @@
 using CardCreator.Features.Images;
 using MyWarCreator.Extensions;
 using System.Drawing;
+using System.IO;
 
 namespace CardCreator.Features.Cards.Model
 {
@@ -11,10 +12,10 @@ namespace CardCreator.Features.Cards.Model
         public ElementSchema ElementSchema { get; }
         private Image Image { get; }
 
-        public Element(IImageProvider imageProvider, string content, ElementSchema elementSchema)
+        public Element(IImageProvider imageProvider, string content, ElementSchema elementSchema, string directory)
         {
             Content = content;
-            Image = imageProvider.TryGet(content);
+            Image = imageProvider.TryGet(Path.Combine(directory, content));
             ElementSchema = elementSchema;
         }
 
@@ -26,7 +27,7 @@ namespace CardCreator.Features.Cards.Model
             if (Image != null)
                 graphics.DrawImage(Image, ElementSchema.Area);
             else
-                graphics.DrawAdjustedString(Content, ElementSchema.Font, Color.Black, ElementSchema.Area, ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.MinSize);
+                graphics.DrawAdjustedString(Content, ElementSchema.Font, ElementSchema.Color, ElementSchema.Area, ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.MinSize);
         }
     }
 }

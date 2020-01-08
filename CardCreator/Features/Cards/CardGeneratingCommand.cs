@@ -54,7 +54,7 @@ namespace CardCreator.Features.Cards
             ProcessWindow.SetProgress(100.0 / (1.0 + Math.Max(CardSchema.ParamsNumber, ElementSchema.ParamsNumber) + readCardFile.CardsElements.Count));
 
             ProcessWindow.LogMessage($"Initializing card schemas ...");
-            var cardSchema = await GetCardSchema(readCardFile);
+            var cardSchema = await GetCardSchema(readCardFile, file.DirectoryName);
             if (cardSchema == null) return 0;
             ProcessWindow.LogMessage($"... done.");
             ProcessWindow.SetProgress(GetProgress(0, readCardFile.CardsElements.Count));
@@ -68,7 +68,7 @@ namespace CardCreator.Features.Cards
 
         private async Task<int> GenerateCards(ReadCardFileResults readCardFile, CardSchema cardSchema, FileInfo file)
         {
-            var directory = Path.Combine(file.Directory.FullName, directoryName);
+            var directory = Path.Combine(file.DirectoryName, directoryName);
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
@@ -78,7 +78,7 @@ namespace CardCreator.Features.Cards
             {
                 try
                 {
-                    var card = new Card(ImageProvider, cardSchema, cardElements);
+                    var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName);
                     try
                     {
                         card.GetImage().Save(Path.Combine(directory, GetFileName(card, i)), ImageFormat.Png);

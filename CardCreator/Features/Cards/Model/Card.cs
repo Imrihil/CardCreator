@@ -13,11 +13,11 @@ namespace CardCreator.Features.Cards.Model
         public int Repetitions { get; set; }
         private Image Image { get; set; }
 
-        public Card(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements) : base(new List<Element>())
+        public Card(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory) : base(new List<Element>())
         {
             CardSchema = cardSchema;
 
-            foreach (var element in cardSchema.Zip(cardElements, (elementSchema, content) => new Element(imageProvider, content, elementSchema)))
+            foreach (var element in cardSchema.Zip(cardElements, (elementSchema, content) => new Element(imageProvider, content, elementSchema, directory)))
             {
                 Add(element);
             }

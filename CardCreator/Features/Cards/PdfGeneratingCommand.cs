@@ -29,7 +29,6 @@ namespace CardCreator.Features.Cards
 
     public class PdfPreparingHandler : CardGeneratingBaseHandler, IRequestHandler<PdfGeneratingCommand, int>
     {
-        private readonly string directoryName;
         private const double a4WidthInch = 8.27;
         private const double a4HeightInch = 11.69;
         private const double pointsInInch = 72;
@@ -38,9 +37,7 @@ namespace CardCreator.Features.Cards
 
         public PdfPreparingHandler(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, ProcessWindow processWindow) :
             base(mediator, fontProvider, imageProvider, processWindow)
-        {
-            directoryName = settings.Value.PdfDirectory;
-        }
+        { }
 
         public async Task<int> Handle(PdfGeneratingCommand request, CancellationToken cancellationToken)
         {
@@ -61,7 +58,7 @@ namespace CardCreator.Features.Cards
             ProcessWindow.SetProgress(100.0 / (1.0 + Math.Max(CardSchema.ParamsNumber, ElementSchema.ParamsNumber) + readCardFile.CardsElements.Count));
 
             ProcessWindow.LogMessage($"Initializing card schemas ...");
-            var cardSchema = await GetCardSchema(readCardFile);
+            var cardSchema = await GetCardSchema(readCardFile, file.DirectoryName);
             if (cardSchema == null) return 0;
             ProcessWindow.LogMessage($"... done.");
             ProcessWindow.SetProgress(GetProgress(0, readCardFile.CardsElements.Count));
@@ -91,11 +88,12 @@ namespace CardCreator.Features.Cards
             {
                 try
                 {
-                    var card = new Card(ImageProvider, cardSchema, cardElements);
+                    var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName);
                     try
                     {
                         var n = readCardFile.CardsRepetitions[i];
-                        if (n > 0) {
+                        if (n > 0)
+                        {
                             using var xImage = XImage.FromGdiPlusImage(card.GetImage());
                             for (var j = 0; j < n; ++j)
                             {
@@ -126,10 +124,18 @@ namespace CardCreator.Features.Cards
                 ++i;
                 ProcessWindow.SetProgress(GetProgress(i, readCardFile.CardsElements.Count + 1));
             }
-            var fileName = $"{file.Name.Substring(0, file.Name.LastIndexOf("."))}.pdf";
-            pdf.Save(Path.Combine(file.DirectoryName, fileName));
-            ProcessWindow.SetProgress(GetProgress(i + 1, readCardFile.CardsElements.Count + 1));
-            ProcessWindow.LogMessage($"The document {fileName} saved.");
+            try
+            {
+                var fileName = $"{file.Name.Substring(0, file.Name.LastIndexOf("."))}.pdf";
+                pdf.Save(Path.Combine(file.DirectoryName, fileName));
+                ProcessWindow.SetProgress(GetProgress(i + 1, readCardFile.CardsElements.Count + 1));
+                ProcessWindow.LogMessage($"The document {fileName} saved.");
+            }
+            catch (Exception ex)
+            {
+                ProcessWindow.LogMessage($"An error occured while saving document: {ex}");
+                return 0;
+            }
 
             return await Task.FromResult(successes);
         }

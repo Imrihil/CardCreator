@@ -37,11 +37,11 @@ namespace CardCreator.Features.Cards
             }
         }
 
-        protected async Task<CardSchema> GetCardSchema(ReadCardFileResults readCardFile)
+        protected async Task<CardSchema> GetCardSchema(ReadCardFileResults readCardFile, string directory)
         {
             try
             {
-                return await Task.FromResult(new CardSchema(ProcessWindow, FontProvider, ImageProvider, readCardFile.CardSchemaParams, readCardFile.ElementSchemasParams));
+                return await Task.FromResult(new CardSchema(ProcessWindow, FontProvider, ImageProvider, readCardFile.CardSchemaParams, readCardFile.ElementSchemasParams, directory));
             }
             catch (ArgumentException ex)
             {
