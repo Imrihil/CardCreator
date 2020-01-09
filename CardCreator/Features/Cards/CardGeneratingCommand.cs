@@ -76,23 +76,26 @@ namespace CardCreator.Features.Cards
             var successes = 0;
             foreach (var cardElements in readCardFile.CardsElements)
             {
-                try
+                if (readCardFile.CardsRepetitions[i] > 0)
                 {
-                    var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName);
                     try
                     {
-                        card.GetImage().Save(Path.Combine(directory, GetFileName(card, i)), ImageFormat.Png);
-                        ++successes;
-                        ProcessWindow.LogMessage($"{(i + 1).ToOrdinal()} card saved: {card.Name}.");
+                        var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName);
+                        try
+                        {
+                            card.GetImage().Save(Path.Combine(directory, GetFileName(card, i)), ImageFormat.Png);
+                            ++successes;
+                            ProcessWindow.LogMessage($"{(i + 1).ToOrdinal()} card saved: {card.Name}.");
+                        }
+                        catch (Exception ex)
+                        {
+                            ProcessWindow.LogMessage($"An error occured while processing {(i + 1).ToOrdinal()} card {card.Name}: {ex}");
+                        }
                     }
                     catch (Exception ex)
                     {
-                        ProcessWindow.LogMessage($"An error occured while processing {(i + 1).ToOrdinal()} card {card.Name}: {ex}");
+                        ProcessWindow.LogMessage($"An error occured while processing {(i + 1).ToOrdinal()} card: {ex}");
                     }
-                }
-                catch (Exception ex)
-                {
-                    ProcessWindow.LogMessage($"An error occured while processing {(i + 1).ToOrdinal()} card: {ex}");
                 }
                 ++i;
                 ProcessWindow.SetProgress(GetProgress(i, readCardFile.CardsElements.Count));

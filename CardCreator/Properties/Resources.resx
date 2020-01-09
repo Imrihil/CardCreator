@@ -159,8 +159,11 @@
   </data>
   <data name="Description" xml:space="preserve">
     <value>Aby wygenerować karty wskaż plik z danymi.
+
 Wygenerowane karty zostaną umieszczone w folderze "cards" utworzonym w tym samym katalogu, w którym znajduje się wskazany plik.
-Wygenerowany plik pdf zostanie umieszczony w folderze z wybranym plikiem i będzie miał taką samą nazwę.</value>
+Wygenerowany plik pdf zostanie umieszczony w folderze z wybranym plikiem i będzie miał taką samą nazwę.
+
+Aby dodać nowe przyciski do panelu należy zmodyfikować plik "appsettings.json".</value>
   </data>
   <data name="Hello" xml:space="preserve">
     <value>Witaj w kreatorze kart!</value>

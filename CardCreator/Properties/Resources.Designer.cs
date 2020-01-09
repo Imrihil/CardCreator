@@ -100,8 +100,11 @@ namespace CardCreator.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Aby wygenerować karty wskaż plik z danymi.
+        ///
         ///Wygenerowane karty zostaną umieszczone w folderze &quot;cards&quot; utworzonym w tym samym katalogu, w którym znajduje się wskazany plik.
-        ///Wygenerowany plik pdf zostanie umieszczony w folderze z wybranym plikiem i będzie miał taką samą nazwę..
+        ///Wygenerowany plik pdf zostanie umieszczony w folderze z wybranym plikiem i będzie miał taką samą nazwę.
+        ///
+        ///Aby dodać nowe przyciski do panelu należy zmodyfikować plik &quot;appsettings.json&quot;..
         /// </summary>
         public static string Description {
             get {
