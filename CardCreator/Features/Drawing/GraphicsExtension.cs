@@ -35,15 +35,31 @@ namespace MyWarCreator.Extensions
             graphics.DrawString(s, font, brush, layoutRectangle, format);
         }
 
-        public static void DrawAdjustedStringWithShadow(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color colorBorder, RectangleF layoutRectangle, int maxFontSize, StringFormat format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)
+        public static void DrawAdjustedStringWithShadow(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color shadowColor, int shadowSize, RectangleF layoutRectangle, int maxFontSize, StringFormat format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)
         {
-            using var font = graphics.GetAdjustedFont(s, fontFamily, layoutRectangle, format, maxFontSize, minFontSize, smallestOnFail, wordWrap);
-            graphics.DrawStringWithShadow(s, font, color, colorBorder, layoutRectangle, format);
+            switch (shadowSize)
+            {
+                case 0:
+                    graphics.DrawAdjustedString(s, fontFamily, color, layoutRectangle, maxFontSize, format, minFontSize, smallestOnFail, wordWrap);
+                    break;
+                case 1:
+                    graphics.DrawAdjustedStringWithBorder(s, fontFamily, color, shadowColor, layoutRectangle, maxFontSize, format, minFontSize, smallestOnFail, wordWrap);
+                    break;
+                default:
+                    graphics.DrawAdjustedStringWithShadow(s, fontFamily, color, shadowColor, layoutRectangle, maxFontSize, format, minFontSize, smallestOnFail, wordWrap);
+                    break;
+            }
         }
 
-        public static void DrawStringWithShadow(this Graphics graphics, string s, Font font, Color color, Color colorBorder, RectangleF layoutRectangle, StringFormat format = default)
+        private static void DrawAdjustedStringWithShadow(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color borderColor, RectangleF layoutRectangle, int maxFontSize, StringFormat format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)
         {
-            using (Brush brush = new SolidBrush(Color.FromArgb((int)((float)colorBorder.A * 4 / 5), colorBorder)))
+            using var font = graphics.GetAdjustedFont(s, fontFamily, layoutRectangle, format, maxFontSize, minFontSize, smallestOnFail, wordWrap);
+            graphics.DrawStringWithShadow(s, font, color, borderColor, layoutRectangle, format);
+        }
+
+        private static void DrawStringWithShadow(this Graphics graphics, string s, Font font, Color color, Color borderColor, RectangleF layoutRectangle, StringFormat format = default)
+        {
+            using (Brush brush = new SolidBrush(Color.FromArgb((int)((float)borderColor.A * 4 / 5), borderColor)))
             {
                 foreach (var offset in CloseBorderModifiers)
                 {
@@ -53,7 +69,7 @@ namespace MyWarCreator.Extensions
                 }
             }
 
-            using (Brush brush = new SolidBrush(Color.FromArgb((int)((float)colorBorder.A / 4), colorBorder)))
+            using (Brush brush = new SolidBrush(Color.FromArgb((int)((float)borderColor.A / 4), borderColor)))
             {
                 foreach (var offset in ShadowModifiers)
                 {
@@ -67,13 +83,13 @@ namespace MyWarCreator.Extensions
                 graphics.DrawString(s, font, brush, layoutRectangle, format);
         }
 
-        public static void DrawAdjustedStringWithBorder(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color borderColor, RectangleF layoutRectangle, int maxFontSize, StringFormat format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)
+        private static void DrawAdjustedStringWithBorder(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color borderColor, RectangleF layoutRectangle, int maxFontSize, StringFormat format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)
         {
             using var font = graphics.GetAdjustedFont(s, fontFamily, layoutRectangle, format, maxFontSize, minFontSize, smallestOnFail, wordWrap);
             graphics.DrawStringWithBorder(s, font, color, borderColor, layoutRectangle, format);
         }
 
-        public static void DrawStringWithBorder(this Graphics graphics, string s, Font font, Color color, Color borderColor, RectangleF layoutRectangle, StringFormat format = default)
+        private static void DrawStringWithBorder(this Graphics graphics, string s, Font font, Color color, Color borderColor, RectangleF layoutRectangle, StringFormat format = default)
         {
             using var brush = new SolidBrush(color);
             using var borderBrush = new SolidBrush(borderColor);
@@ -86,7 +102,7 @@ namespace MyWarCreator.Extensions
             graphics.DrawString(s, font, brush, layoutRectangle, format);
         }
 
-        public static Font GetAdjustedFont(this Graphics graphics, string graphicString, FontFamily fontFamily, RectangleF container, StringFormat stringFormat, int maxFontSize, int minFontSize, bool smallestOnFail = true, bool wordWrap = true)
+        private static Font GetAdjustedFont(this Graphics graphics, string graphicString, FontFamily fontFamily, RectangleF container, StringFormat stringFormat, int maxFontSize, int minFontSize, bool smallestOnFail = true, bool wordWrap = true)
         {
             // We utilize MeasureString which we get via a control instance           
             for (var adjustedSize = maxFontSize; adjustedSize >= minFontSize; adjustedSize--)

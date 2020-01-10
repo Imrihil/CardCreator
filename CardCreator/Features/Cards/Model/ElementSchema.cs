@@ -11,7 +11,7 @@ namespace CardCreator.Features.Cards.Model
 {
     public class ElementSchema
     {
-        public const int ParamsNumber = 14;
+        public const int ParamsNumber = 16;
 
         private const int NameIdx = 0;
         private const int BackgroundIdx = 1;
@@ -20,18 +20,22 @@ namespace CardCreator.Features.Cards.Model
         private const int WidthIdx = 4;
         private const int HeightIdx = 5;
         private const int ColorIdx = 6;
-        private const int FontIdx = 7;
-        private const int MaxSizeIdx = 8;
-        private const int HorizontalAlignmentIdx = 9;
-        private const int VerticalAlignmentIdx = 10;
-        private const int WrapIdx = 11;
-        private const int StretchIdx = 12;
-        private const int JoinDirectionIdx = 13;
+        private const int ShadowColorIdx = 7;
+        private const int ShadowSizeIdx = 8;
+        private const int FontIdx = 9;
+        private const int MaxSizeIdx = 10;
+        private const int HorizontalAlignmentIdx = 11;
+        private const int VerticalAlignmentIdx = 12;
+        private const int WrapIdx = 13;
+        private const int StretchIdx = 14;
+        private const int JoinDirectionIdx = 15;
 
         public Image Background { get; }
         public string Name { get; }
         public Rectangle Area { get; }
         public Color Color { get; }
+        public Color ShadowColor { get; }
+        public int ShadowSize { get; }
         public FontFamily Font { get; }
         public int MaxSize { get; }
         public int MinSize { get; }
@@ -40,13 +44,15 @@ namespace CardCreator.Features.Cards.Model
         public bool StretchImage { get; }
         public JoinDirection JoinDirection { get; }
 
-        public ElementSchema(string name, Image background, Rectangle area, Color color, FontFamily font, 
-            int maxSize, StringFormat stringFormat, bool wrap, bool stretchImage, JoinDirection joinDirection)
+        public ElementSchema(string name, Image background, Rectangle area, Color color, Color shadowColor, int shadowSize,
+            FontFamily font, int maxSize, StringFormat stringFormat, bool wrap, bool stretchImage, JoinDirection joinDirection)
         {
             Name = name;
             Background = background;
             Area = area;
             Color = color;
+            ShadowColor = shadowColor;
+            ShadowSize = shadowSize;
             Font = font;
             MaxSize = maxSize;
             MinSize = Math.Min(6, MaxSize);
@@ -56,12 +62,12 @@ namespace CardCreator.Features.Cards.Model
             JoinDirection = joinDirection;
         }
 
-        public ElementSchema(string name, Image background, int x, int y, int width, int height, Color color, FontFamily font,
+        public ElementSchema(string name, Image background, int x, int y, int width, int height, Color color, Color shadowColor, int shadowSize, FontFamily font,
             int maxSize, StringFormat stringFormat, bool wrap, bool stretchImage, JoinDirection joinDirection)
-            : this(name, background, new Rectangle(x, y, width, height), color, font, maxSize, stringFormat, wrap, stretchImage, joinDirection) { }
+            : this(name, background, new Rectangle(x, y, width, height), color, shadowColor, shadowSize, font, maxSize, stringFormat, wrap, stretchImage, joinDirection) { }
 
         public ElementSchema(ILogger logger, IImageProvider imageProvider, IFontProvider fontProvider,
-            IList<string> parameters, string directory, Color? defaultColor = null) :
+            IList<string> parameters, string directory, Color defaultColor, Color defaultBorderColor) :
             this(
                 parameters[NameIdx],
                 imageProvider.TryGet(Path.Combine(directory, parameters[BackgroundIdx])),
@@ -74,6 +80,9 @@ namespace CardCreator.Features.Cards.Model
                 Parser<int>.Parse(logger, parameters[HeightIdx], (param) => int.Parse(param), (val) => val > 0,
                 $"{(HeightIdx + 1).ToOrdinal()} parameter must be a positive integer, but \"{parameters[HeightIdx]}\" is not."),
                 TryGetColor(parameters[ColorIdx], defaultColor),
+                TryGetColor(parameters[ShadowColorIdx], defaultBorderColor),
+                Parser<int>.Parse(logger, parameters[ShadowSizeIdx], (param) => int.TryParse(param, out var val) ? val : 0, (val) => val >= 0,
+                $"{(ShadowSizeIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[ShadowSizeIdx]}\" is not."),
                 fontProvider.TryGet(parameters[FontIdx]),
                 Parser<int>.Parse(logger, parameters[MaxSizeIdx], (param) => int.Parse(param), (val) => val >= 0,
                 $"{(MaxSizeIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[MaxSizeIdx]}\" is not."),
@@ -86,9 +95,9 @@ namespace CardCreator.Features.Cards.Model
             )
         { }
 
-        private static Color TryGetColor(string color, Color? @default = null)
+        private static Color TryGetColor(string color, Color @default)
         {
-            if (string.IsNullOrEmpty(color)) return @default ?? Color.Black;
+            if (string.IsNullOrEmpty(color)) return @default;
             try
             {
                 return ColorTranslator.FromHtml(color);
