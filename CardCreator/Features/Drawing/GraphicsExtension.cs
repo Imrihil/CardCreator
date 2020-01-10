@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace MyWarCreator.Extensions
@@ -107,6 +108,77 @@ namespace MyWarCreator.Extensions
             return smallestOnFail
                 ? new Font(fontFamily, minFontSize, GraphicsUnit.Pixel)
                 : new Font(fontFamily, maxFontSize, GraphicsUnit.Pixel);
+        }
+
+        /// <summary>
+        /// Draws the specified Image at the specified location and with the scaled size.
+        /// </summary>
+        /// <param name="image">The image to resize.</param>
+        /// <param name="width">The width to resize to.</param>
+        /// <param name="height">The height to resize to.</param>
+        /// <returns>The resized image.</returns>
+        public static void DrawImage(this Graphics graphics, Image image,
+            Rectangle targetRectangle, StringFormat stringFormat, bool stretch)
+        {
+            // Scale.
+            // Get scale factors for both directions.
+            var scaleX = (float)targetRectangle.Width / image.Width;
+            var scaleY = (float)targetRectangle.Height / image.Height;
+
+            if (!stretch)
+            {
+                // To preserve the aspect ratio,
+                // use the smaller scale factor.
+                scaleX = Math.Min(scaleX, scaleY);
+                scaleY = scaleX;
+            }
+
+            var targetWidth = (int)(image.Width * scaleX);
+            var targetHeight = (int)(image.Height * scaleY);
+
+            if (targetWidth == targetRectangle.Width && targetHeight == targetRectangle.Height)
+            {
+                graphics.DrawImage(image, targetRectangle);
+            }
+            else
+            {
+                using Image targetImage = image.Resize(targetWidth, targetHeight);
+
+                var translateX =
+                    stringFormat.Alignment == StringAlignment.Near ? 0 :
+                    stringFormat.Alignment == StringAlignment.Center ? (targetRectangle.Width - targetImage.Width) / 2 :
+                    (targetRectangle.Width - targetImage.Width);
+                var translateY =
+                    stringFormat.LineAlignment == StringAlignment.Near ? 0 :
+                    stringFormat.LineAlignment == StringAlignment.Center ? (targetRectangle.Height - targetImage.Height) / 2 :
+                    (targetRectangle.Height - targetImage.Height);
+
+                graphics.DrawImage(targetImage, targetRectangle.X + translateX, targetRectangle.Y + translateY, targetWidth, targetHeight);
+            }
+        }
+
+        /// <summary>
+        /// Resize the image to the specified width and height.
+        /// </summary>
+        /// <param name="image">The image to resize.</param>
+        /// <param name="width">The width to resize to.</param>
+        /// <param name="height">The height to resize to.</param>
+        /// <returns>The resized image.</returns>
+        private static Bitmap Resize(this Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            using var graphics = Graphics.FromImage(destImage);
+            graphics.CompositingMode = CompositingMode.SourceCopy;
+            graphics.CompositingQuality = CompositingQuality.HighQuality;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+            graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel);
+
+            return destImage;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using CardCreator.Features.Drawing;
@@ -13,13 +14,29 @@ namespace CardCreator.Features.Cards.Model
         public int Repetitions { get; set; }
         private Image Image { get; set; }
 
-        public Card(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory) : base(new List<Element>())
+        public Card(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory) :
+            base(cardSchema.Zip(cardElements, (elementSchema, content) =>
+                elementSchema.Background == null && string.IsNullOrEmpty(content) ? null :
+                    new Element(imageProvider, content, elementSchema, directory))
+                .Where(element => element != null))
         {
             CardSchema = cardSchema;
 
-            foreach (var element in cardSchema.Zip(cardElements, (elementSchema, content) => new Element(imageProvider, content, elementSchema, directory)))
+            MergeElementsByName();
+        }
+
+        private void MergeElementsByName()
+        {
+            foreach (var elementsGroup in this.GroupBy(element => element.ElementSchema.Name))
             {
-                Add(element);
+                var all = elementsGroup.Count();
+                if (all == 1) continue;
+
+                var position = 0;
+                foreach (var element in elementsGroup)
+                {
+                    element.SetPosition(position++, all);
+                }
             }
         }
 
