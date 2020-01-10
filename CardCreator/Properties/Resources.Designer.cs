@@ -80,11 +80,29 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Karty:.
+        /// </summary>
+        public static string Cards {
+            get {
+                return ResourceManager.GetString("Cards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Wybierz plik.
         /// </summary>
         public static string ChooseFile {
             get {
                 return ResourceManager.GetString("ChooseFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wybierz karty.
+        /// </summary>
+        public static string ChooseImages {
+            get {
+                return ResourceManager.GetString("ChooseImages", resourceCulture);
             }
         }
         
@@ -190,7 +208,16 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Przygotuj pdfy do druku.
+        ///   Looks up a localized string similar to Przygotuj pdf z wybranych kart.
+        /// </summary>
+        public static string PrepareChoosenPdf {
+            get {
+                return ResourceManager.GetString("PrepareChoosenPdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Przygotuj pdf do druku.
         /// </summary>
         public static string PreparePdf {
             get {
@@ -215,6 +242,15 @@ namespace CardCreator.Properties {
             get {
                 object obj = ResourceManager.GetObject("runic_altno", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zapisz dokument jako.
+        /// </summary>
+        public static string SavePdf {
+            get {
+                return ResourceManager.GetString("SavePdf", resourceCulture);
             }
         }
         

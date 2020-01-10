@@ -11,6 +11,7 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 
 namespace CardCreator
@@ -47,6 +48,8 @@ namespace CardCreator
 
         private void ConfigureServices(IServiceCollection services)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             services.Configure<AppSettings>(Configuration);
 
             services.AddTransient<MainWindow>();

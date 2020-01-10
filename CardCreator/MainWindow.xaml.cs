@@ -12,6 +12,7 @@ using System.Threading;
 using CardCreator.Settings;
 using Microsoft.Extensions.Options;
 using System.Windows.Controls;
+using System.Linq;
 
 namespace CardCreator
 {
@@ -29,6 +30,7 @@ namespace CardCreator
         private readonly IImageProvider imageProvider;
 
         private OpenFileDialog ChooseFileDialog { get; }
+        private OpenFileDialog ChooseImagesDialog { get; }
 
         public MainWindow(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider)
         {
@@ -40,6 +42,7 @@ namespace CardCreator
             InitializeComponent();
 
             ChooseFileDialog = InitializeChooseFileDialog();
+            ChooseImagesDialog = InitializeChooseImagesDialog();
             InitializeFonts();
             InitializeControls();
             InitializeButtons();
@@ -47,13 +50,34 @@ namespace CardCreator
 
         private OpenFileDialog InitializeChooseFileDialog()
         {
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Excel files (*.xls;*xlsx)|*.xls;*xlsx";
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "Excel files (*.xls;*xlsx)|*.xls;*xlsx",
+                Title = Properties.Resources.ResourceManager.GetString("ChooseFile"),
 #if DEBUG
-            openFileDialog.InitialDirectory = Path.GetFullPath(Directory.GetCurrentDirectory() + "../../../../../AppData");
+                InitialDirectory = Path.GetFullPath(Directory.GetCurrentDirectory() + "../../../../../AppData")
 #else
-            openFileDialog.InitialDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
+                InitialDirectory = Path.GetFullPath(Directory.GetCurrentDirectory())
 #endif
+            };
+            return openFileDialog;
+        }
+
+        private OpenFileDialog InitializeChooseImagesDialog()
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter =
+                    "Images (*.bmp;*.jpg;*.png;*.gif)|*.bmp;*.jpg;*.png;*.gif|" +
+                    "All files (*.*)|*.*",
+                Multiselect = true,
+                Title = Properties.Resources.ResourceManager.GetString("ChooseImages"),
+#if DEBUG
+                InitialDirectory = Path.GetFullPath(Directory.GetCurrentDirectory() + "../../../../../AppData")
+#else
+                InitialDirectory = Path.GetFullPath(Directory.GetCurrentDirectory())
+#endif
+            };
             return openFileDialog;
         }
 
@@ -73,6 +97,7 @@ namespace CardCreator
         {
             GenerateCards_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
             PreparePdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
+            PrepareChoosenPdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
         }
 
         private void InitializeButtons()
@@ -139,7 +164,7 @@ namespace CardCreator
             if (ChooseFileDialog.ShowDialog() == true)
             {
                 var fileInfo = new FileInfo(ChooseFileDialog.FileName);
-                Directory_Label.Content = fileInfo.Name;
+                ChoosenFile_Label.Content = fileInfo.Name;
                 ChooseFileDialog.InitialDirectory = fileInfo.Directory.FullName;
 
                 GenerateCards_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
@@ -168,6 +193,27 @@ namespace CardCreator
         {
             var cts = new CancellationTokenSource();
             var result = mediator.Send(new PdfGeneratingCommand(fileName, cts), cts.Token).GetAwaiter().GetResult();
+            Console.WriteLine(result);
+        }
+
+        private void ChooseImages_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (ChooseImagesDialog.ShowDialog() == true)
+            {
+                var file = ChooseImagesDialog.FileNames.FirstOrDefault();
+                if (file == null) return;
+
+                var fileInfo = new FileInfo(file);
+                ChooseImagesDialog.InitialDirectory = fileInfo.Directory.FullName;
+
+                PrepareChoosenPdf_Button.IsEnabled = ChooseImagesDialog.FileNames.Any();
+            }
+        }
+
+        private void PrepareChoosenPdf_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var cts = new CancellationTokenSource();
+            var result = mediator.Send(new PdfGeneratingFromImagesCommand(ChooseImagesDialog.FileNames, 100, cts), cts.Token).GetAwaiter().GetResult();
             Console.WriteLine(result);
         }
 
