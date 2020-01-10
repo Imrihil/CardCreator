@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:CardCreator.Properties"
         mc:Ignorable="d"
-        Title="CardCreator v.1.2" Width="400" Height="320">
+        Title="CardCreator v.1.2" Width="400" Height="385">
     <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5"/>
@@ -19,20 +19,30 @@
             <RowDefinition Height="5"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="5"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="5"/>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="5"/>
             <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
         <TextBlock Text="{x:Static p:Resources.Hello}" Margin="5,5,5,5" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" />
         <TextBlock Text="{x:Static p:Resources.Description}" Margin="5,5,5,5" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" />
-        <Label Content="{x:Static p:Resources.SourceFile}" Margin="5,0,5,0" Grid.Row="3" Grid.Column="1" />
-        <Button Name="ChooseFile_Button" Content="{x:Static p:Resources.ChooseFile}" Margin="5,5,5,5" Click="ChooseFile_Button_Click" Grid.Row="3" Grid.Column="2" />
-        <Label Name="ChoosenFile_Label" Margin="5,0,5,0" FontStyle="Italic" Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2" />
-        <Button Name="GenerateCards_Button" Content="{x:Static p:Resources.GenerateCards}" Margin="5,5,5,5" Click="GenerateCards_Button_Click" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" />
-        <Button Name="PreparePdf_Button" Content="{x:Static p:Resources.PreparePdf}" Margin="5,5,5,5" Click="PreparePdf_Button_Click" Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2" />
-        <Label Content="{x:Static p:Resources.Cards}" Margin="5,0,5,0" Grid.Row="5" Grid.Column="1" />
-        <Button Name="ChooseImages_Button" Content="{x:Static p:Resources.ChooseImages}" Margin="5,5,5,5" Click="ChooseImages_Button_Click" Grid.Row="5" Grid.Column="2" />
-        <Button Name="PrepareChoosenPdf_Button" Content="{x:Static p:Resources.PrepareChoosenPdf}" Margin="5,5,5,5" Click="PrepareChoosenPdf_Button_Click" Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" />
+        <Separator Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" />
+        <Label Content="{x:Static p:Resources.SourceFile}" Margin="5,0,5,0" Grid.Row="4" Grid.Column="1" />
+        <Label Name="ChoosenFile_Label" Margin="5,0,5,0" FontStyle="Italic" Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2" />
+        <Button Name="ChooseFile_Button" Content="{x:Static p:Resources.ChooseFile}" Margin="5,5,5,5" Click="ChooseFile_Button_Click" Grid.Row="4" Grid.Column="2" />
+        <Button Name="GenerateCards_Button" Content="{x:Static p:Resources.GenerateCards}" Margin="5,5,5,5" Click="GenerateCards_Button_Click" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" />
+        <Button Name="PreparePdf_Button" Content="{x:Static p:Resources.PreparePdf}" Margin="5,5,5,5" Click="PreparePdf_Button_Click" Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" />
+        <Separator Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" />
+        <Label Content="{x:Static p:Resources.Cards}" Margin="5,0,5,0" Grid.Row="7" Grid.Column="1" />
+        <Button Name="ChooseImages_Button" Content="{x:Static p:Resources.ChooseImages}" Margin="5,5,5,5" Click="ChooseImages_Button_Click" Grid.Row="7" Grid.Column="2" />
+        <Label Name="ChoosenImages_Label" Margin="5,0,5,0" FontStyle="Italic" Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="2" />
+        <Label Content="Dpi:" Margin="5,0,5,0" Grid.Row="8" Grid.Column="1" />
+        <TextBox Name="Dpi_TextBox" Margin="5,0,5,0" Text="150" VerticalAlignment="Center" Grid.Row="8" Grid.Column="2" />
+        <Button Name="PrepareChoosenPdf_Button" Content="{x:Static p:Resources.PrepareChoosenPdf}" Margin="5,5,5,5" Click="PrepareChoosenPdf_Button_Click" Grid.Row="8" Grid.Column="3" Grid.ColumnSpan="2" />
+        <Separator Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="4" />
     </Grid>
 </Window>

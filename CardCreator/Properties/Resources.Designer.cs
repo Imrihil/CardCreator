@@ -107,6 +107,15 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wybrano kart: .
+        /// </summary>
+        public static string Choosen {
+            get {
+                return ResourceManager.GetString("Choosen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         public static byte[] colonna_mt {

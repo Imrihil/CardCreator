@@ -1,7 +1,10 @@
 ﻿using CardCreator.Features.System;
+using CardCreator.Settings;
 using CardCreator.View;
 using MediatR;
+using Microsoft.Extensions.Options;
 using Microsoft.Win32;
+using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System;
@@ -32,10 +35,22 @@ namespace CardCreator.Features.Cards
     public class PdfGeneratingFromImagesHandler : IRequestHandler<PdfGeneratingFromImagesCommand, int>
     {
         private readonly ProcessWindow ProcessWindow;
+        private readonly PageSize PageSize;
+        private readonly PageOrientation PageOrientation;
+        private readonly double PageWidthInch;
+        private readonly double PageHeightInch;
+        private readonly double PageMarginPts;
+        private readonly double CardsMarginPts;
 
-        public PdfGeneratingFromImagesHandler(ProcessWindow processWindow)
+        public PdfGeneratingFromImagesHandler(IOptions<AppSettings> settings, ProcessWindow processWindow)
         {
             ProcessWindow = processWindow;
+            PageSize = settings.Value.PageSize;
+            PageOrientation = settings.Value.PageOrientation;
+            PageWidthInch = settings.Value.PageWidthInch;
+            PageHeightInch = settings.Value.PageHeightInch;
+            PageMarginPts = settings.Value.PageMarginPts;
+            CardsMarginPts = settings.Value.CardsMarginPts;
         }
 
         public async Task<int> Handle(PdfGeneratingFromImagesCommand request, CancellationToken cancellationToken)
@@ -56,10 +71,10 @@ namespace CardCreator.Features.Cards
             using var pdf = new PdfDocument();
             PdfPage pdfPage = null;
 
-            var cardWidth = firstImage.Width * PdfConsts.PointsInInch / request.Dpi;
-            var cardHeight = firstImage.Height * PdfConsts.PointsInInch / request.Dpi;
-            var cardsInRow = Math.Max(1, (int)((PdfConsts.A4WidthInch * PdfConsts.PointsInInch - 2 * PdfConsts.PageMarginPts) / (cardWidth + PdfConsts.CardsMarginPts)));
-            var cardsInCol = Math.Max(1, (int)((PdfConsts.A4HeightInch * PdfConsts.PointsInInch - 2 * PdfConsts.PageMarginPts) / (cardHeight + PdfConsts.CardsMarginPts)));
+            var cardWidth = firstImage.Width * AppSettings.PointsInInch / request.Dpi;
+            var cardHeight = firstImage.Height * AppSettings.PointsInInch / request.Dpi;
+            var cardsInRow = Math.Max(1, (int)((PageWidthInch * AppSettings.PointsInInch - 2 * PageMarginPts) / (cardWidth + CardsMarginPts)));
+            var cardsInCol = Math.Max(1, (int)((PageHeightInch * AppSettings.PointsInInch - 2 * PageMarginPts) / (cardHeight + CardsMarginPts)));
             var cardsPerPage = cardsInRow * cardsInCol;
 
             var i = 0;
@@ -72,12 +87,16 @@ namespace CardCreator.Features.Cards
                     var file = new FileInfo(filePath);
                     using var xImage = XImage.FromFile(filePath);
                     if (nCard % cardsPerPage == 0)
+                    {
                         pdfPage = pdf.AddPage();
+                        pdfPage.Size = PageSize;
+                        pdfPage.Orientation = PageOrientation;
+                    }
                     using var xGraphics = XGraphics.FromPdfPage(pdfPage);
                     xGraphics.DrawImage(
                         xImage,
-                        nCard % cardsInRow * (cardWidth + PdfConsts.CardsMarginPts) + PdfConsts.PageMarginPts,
-                        nCard % cardsPerPage / cardsInRow * (cardHeight + PdfConsts.CardsMarginPts) + PdfConsts.PageMarginPts,
+                        nCard % cardsInRow * (cardWidth + CardsMarginPts) + PageMarginPts,
+                        nCard % cardsPerPage / cardsInRow * (cardHeight + CardsMarginPts) + PageMarginPts,
                         cardWidth,
                         cardHeight);
                     ++nCard;

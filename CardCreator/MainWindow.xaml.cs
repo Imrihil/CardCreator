@@ -98,11 +98,12 @@ namespace CardCreator
             GenerateCards_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
             PreparePdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
             PrepareChoosenPdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
+            Dpi_TextBox.Text = settings.Dpi.ToString();
         }
 
         private void InitializeButtons()
         {
-            var currentRow = MainGrid.RowDefinitions.Count - 2;
+            var currentRow = MainGrid.RowDefinitions.Count - 1;
             foreach (var button in settings.Buttons)
             {
                 currentRow = NewButtonRow(currentRow);
@@ -111,7 +112,16 @@ namespace CardCreator
                     InitializeButton(button, ButtonAction.Generate, button.Generate, currentRow);
                 if (!string.IsNullOrEmpty(button.Pdf))
                     InitializeButton(button, ButtonAction.Pdf, button.Pdf, currentRow);
+
+                currentRow++;
             }
+        }
+
+        private int NewButtonRow(int currentRow)
+        {
+            Application.Current.MainWindow.Height += RowHeight;
+            MainGrid.RowDefinitions.Insert(currentRow, new RowDefinition { Height = new GridLength(RowHeight) });
+            return currentRow;
         }
 
         private void InitializeButton(ButtonSettings button, ButtonAction action, string content, int row)
@@ -130,13 +140,6 @@ namespace CardCreator
             Grid.SetColumnSpan(control, 2);
 
             MainGrid.Children.Add(control);
-        }
-
-        private int NewButtonRow(int currentRow)
-        {
-            Application.Current.MainWindow.Height += RowHeight;
-            MainGrid.RowDefinitions.Insert(currentRow, new RowDefinition { Height = new GridLength(RowHeight) });
-            return currentRow + 1;
         }
 
         private int GetColumnNumber(ButtonAction action)
@@ -206,6 +209,7 @@ namespace CardCreator
                 var fileInfo = new FileInfo(file);
                 ChooseImagesDialog.InitialDirectory = fileInfo.Directory.FullName;
 
+                ChoosenImages_Label.Content = $"{Properties.Resources.ResourceManager.GetString("Choosen")} {ChooseImagesDialog.FileNames.Count()}";
                 PrepareChoosenPdf_Button.IsEnabled = ChooseImagesDialog.FileNames.Any();
             }
         }
@@ -213,8 +217,15 @@ namespace CardCreator
         private void PrepareChoosenPdf_Button_Click(object sender, RoutedEventArgs e)
         {
             var cts = new CancellationTokenSource();
-            var result = mediator.Send(new PdfGeneratingFromImagesCommand(ChooseImagesDialog.FileNames, 100, cts), cts.Token).GetAwaiter().GetResult();
-            Console.WriteLine(result);
+            if (int.TryParse(Dpi_TextBox.Text, out var dpi))
+            {
+                var result = mediator.Send(new PdfGeneratingFromImagesCommand(ChooseImagesDialog.FileNames, dpi, cts), cts.Token).GetAwaiter().GetResult();
+                Console.WriteLine(result);
+            }
+            else
+            {
+                MessageBox.Show($"{Dpi_TextBox.Text} is not a valid integer", $"Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)

@@ -192,6 +192,9 @@ Aby dodać nowe przyciski do panelu należy zmodyfikować plik "appsettings.json
   <data name="ChooseImages" xml:space="preserve">
     <value>Wybierz karty</value>
   </data>
+  <data name="Choosen" xml:space="preserve">
+    <value>Wybrano kart: </value>
+  </data>
   <data name="PrepareChoosenPdf" xml:space="preserve">
     <value>Przygotuj pdf z wybranych kart</value>
   </data>
