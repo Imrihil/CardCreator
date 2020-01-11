@@ -47,10 +47,10 @@ namespace CardCreator.Features.Cards.Model
             CommentIdxs = commentIdx ?? new HashSet<int>();
         }
 
-        public CardSchema(ILogger logger, IFontProvider fontProvider, IImageProvider imageProvider, IList<string> parameters, List<List<string>> elementSchemasParams, string directory) :
+        public CardSchema(ILogger logger, IFontProvider fontProvider, IImageProvider imageProvider, IList<string> parameters, List<List<string>> elementSchemasParams, string directory, bool generateImages = true) :
             this(
                 parameters[NameIdx],
-                imageProvider.TryGet(Path.Combine(directory, parameters[BackgroundIdx])),
+                generateImages ? imageProvider.TryGet(Path.Combine(directory, parameters[BackgroundIdx])) : null,
                 Parser<int>.Parse(logger, parameters[WidthPxIdx], (param) => int.Parse(param), (val) => val > 0,
                 $"{(WidthPxIdx + 1).ToOrdinal()} parameter must be a positive integer, but \"{parameters[WidthPxIdx]}\" is not."),
                 Parser<int>.Parse(logger, parameters[HeightPxIdx], (param) => int.Parse(param), (val) => val > 0,
@@ -59,7 +59,7 @@ namespace CardCreator.Features.Cards.Model
                 $"{(WidthInchIdx + 1).ToOrdinal()} parameter must be a positive number, but \"{parameters[WidthInchIdx]}\" is not."),
                 Parser<double>.Parse(logger, parameters[HeightInchIdx], (param) => double.Parse(param.Replace(',', '.'), CultureInfo.InvariantCulture), (val) => val > 0,
                 $"{(HeightInchIdx + 1).ToOrdinal()} parameter must be a positive number, but \"{parameters[HeightInchIdx]}\" is not."),
-                InitElementSchemas(logger, fontProvider, imageProvider, elementSchemasParams, directory, TryGetColor(parameters[ColorIdx]), TryGetColor(parameters[ShadowColorIdx])),
+                InitElementSchemas(logger, fontProvider, imageProvider, elementSchemasParams, directory, TryGetColor(parameters[ColorIdx]), TryGetColor(parameters[ShadowColorIdx]), generateImages),
                 TryGetColor(parameters[ColorIdx]),
                 TryGetColor(parameters[ShadowColorIdx]),
                 GetCommentIdxs(elementSchemasParams)
@@ -77,9 +77,9 @@ namespace CardCreator.Features.Cards.Model
             return new HashSet<int>(commentIdxs);
         }
 
-        private static List<ElementSchema> InitElementSchemas(ILogger logger, IFontProvider fontProvider, IImageProvider imageProvider, List<List<string>> elementSchemasParams, string directory, Color? defaultColor, Color? defaultShadowColor)
+        private static List<ElementSchema> InitElementSchemas(ILogger logger, IFontProvider fontProvider, IImageProvider imageProvider, List<List<string>> elementSchemasParams, string directory, Color? defaultColor, Color? defaultShadowColor, bool generateImages)
         {
-            var elementSchemas = new List<ElementSchema>(elementSchemasParams.Where(elementSchemaParams => !string.IsNullOrEmpty(elementSchemaParams.First())).Select(elementSchemaParams => new ElementSchema(logger, imageProvider, fontProvider, elementSchemaParams, directory, defaultColor ?? Color.Black, defaultShadowColor ?? Color.White)));
+            var elementSchemas = new List<ElementSchema>(elementSchemasParams.Where(elementSchemaParams => !string.IsNullOrEmpty(elementSchemaParams.First())).Select(elementSchemaParams => new ElementSchema(logger, imageProvider, fontProvider, elementSchemaParams, directory, defaultColor ?? Color.Black, defaultShadowColor ?? Color.White, generateImages)));
 
             return elementSchemas;
         }

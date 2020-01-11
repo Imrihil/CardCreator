@@ -201,4 +201,7 @@ Aby dodać nowe przyciski do panelu należy zmodyfikować plik "appsettings.json
   <data name="SavePdf" xml:space="preserve">
     <value>Zapisz dokument jako</value>
   </data>
+  <data name="GenerateImages" xml:space="preserve">
+    <value>Generuj obrazki</value>
+  </data>
 </root>

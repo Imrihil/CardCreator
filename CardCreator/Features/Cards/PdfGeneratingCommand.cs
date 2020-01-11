@@ -19,11 +19,13 @@ namespace CardCreator.Features.Cards
     public class PdfGeneratingCommand : IRequest<int>
     {
         public string FilePath { get; set; }
+        public bool GenerateImages { get; set; }
         public CancellationTokenSource Cts { get; set; }
 
-        public PdfGeneratingCommand(string filePath, CancellationTokenSource cts)
+        public PdfGeneratingCommand(string filePath, bool generateImages, CancellationTokenSource cts)
         {
             FilePath = filePath;
+            GenerateImages = generateImages;
             Cts = cts;
         }
     }
@@ -67,19 +69,19 @@ namespace CardCreator.Features.Cards
             ProcessWindow.SetProgress(100.0 / (1.0 + Math.Max(CardSchema.ParamsNumber, ElementSchema.ParamsNumber) + readCardFile.CardsElements.Count));
 
             ProcessWindow.LogMessage($"Initializing card schemas ...");
-            var cardSchema = await GetCardSchema(readCardFile, file.DirectoryName);
+            var cardSchema = await GetCardSchema(readCardFile, file.DirectoryName, request.GenerateImages);
             if (cardSchema == null) return 0;
             ProcessWindow.LogMessage($"... done.");
             ProcessWindow.SetProgress(GetProgress(0, readCardFile.CardsElements.Count));
 
             ProcessWindow.LogMessage("Creating document ...");
-            var successes = await GeneratePdf(readCardFile, cardSchema, file);
+            var successes = await GeneratePdf(readCardFile, cardSchema, file, request.GenerateImages);
             ProcessWindow.LogMessage($"... done.");
 
             return successes;
         }
 
-        private async Task<int> GeneratePdf(ReadCardFileResults readCardFile, CardSchema cardSchema, FileInfo file)
+        private async Task<int> GeneratePdf(ReadCardFileResults readCardFile, CardSchema cardSchema, FileInfo file, bool generateImages)
         {
             using var pdf = new PdfDocument();
             PdfPage pdfPage = null;
@@ -97,7 +99,7 @@ namespace CardCreator.Features.Cards
             {
                 try
                 {
-                    var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName);
+                    var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
                     try
                     {
                         var n = readCardFile.CardsRepetitions[i];

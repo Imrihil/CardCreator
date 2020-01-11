@@ -169,6 +169,15 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generuj obrazki.
+        /// </summary>
+        public static string GenerateImages {
+            get {
+                return ResourceManager.GetString("GenerateImages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         public static byte[] Got_Heroin {

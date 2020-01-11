@@ -17,11 +17,13 @@ namespace CardCreator.Features.Cards
     public class CardGeneratingCommand : IRequest<int>
     {
         public string FilePath { get; }
+        public bool GenerateImages { get; set; }
         public CancellationTokenSource Cts { get; }
 
-        public CardGeneratingCommand(string filePath, CancellationTokenSource cts)
+        public CardGeneratingCommand(string filePath, bool generateImages, CancellationTokenSource cts)
         {
             FilePath = filePath;
+            GenerateImages = generateImages;
             Cts = cts;
         }
     }
@@ -54,19 +56,19 @@ namespace CardCreator.Features.Cards
             ProcessWindow.SetProgress(100.0 / (1.0 + Math.Max(CardSchema.ParamsNumber, ElementSchema.ParamsNumber) + readCardFile.CardsElements.Count));
 
             ProcessWindow.LogMessage($"Initializing card schemas ...");
-            var cardSchema = await GetCardSchema(readCardFile, file.DirectoryName);
+            var cardSchema = await GetCardSchema(readCardFile, file.DirectoryName, request.GenerateImages);
             if (cardSchema == null) return 0;
             ProcessWindow.LogMessage($"... done.");
             ProcessWindow.SetProgress(GetProgress(0, readCardFile.CardsElements.Count));
 
             ProcessWindow.LogMessage($"Generating cards ...");
-            var successes = await GenerateCards(readCardFile, cardSchema, file);
+            var successes = await GenerateCards(readCardFile, cardSchema, file, request.GenerateImages);
             ProcessWindow.LogMessage($"... done.");
 
             return successes;
         }
 
-        private async Task<int> GenerateCards(ReadCardFileResults readCardFile, CardSchema cardSchema, FileInfo file)
+        private async Task<int> GenerateCards(ReadCardFileResults readCardFile, CardSchema cardSchema, FileInfo file, bool generateImages)
         {
             var directory = Path.Combine(file.DirectoryName, directoryName);
             if (!Directory.Exists(directory))
@@ -80,7 +82,7 @@ namespace CardCreator.Features.Cards
                 {
                     try
                     {
-                        var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName);
+                        var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
                         try
                         {
                             card.GetImage().Save(Path.Combine(directory, GetFileName(card, i)), ImageFormat.Png);

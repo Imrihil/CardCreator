@@ -12,10 +12,15 @@ namespace CardCreator.Features.Cards.Model
         public ElementSchema ElementSchema { get; private set; }
         private Image Image { get; }
 
-        public Element(IImageProvider imageProvider, string content, ElementSchema elementSchema, string directory)
+        public Element(IImageProvider imageProvider, string content, ElementSchema elementSchema, string directory, bool generateImages = true)
         {
             Content = content;
             Image = imageProvider.TryGet(Path.Combine(directory, content));
+            if (Image != null && !generateImages)
+            {
+                Content = null;
+                Image = null;
+            }
             ElementSchema = elementSchema;
         }
 
@@ -29,7 +34,7 @@ namespace CardCreator.Features.Cards.Model
 
             if (Image != null)
                 graphics.DrawImage(Image, ElementSchema.Area, ElementSchema.StringFormat.StringFormat, ElementSchema.StretchImage);
-            else
+            else if (!string.IsNullOrWhiteSpace(Content))
                 graphics.DrawAdjustedStringWithShadow(Content, ElementSchema.Font, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.Area, ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.MinSize, true, ElementSchema.Wrap);
         }
 

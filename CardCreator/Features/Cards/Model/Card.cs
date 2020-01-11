@@ -14,22 +14,22 @@ namespace CardCreator.Features.Cards.Model
         public int Repetitions { get; set; }
         private Image Image { get; set; }
 
-        public Card(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory) :
-            base(InitElements(imageProvider, cardSchema, cardElements, directory))
+        public Card(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory, bool generateImages = true) :
+            base(InitElements(imageProvider, cardSchema, cardElements, directory, generateImages))
         {
             CardSchema = cardSchema;
 
             MergeElementsByName();
         }
 
-        private static IEnumerable<Element> InitElements(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory)
+        private static IEnumerable<Element> InitElements(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory, bool generateImages)
         {
             var i = 0;
             var elements = cardElements
                 .Where(_ => !cardSchema.CommentIdxs.Contains(i++))
                 .Zip(cardSchema, (content, elementSchema) =>
                        elementSchema.Background == null && string.IsNullOrEmpty(content) ? null :
-                           new Element(imageProvider, content, elementSchema, directory))
+                           new Element(imageProvider, content, elementSchema, directory, generateImages))
                        .Where(element => element != null);
 
             return elements;

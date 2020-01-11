@@ -188,14 +188,14 @@ namespace CardCreator
         private void GenerateCard(string fileName)
         {
             var cts = new CancellationTokenSource();
-            var result = mediator.Send(new CardGeneratingCommand(fileName, cts), cts.Token).GetAwaiter().GetResult();
+            var result = mediator.Send(new CardGeneratingCommand(fileName, GenerateImages_Checkbox.IsChecked ?? true, cts), cts.Token).GetAwaiter().GetResult();
             Console.WriteLine(result);
         }
 
         private void PreparePdf(string fileName)
         {
             var cts = new CancellationTokenSource();
-            var result = mediator.Send(new PdfGeneratingCommand(fileName, cts), cts.Token).GetAwaiter().GetResult();
+            var result = mediator.Send(new PdfGeneratingCommand(fileName, GenerateImages_Checkbox.IsChecked ?? true, cts), cts.Token).GetAwaiter().GetResult();
             Console.WriteLine(result);
         }
 

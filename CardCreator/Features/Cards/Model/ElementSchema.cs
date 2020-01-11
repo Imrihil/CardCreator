@@ -68,10 +68,10 @@ namespace CardCreator.Features.Cards.Model
             : this(name, background, new Rectangle(x, y, width, height), color, shadowColor, shadowSize, font, maxSize, stringFormat, wrap, stretchImage, joinDirection) { }
 
         public ElementSchema(ILogger logger, IImageProvider imageProvider, IFontProvider fontProvider,
-            IList<string> parameters, string directory, Color defaultColor, Color defaultBorderColor) :
+            IList<string> parameters, string directory, Color defaultColor, Color defaultBorderColor, bool generateImages = true) :
             this(
                 parameters[NameIdx],
-                imageProvider.TryGet(Path.Combine(directory, parameters[BackgroundIdx])),
+                generateImages ? imageProvider.TryGet(Path.Combine(directory, parameters[BackgroundIdx])) : null,
                 Parser<int>.Parse(logger, parameters[XIdx], (param) => string.IsNullOrEmpty(param) ? 0 : int.Parse(param), (val) => val >= 0,
                 $"{(XIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[XIdx]}\" is not."),
                 Parser<int>.Parse(logger, parameters[YIdx], (param) => string.IsNullOrEmpty(param) ? 0 : int.Parse(param), (val) => val >= 0,
