@@ -1,11 +1,10 @@
-﻿using CardCreator.Features.Drawing.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 
-namespace MyWarCreator.Extensions
+namespace CardCreator.Features.Drawing
 {
     public static class GraphicsExtensions
     {
@@ -36,18 +35,6 @@ namespace MyWarCreator.Extensions
             graphics.DrawString(s, font, brush, layoutRectangle, format);
         }
 
-        public static void DrawAdjustedStringWithShadow(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color shadowColor, int shadowSize, RectangleF layoutRectangle, int maxFontSize, StringFormatExtended format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)
-        {
-            if (!format.IsExtended)
-            {
-                graphics.DrawAdjustedStringWithShadow(s, fontFamily, color, shadowColor, shadowSize, layoutRectangle, maxFontSize, format.StringFormat, minFontSize, smallestOnFail, wordWrap);
-                return;
-            }
-            graphics.DrawAdjustedStringWithShadow(s, fontFamily, color, shadowColor, shadowSize, layoutRectangle, maxFontSize, format.StringFormat, minFontSize, smallestOnFail, wordWrap);
-            //GetAdjustedFont(this Graphics graphics, string graphicString, FontFamily fontFamily, RectangleF container, StringFormat stringFormat, int maxFontSize, int minFontSize, bool smallestOnFail = true, bool wordWrap = true);
-            //var adjustedSizeNew = graphics.MeasureString(graphicString, testFont, new SizeF(container.Width, container.Height), stringFormat, out var characterFitted, out var linesFilled);
-        }
-
         public static void DrawAdjustedStringWithShadow(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color shadowColor, int shadowSize, RectangleF layoutRectangle, int maxFontSize, StringFormat format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)
         {
             switch (shadowSize)
@@ -64,15 +51,34 @@ namespace MyWarCreator.Extensions
             }
         }
 
-        private static void DrawAdjustedStringWithShadow(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color borderColor, RectangleF layoutRectangle, int maxFontSize, StringFormat format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)
+        public static void DrawStringWithShadow(this Graphics graphics, string s, Font font, Color color, Color shadowColor, int shadowSize, RectangleF layoutRectangle, StringFormat format = default)
         {
-            using var font = graphics.GetAdjustedFont(s, fontFamily, layoutRectangle, format, maxFontSize, minFontSize, smallestOnFail, wordWrap);
-            graphics.DrawStringWithShadow(s, font, color, borderColor, layoutRectangle, format);
+            switch (shadowSize)
+            {
+                case 0:
+                    {
+                        using var brush = new SolidBrush(color);
+                        graphics.DrawString(s, font, brush, layoutRectangle, format);
+                        break;
+                    }
+                case 1:
+                    graphics.DrawStringWithBorder(s, font, color, shadowColor, layoutRectangle, format);
+                    break;
+                default:
+                    graphics.DrawStringWithShadow(s, font, color, shadowColor, layoutRectangle, format);
+                    break;
+            }
         }
 
-        private static void DrawStringWithShadow(this Graphics graphics, string s, Font font, Color color, Color borderColor, RectangleF layoutRectangle, StringFormat format = default)
+        private static void DrawAdjustedStringWithShadow(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color shadowColor, RectangleF layoutRectangle, int maxFontSize, StringFormat format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)
         {
-            using (Brush brush = new SolidBrush(Color.FromArgb((int)((float)borderColor.A * 4 / 5), borderColor)))
+            using var font = graphics.GetAdjustedFont(s, fontFamily, layoutRectangle, format, maxFontSize, minFontSize, smallestOnFail, wordWrap);
+            graphics.DrawStringWithShadow(s, font, color, shadowColor, layoutRectangle, format);
+        }
+
+        internal static void DrawStringWithShadow(this Graphics graphics, string s, Font font, Color color, Color shadowColor, RectangleF layoutRectangle, StringFormat format = default)
+        {
+            using (Brush brush = new SolidBrush(Color.FromArgb((int)((float)shadowColor.A * 4 / 5), shadowColor)))
             {
                 foreach (var offset in CloseBorderModifiers)
                 {
@@ -82,7 +88,7 @@ namespace MyWarCreator.Extensions
                 }
             }
 
-            using (Brush brush = new SolidBrush(Color.FromArgb((int)((float)borderColor.A / 4), borderColor)))
+            using (Brush brush = new SolidBrush(Color.FromArgb((int)((float)shadowColor.A / 4), shadowColor)))
             {
                 foreach (var offset in ShadowModifiers)
                 {
@@ -96,16 +102,16 @@ namespace MyWarCreator.Extensions
                 graphics.DrawString(s, font, brush, layoutRectangle, format);
         }
 
-        private static void DrawAdjustedStringWithBorder(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color borderColor, RectangleF layoutRectangle, int maxFontSize, StringFormat format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)
+        private static void DrawAdjustedStringWithBorder(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color shadowColor, RectangleF layoutRectangle, int maxFontSize, StringFormat format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)
         {
             using var font = graphics.GetAdjustedFont(s, fontFamily, layoutRectangle, format, maxFontSize, minFontSize, smallestOnFail, wordWrap);
-            graphics.DrawStringWithBorder(s, font, color, borderColor, layoutRectangle, format);
+            graphics.DrawStringWithBorder(s, font, color, shadowColor, layoutRectangle, format);
         }
 
-        private static void DrawStringWithBorder(this Graphics graphics, string s, Font font, Color color, Color borderColor, RectangleF layoutRectangle, StringFormat format = default)
+        private static void DrawStringWithBorder(this Graphics graphics, string s, Font font, Color color, Color shadowColor, RectangleF layoutRectangle, StringFormat format = default)
         {
             using var brush = new SolidBrush(color);
-            using var borderBrush = new SolidBrush(borderColor);
+            using var borderBrush = new SolidBrush(shadowColor);
 
             foreach (var offset in CloseBorderModifiers)
             {
@@ -115,7 +121,7 @@ namespace MyWarCreator.Extensions
             graphics.DrawString(s, font, brush, layoutRectangle, format);
         }
 
-        private static Font GetAdjustedFont(this Graphics graphics, string graphicString, FontFamily fontFamily, RectangleF container, StringFormat stringFormat, int maxFontSize, int minFontSize, bool smallestOnFail = true, bool wordWrap = true)
+        internal static Font GetAdjustedFont(this Graphics graphics, string s, FontFamily fontFamily, RectangleF layoutRectangle, StringFormat stringFormat, int maxFontSize, int minFontSize, bool smallestOnFail = true, bool wordWrap = true)
         {
             // We utilize MeasureString which we get via a control instance           
             for (var adjustedSize = maxFontSize; adjustedSize >= minFontSize; adjustedSize--)
@@ -123,9 +129,9 @@ namespace MyWarCreator.Extensions
                 var testFont = new Font(fontFamily, adjustedSize, GraphicsUnit.Pixel);
 
                 // Test the string with the new size
-                var adjustedSizeNew = graphics.MeasureString(graphicString, testFont, new SizeF(container.Width, container.Height), stringFormat, out var characterFitted, out var linesFilled);
+                var adjustedSizeNew = graphics.MeasureString(s, testFont, new SizeF(layoutRectangle.Width, layoutRectangle.Height), stringFormat, out var characterFitted, out var linesFilled);
 
-                if (characterFitted == graphicString.Length && (wordWrap || linesFilled == graphicString.Count(x => x == '\n') + 1) && container.Width > Convert.ToInt32(adjustedSizeNew.Width) && container.Height > Convert.ToInt32(adjustedSizeNew.Height))
+                if (characterFitted == s.Length && (wordWrap || linesFilled == s.Count(x => x == '\n') + 1) && layoutRectangle.Width > Convert.ToInt32(adjustedSizeNew.Width) && layoutRectangle.Height > Convert.ToInt32(adjustedSizeNew.Height))
                 {
                     // Good font, return it
                     return testFont;
@@ -147,12 +153,12 @@ namespace MyWarCreator.Extensions
         /// <param name="height">The height to resize to.</param>
         /// <returns>The resized image.</returns>
         public static void DrawImage(this Graphics graphics, Image image,
-            Rectangle targetRectangle, StringFormat stringFormat, bool stretch)
+            Rectangle layoutRectangle, StringFormat stringFormat, bool stretch)
         {
             // Scale.
             // Get scale factors for both directions.
-            var scaleX = (float)targetRectangle.Width / image.Width;
-            var scaleY = (float)targetRectangle.Height / image.Height;
+            var scaleX = (float)layoutRectangle.Width / image.Width;
+            var scaleY = (float)layoutRectangle.Height / image.Height;
 
             if (!stretch)
             {
@@ -165,9 +171,9 @@ namespace MyWarCreator.Extensions
             var targetWidth = (int)(image.Width * scaleX);
             var targetHeight = (int)(image.Height * scaleY);
 
-            if (targetWidth == targetRectangle.Width && targetHeight == targetRectangle.Height)
+            if (targetWidth == layoutRectangle.Width && targetHeight == layoutRectangle.Height)
             {
-                graphics.DrawImage(image, targetRectangle);
+                graphics.DrawImage(image, layoutRectangle);
             }
             else
             {
@@ -175,14 +181,14 @@ namespace MyWarCreator.Extensions
 
                 var translateX =
                     stringFormat.Alignment == StringAlignment.Near ? 0 :
-                    stringFormat.Alignment == StringAlignment.Center ? (targetRectangle.Width - targetImage.Width) / 2 :
-                    (targetRectangle.Width - targetImage.Width);
+                    stringFormat.Alignment == StringAlignment.Center ? (layoutRectangle.Width - targetImage.Width) / 2 :
+                    layoutRectangle.Width - targetImage.Width;
                 var translateY =
                     stringFormat.LineAlignment == StringAlignment.Near ? 0 :
-                    stringFormat.LineAlignment == StringAlignment.Center ? (targetRectangle.Height - targetImage.Height) / 2 :
-                    (targetRectangle.Height - targetImage.Height);
+                    stringFormat.LineAlignment == StringAlignment.Center ? (layoutRectangle.Height - targetImage.Height) / 2 :
+                    layoutRectangle.Height - targetImage.Height;
 
-                graphics.DrawImage(targetImage, targetRectangle.X + translateX, targetRectangle.Y + translateY, targetWidth, targetHeight);
+                graphics.DrawImage(targetImage, layoutRectangle.X + translateX, layoutRectangle.Y + translateY, targetWidth, targetHeight);
             }
         }
 

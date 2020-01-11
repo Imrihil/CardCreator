@@ -1,6 +1,5 @@
 ﻿using CardCreator.Features.Drawing;
 using CardCreator.Features.Images;
-using MyWarCreator.Extensions;
 using System.Drawing;
 using System.IO;
 
