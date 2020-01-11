@@ -1,7 +1,6 @@
 ﻿using CardCreator.Features.Drawing;
 using CardCreator.Features.Images;
 using MyWarCreator.Extensions;
-using System;
 using System.Drawing;
 using System.IO;
 
@@ -22,11 +21,14 @@ namespace CardCreator.Features.Cards.Model
 
         public void Draw(Graphics graphics)
         {
+            if (ElementSchema.Area.Width == 0 && ElementSchema.Area.Height == 0)
+                return;
+
             if (ElementSchema.Background != null)
                 graphics.DrawImage(ElementSchema.Background, ElementSchema.Area);
 
             if (Image != null)
-                graphics.DrawImage(Image, ElementSchema.Area, ElementSchema.StringFormat, ElementSchema.StretchImage);
+                graphics.DrawImage(Image, ElementSchema.Area, ElementSchema.StringFormat.StringFormat, ElementSchema.StretchImage);
             else
                 graphics.DrawAdjustedStringWithShadow(Content, ElementSchema.Font, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.Area, ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.MinSize, true, ElementSchema.Wrap);
         }

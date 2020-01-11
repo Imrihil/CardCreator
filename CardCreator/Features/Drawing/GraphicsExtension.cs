@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CardCreator.Features.Drawing.Model;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -33,6 +34,18 @@ namespace MyWarCreator.Extensions
             using var font = graphics.GetAdjustedFont(s, fontFamily, layoutRectangle, format, maxFontSize, minFontSize, smallestOnFail, wordWrap);
             using var brush = new SolidBrush(color);
             graphics.DrawString(s, font, brush, layoutRectangle, format);
+        }
+
+        public static void DrawAdjustedStringWithShadow(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color shadowColor, int shadowSize, RectangleF layoutRectangle, int maxFontSize, StringFormatExtended format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)
+        {
+            if (!format.IsExtended)
+            {
+                graphics.DrawAdjustedStringWithShadow(s, fontFamily, color, shadowColor, shadowSize, layoutRectangle, maxFontSize, format.StringFormat, minFontSize, smallestOnFail, wordWrap);
+                return;
+            }
+            graphics.DrawAdjustedStringWithShadow(s, fontFamily, color, shadowColor, shadowSize, layoutRectangle, maxFontSize, format.StringFormat, minFontSize, smallestOnFail, wordWrap);
+            //GetAdjustedFont(this Graphics graphics, string graphicString, FontFamily fontFamily, RectangleF container, StringFormat stringFormat, int maxFontSize, int minFontSize, bool smallestOnFail = true, bool wordWrap = true);
+            //var adjustedSizeNew = graphics.MeasureString(graphicString, testFont, new SizeF(container.Width, container.Height), stringFormat, out var characterFitted, out var linesFilled);
         }
 
         public static void DrawAdjustedStringWithShadow(this Graphics graphics, string s, FontFamily fontFamily, Color color, Color shadowColor, int shadowSize, RectangleF layoutRectangle, int maxFontSize, StringFormat format = default, int minFontSize = 0, bool smallestOnFail = true, bool wordWrap = true)

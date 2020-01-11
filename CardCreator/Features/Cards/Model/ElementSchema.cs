@@ -1,4 +1,5 @@
-﻿using CardCreator.Features.Fonts;
+﻿using CardCreator.Features.Drawing.Model;
+using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
 using CardCreator.Features.Logging;
 using CardCreator.Features.System;
@@ -39,13 +40,13 @@ namespace CardCreator.Features.Cards.Model
         public FontFamily Font { get; }
         public int MaxSize { get; }
         public int MinSize { get; }
-        public StringFormat StringFormat { get; }
+        public StringFormatExtended StringFormat { get; }
         public bool Wrap { get; }
         public bool StretchImage { get; }
         public JoinDirection JoinDirection { get; }
 
         public ElementSchema(string name, Image background, Rectangle area, Color color, Color shadowColor, int shadowSize,
-            FontFamily font, int maxSize, StringFormat stringFormat, bool wrap, bool stretchImage, JoinDirection joinDirection)
+            FontFamily font, int maxSize, StringFormatExtended stringFormat, bool wrap, bool stretchImage, JoinDirection joinDirection)
         {
             Name = name;
             Background = background;
@@ -63,7 +64,7 @@ namespace CardCreator.Features.Cards.Model
         }
 
         public ElementSchema(string name, Image background, int x, int y, int width, int height, Color color, Color shadowColor, int shadowSize, FontFamily font,
-            int maxSize, StringFormat stringFormat, bool wrap, bool stretchImage, JoinDirection joinDirection)
+            int maxSize, StringFormatExtended stringFormat, bool wrap, bool stretchImage, JoinDirection joinDirection)
             : this(name, background, new Rectangle(x, y, width, height), color, shadowColor, shadowSize, font, maxSize, stringFormat, wrap, stretchImage, joinDirection) { }
 
         public ElementSchema(ILogger logger, IImageProvider imageProvider, IFontProvider fontProvider,
@@ -71,22 +72,22 @@ namespace CardCreator.Features.Cards.Model
             this(
                 parameters[NameIdx],
                 imageProvider.TryGet(Path.Combine(directory, parameters[BackgroundIdx])),
-                Parser<int>.Parse(logger, parameters[XIdx], (param) => int.Parse(param), (val) => val >= 0,
+                Parser<int>.Parse(logger, parameters[XIdx], (param) => string.IsNullOrEmpty(param) ? 0 : int.Parse(param), (val) => val >= 0,
                 $"{(XIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[XIdx]}\" is not."),
-                Parser<int>.Parse(logger, parameters[YIdx], (param) => int.Parse(param), (val) => val >= 0,
+                Parser<int>.Parse(logger, parameters[YIdx], (param) => string.IsNullOrEmpty(param) ? 0 : int.Parse(param), (val) => val >= 0,
                 $"{(YIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[YIdx]}\" is not."),
-                Parser<int>.Parse(logger, parameters[WidthIdx], (param) => int.Parse(param), (val) => val > 0,
-                $"{(WidthIdx + 1).ToOrdinal()} parameter must be a positive integer, but \"{parameters[WidthIdx]}\" is not."),
-                Parser<int>.Parse(logger, parameters[HeightIdx], (param) => int.Parse(param), (val) => val > 0,
-                $"{(HeightIdx + 1).ToOrdinal()} parameter must be a positive integer, but \"{parameters[HeightIdx]}\" is not."),
+                Parser<int>.Parse(logger, parameters[WidthIdx], (param) => string.IsNullOrEmpty(param) ? 0 : int.Parse(param), (val) => val >= 0,
+                $"{(WidthIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[WidthIdx]}\" is not."),
+                Parser<int>.Parse(logger, parameters[HeightIdx], (param) => string.IsNullOrEmpty(param) ? 0 : int.Parse(param), (val) => val >= 0,
+                $"{(HeightIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[HeightIdx]}\" is not."),
                 TryGetColor(parameters[ColorIdx], defaultColor),
                 TryGetColor(parameters[ShadowColorIdx], defaultBorderColor),
                 Parser<int>.Parse(logger, parameters[ShadowSizeIdx], (param) => int.TryParse(param, out var val) ? val : 0, (val) => val >= 0,
                 $"{(ShadowSizeIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[ShadowSizeIdx]}\" is not."),
                 fontProvider.TryGet(parameters[FontIdx]),
-                Parser<int>.Parse(logger, parameters[MaxSizeIdx], (param) => int.Parse(param), (val) => val >= 0,
+                Parser<int>.Parse(logger, parameters[MaxSizeIdx], (param) => string.IsNullOrEmpty(param) ? 12 : int.Parse(param), (val) => val >= 0,
                 $"{(MaxSizeIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[MaxSizeIdx]}\" is not."),
-                GetStringFormat(parameters[HorizontalAlignmentIdx], parameters[VerticalAlignmentIdx]),
+                new StringFormatExtended(parameters[HorizontalAlignmentIdx], parameters[VerticalAlignmentIdx]),
                 Parser<bool>.Parse(logger, parameters[WrapIdx], (param) => string.IsNullOrEmpty(param) ? true : bool.Parse(param), _ => true,
                 $"{(WrapIdx + 1).ToOrdinal()} parameter must be a boolean, but \"{parameters[WrapIdx]}\" is not."),
                 Parser<bool>.Parse(logger, parameters[StretchIdx], (param) => string.IsNullOrEmpty(param) ? false : bool.Parse(param), _ => true,
@@ -105,38 +106,6 @@ namespace CardCreator.Features.Cards.Model
             catch
             {
                 return Color.Black;
-            }
-        }
-
-        private static StringFormat GetStringFormat(string horizontalAlignment, string verticalAlignment)
-        {
-            StringAlignment horizontal = GetAlignment(horizontalAlignment);
-            StringAlignment vertical = GetAlignment(verticalAlignment);
-            return new StringFormat
-            {
-                Alignment = horizontal,
-                LineAlignment = vertical
-            };
-        }
-
-        private static StringAlignment GetAlignment(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-                return StringAlignment.Center;
-
-            switch (value.Substring(0, 1).ToUpper())
-            {
-                case "L": // Left
-                case "T": // Top
-                case "N": // Near
-                    return StringAlignment.Near;
-                case "C": // Center
-                    return StringAlignment.Center;
-                case "R": // Right
-                case "B": // Bottom
-                case "F": // Far
-                    return StringAlignment.Far;
-                default: throw new ArgumentException($"{value} is unknown alignment. Try: \"Left\", \"Top\" or \"Near\", \"Center\", \"Right\", \"Bottom\" or \"Far\".");
             }
         }
 

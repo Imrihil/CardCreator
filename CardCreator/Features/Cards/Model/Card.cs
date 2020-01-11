@@ -15,14 +15,24 @@ namespace CardCreator.Features.Cards.Model
         private Image Image { get; set; }
 
         public Card(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory) :
-            base(cardSchema.Zip(cardElements, (elementSchema, content) =>
-                elementSchema.Background == null && string.IsNullOrEmpty(content) ? null :
-                    new Element(imageProvider, content, elementSchema, directory))
-                .Where(element => element != null))
+            base(InitElements(imageProvider, cardSchema, cardElements, directory))
         {
             CardSchema = cardSchema;
 
             MergeElementsByName();
+        }
+
+        private static IEnumerable<Element> InitElements(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory)
+        {
+            var i = 0;
+            var elements = cardElements
+                .Where(_ => !cardSchema.CommentIdxs.Contains(i++))
+                .Zip(cardSchema, (content, elementSchema) =>
+                       elementSchema.Background == null && string.IsNullOrEmpty(content) ? null :
+                           new Element(imageProvider, content, elementSchema, directory))
+                       .Where(element => element != null);
+
+            return elements;
         }
 
         private void MergeElementsByName()

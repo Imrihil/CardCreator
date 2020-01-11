@@ -2,6 +2,7 @@
 using CardCreator.Features.Images;
 using CardCreator.Features.Logging;
 using CardCreator.Features.System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -31,8 +32,9 @@ namespace CardCreator.Features.Cards.Model
         public double HeightInch { get; }
         public Color DefaultColor { get; }
         public Color DefaultShadowColor { get; }
+        public ISet<int> CommentIdxs { get; }
 
-        public CardSchema(string name, Image background, int widhtPx, int heightPx, double widthInch, double heightInch, IList<ElementSchema> elementSchemas, Color? defaultColor = null, Color? defaultShadowColor = null) : base(elementSchemas)
+        public CardSchema(string name, Image background, int widhtPx, int heightPx, double widthInch, double heightInch, IList<ElementSchema> elementSchemas, Color? defaultColor = null, Color? defaultShadowColor = null, ISet<int> commentIdx = null) : base(elementSchemas)
         {
             Name = name;
             Background = background;
@@ -42,6 +44,7 @@ namespace CardCreator.Features.Cards.Model
             HeightInch = heightInch;
             DefaultColor = defaultColor ?? Color.Black;
             DefaultShadowColor = defaultShadowColor ?? Color.White;
+            CommentIdxs = commentIdx ?? new HashSet<int>();
         }
 
         public CardSchema(ILogger logger, IFontProvider fontProvider, IImageProvider imageProvider, IList<string> parameters, List<List<string>> elementSchemasParams, string directory) :
@@ -58,13 +61,25 @@ namespace CardCreator.Features.Cards.Model
                 $"{(HeightInchIdx + 1).ToOrdinal()} parameter must be a positive number, but \"{parameters[HeightInchIdx]}\" is not."),
                 InitElementSchemas(logger, fontProvider, imageProvider, elementSchemasParams, directory, TryGetColor(parameters[ColorIdx]), TryGetColor(parameters[ShadowColorIdx])),
                 TryGetColor(parameters[ColorIdx]),
-                TryGetColor(parameters[ShadowColorIdx])
+                TryGetColor(parameters[ShadowColorIdx]),
+                GetCommentIdxs(elementSchemasParams)
             )
         { }
 
-        private static IList<ElementSchema> InitElementSchemas(ILogger logger, IFontProvider fontProvider, IImageProvider imageProvider, List<List<string>> elementSchemasParams, string directory, Color? defaultColor, Color? defaultShadowColor)
+        private static HashSet<int> GetCommentIdxs(List<List<string>> elementSchemasParams)
         {
-            var elementSchemas = new List<ElementSchema>(elementSchemasParams.Select(elementSchemaParams => new ElementSchema(logger, imageProvider, fontProvider, elementSchemaParams, directory, defaultColor ?? Color.Black, defaultShadowColor ?? Color.White)));
+            var i = 0;
+            var commentIdxs = elementSchemasParams
+                .Select(elementSchemaParams => new KeyValuePair<int, string>(i++, elementSchemaParams.First()))
+                .Where(kv => string.IsNullOrEmpty(kv.Value))
+                .Select(kv => kv.Key);
+
+            return new HashSet<int>(commentIdxs);
+        }
+
+        private static List<ElementSchema> InitElementSchemas(ILogger logger, IFontProvider fontProvider, IImageProvider imageProvider, List<List<string>> elementSchemasParams, string directory, Color? defaultColor, Color? defaultShadowColor)
+        {
+            var elementSchemas = new List<ElementSchema>(elementSchemasParams.Where(elementSchemaParams => !string.IsNullOrEmpty(elementSchemaParams.First())).Select(elementSchemaParams => new ElementSchema(logger, imageProvider, fontProvider, elementSchemaParams, directory, defaultColor ?? Color.Black, defaultShadowColor ?? Color.White)));
 
             return elementSchemas;
         }

@@ -144,22 +144,22 @@ namespace CardCreator
 
         private int GetColumnNumber(ButtonAction action)
         {
-            switch (action)
+            return action switch
             {
-                case ButtonAction.Generate: return 1;
-                case ButtonAction.Pdf: return 3;
-            }
-            return 0;
+                ButtonAction.Generate => 1,
+                ButtonAction.Pdf => 3,
+                _ => 0,
+            };
         }
 
         private RoutedEventHandler GetAction(ButtonSettings button, ButtonAction action)
         {
-            switch (action)
+            return action switch
             {
-                case ButtonAction.Generate: return new RoutedEventHandler((sender, e) => GenerateCard(button.File));
-                case ButtonAction.Pdf: return new RoutedEventHandler((sender, e) => PreparePdf(button.File));
-            }
-            return null;
+                ButtonAction.Generate => new RoutedEventHandler((sender, e) => GenerateCard(button.File)),
+                ButtonAction.Pdf => new RoutedEventHandler((sender, e) => PreparePdf(button.File)),
+                _ => null,
+            };
         }
 
         private void ChooseFile_Button_Click(object sender, RoutedEventArgs e)
