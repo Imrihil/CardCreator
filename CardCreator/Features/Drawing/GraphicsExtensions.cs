@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CardCreator.Features.Drawing.Model;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -153,14 +154,15 @@ namespace CardCreator.Features.Drawing
         /// <param name="height">The height to resize to.</param>
         /// <returns>The resized image.</returns>
         public static void DrawImage(this Graphics graphics, Image image,
-            Rectangle layoutRectangle, StringFormat stringFormat, bool stretch)
+            Rectangle layoutRectangle, StringFormatExtended stringFormat)
         {
             // Scale.
             // Get scale factors for both directions.
             var scaleX = (float)layoutRectangle.Width / image.Width;
             var scaleY = (float)layoutRectangle.Height / image.Height;
 
-            if (!stretch)
+            if (stringFormat.Alignment != StringAlignmentExtended.Justify ||
+                stringFormat.LineAlignment != StringAlignmentExtended.Justify)
             {
                 // To preserve the aspect ratio,
                 // use the smaller scale factor.
@@ -180,12 +182,12 @@ namespace CardCreator.Features.Drawing
                 using Image targetImage = image.Resize(targetWidth, targetHeight);
 
                 var translateX =
-                    stringFormat.Alignment == StringAlignment.Near ? 0 :
-                    stringFormat.Alignment == StringAlignment.Center ? (layoutRectangle.Width - targetImage.Width) / 2 :
+                    stringFormat.Alignment == StringAlignmentExtended.Near ? 0 :
+                    stringFormat.Alignment == StringAlignmentExtended.Center ? (layoutRectangle.Width - targetImage.Width) / 2 :
                     layoutRectangle.Width - targetImage.Width;
                 var translateY =
-                    stringFormat.LineAlignment == StringAlignment.Near ? 0 :
-                    stringFormat.LineAlignment == StringAlignment.Center ? (layoutRectangle.Height - targetImage.Height) / 2 :
+                    stringFormat.LineAlignment == StringAlignmentExtended.Near ? 0 :
+                    stringFormat.LineAlignment == StringAlignmentExtended.Center ? (layoutRectangle.Height - targetImage.Height) / 2 :
                     layoutRectangle.Height - targetImage.Height;
 
                 graphics.DrawImage(targetImage, layoutRectangle.X + translateX, layoutRectangle.Y + translateY, targetWidth, targetHeight);

@@ -12,7 +12,7 @@ namespace CardCreator.Features.Cards.Model
 {
     public class ElementSchema
     {
-        public const int ParamsNumber = 16;
+        public const int ParamsNumber = 15;
 
         private const int NameIdx = 0;
         private const int BackgroundIdx = 1;
@@ -28,8 +28,7 @@ namespace CardCreator.Features.Cards.Model
         private const int HorizontalAlignmentIdx = 11;
         private const int VerticalAlignmentIdx = 12;
         private const int WrapIdx = 13;
-        private const int StretchIdx = 14;
-        private const int JoinDirectionIdx = 15;
+        private const int JoinDirectionIdx = 14;
 
         public Image Background { get; }
         public string Name { get; }
@@ -42,11 +41,10 @@ namespace CardCreator.Features.Cards.Model
         public int MinSize { get; }
         public StringFormatExtended StringFormat { get; }
         public bool Wrap { get; }
-        public bool StretchImage { get; }
         public JoinDirection JoinDirection { get; }
 
         public ElementSchema(string name, Image background, Rectangle area, Color color, Color shadowColor, int shadowSize,
-            FontFamily font, int maxSize, StringFormatExtended stringFormat, bool wrap, bool stretchImage, JoinDirection joinDirection)
+            FontFamily font, int maxSize, StringFormatExtended stringFormat, bool wrap, JoinDirection joinDirection)
         {
             Name = name;
             Background = background;
@@ -59,13 +57,12 @@ namespace CardCreator.Features.Cards.Model
             MinSize = Math.Min(6, MaxSize);
             StringFormat = stringFormat;
             Wrap = wrap;
-            StretchImage = stretchImage;
             JoinDirection = joinDirection;
         }
 
         public ElementSchema(string name, Image background, int x, int y, int width, int height, Color color, Color shadowColor, int shadowSize, FontFamily font,
-            int maxSize, StringFormatExtended stringFormat, bool wrap, bool stretchImage, JoinDirection joinDirection)
-            : this(name, background, new Rectangle(x, y, width, height), color, shadowColor, shadowSize, font, maxSize, stringFormat, wrap, stretchImage, joinDirection) { }
+            int maxSize, StringFormatExtended stringFormat, bool wrap, JoinDirection joinDirection)
+            : this(name, background, new Rectangle(x, y, width, height), color, shadowColor, shadowSize, font, maxSize, stringFormat, wrap, joinDirection) { }
 
         public ElementSchema(ILogger logger, IImageProvider imageProvider, IFontProvider fontProvider,
             IList<string> parameters, string directory, Color defaultColor, Color defaultBorderColor, bool generateImages = true) :
@@ -90,8 +87,6 @@ namespace CardCreator.Features.Cards.Model
                 new StringFormatExtended(parameters[HorizontalAlignmentIdx], parameters[VerticalAlignmentIdx]),
                 Parser<bool>.Parse(logger, parameters[WrapIdx], (param) => string.IsNullOrEmpty(param) ? true : bool.Parse(param), _ => true,
                 $"{(WrapIdx + 1).ToOrdinal()} parameter must be a boolean, but \"{parameters[WrapIdx]}\" is not."),
-                Parser<bool>.Parse(logger, parameters[StretchIdx], (param) => string.IsNullOrEmpty(param) ? false : bool.Parse(param), _ => true,
-                $"{(StretchIdx + 1).ToOrdinal()} parameter must be a boolean, but \"{parameters[StretchIdx]}\" is not."),
                 TryGetJoinDirection(parameters[JoinDirectionIdx])
             )
         { }

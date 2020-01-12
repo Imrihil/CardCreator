@@ -28,7 +28,7 @@ namespace CardCreator.Features.Drawing
                 {
                     var rectangle = GetVerticalLayoutRectangle(i, allLines, font.Height, layoutRectangle, format);
                     if (++j == paragraph.Count || format.Alignment != StringAlignmentExtended.Justify)
-                        graphics.DrawStringWithShadow(line.TrimEnd('\n', '\r'), font, color, shadowColor, rectangle, format.StringFormat);
+                        graphics.DrawStringWithShadow(line, font, color, shadowColor, shadowSize, rectangle, format.StringFormat);
                     else
                         graphics.DrawStretchStringWithShadow(line, font, color, shadowColor, shadowSize, rectangle);
                     ++i;

@@ -32,8 +32,8 @@ namespace CardCreator.Features.Cards.Model
                 graphics.DrawImage(ElementSchema.Background, ElementSchema.Area);
 
             if (Image != null)
-                graphics.DrawImage(Image, ElementSchema.Area, ElementSchema.StringFormat.StringFormat, ElementSchema.StretchImage);
-            else if (!string.IsNullOrWhiteSpace(Content))
+                graphics.DrawImage(Image, ElementSchema.Area, ElementSchema.StringFormat);
+            else if (!string.IsNullOrWhiteSpace(Content) && ElementSchema.MaxSize > 0)
                 graphics.DrawAdjustedStringWithShadow(Content, ElementSchema.Font, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.Area, ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.MinSize, true, ElementSchema.Wrap);
         }
 
@@ -51,7 +51,7 @@ namespace CardCreator.Features.Cards.Model
                 new Rectangle(ElementSchema.Area.X, ElementSchema.Area.Y + position * shift, ElementSchema.Area.Width, shift);
 
             ElementSchema = new ElementSchema(ElementSchema.Name, ElementSchema.Background, area, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.Font,
-                ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.Wrap, ElementSchema.StretchImage, ElementSchema.JoinDirection);
+                ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.Wrap, ElementSchema.JoinDirection);
         }
     }
 }
