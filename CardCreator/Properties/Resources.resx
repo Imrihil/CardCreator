@@ -216,6 +216,9 @@ Aby dodać nowe przyciski do panelu należy zmodyfikować plik "appsettings.json
   <data name="Next" xml:space="preserve">
     <value>&gt;</value>
   </data>
+  <data name="PreviewHidden" xml:space="preserve">
+    <value>Wybierz plik, aby wyświetlić podgląd</value>
+  </data>
   <data name="Previous" xml:space="preserve">
     <value>&lt;</value>
   </data>

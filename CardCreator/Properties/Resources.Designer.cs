@@ -280,6 +280,15 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wybierz plik, aby wyświetlić podgląd.
+        /// </summary>
+        public static string PreviewHidden {
+            get {
+                return ResourceManager.GetString("PreviewHidden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;.
         /// </summary>
         public static string Previous {

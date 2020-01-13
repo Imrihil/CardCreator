@@ -113,15 +113,12 @@ namespace CardCreator
             PreparePdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
             PrepareChoosenPdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
             Dpi_TextBox.Text = settings.Dpi.ToString();
-            Preview_RadioButton_ChoosenFile.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
-            PreviewAutoRefresh_Checkbox.Visibility = Preview_Image.Source == null ? Visibility.Hidden : Visibility.Visible;
-            PreviousPreview_Button.Visibility = Preview_Image.Source == null ? Visibility.Hidden : Visibility.Visible;
-            NextPreview_Button.Visibility = Preview_Image.Source == null ? Visibility.Hidden : Visibility.Visible;
+            UpdatePreviewControls(null);
         }
 
         private void InitializeButtons()
         {
-            var currentRow = MainGrid.RowDefinitions.Count - 1;
+            var currentRow = MainGrid.RowDefinitions.Count - 2;
             var isFirst = true;
             foreach (var button in settings.Buttons)
             {
@@ -143,8 +140,6 @@ namespace CardCreator
             Application.Current.MainWindow.Height += RowHeight;
             Grid.SetRowSpan(Vertical_Rectangle, Grid.GetRowSpan(Vertical_Rectangle) + (withSeparator ? 2 : 1));
             Grid.SetRowSpan(Preview_Image, Grid.GetRowSpan(Preview_Image) + (withSeparator ? 2 : 1));
-            Grid.SetRow(PreviousPreview_Button, Grid.GetRow(PreviousPreview_Button) + (withSeparator ? 2 : 1));
-            Grid.SetRow(NextPreview_Button, Grid.GetRow(NextPreview_Button) + (withSeparator ? 2 : 1));
             MainGrid.RowDefinitions.Insert(currentRow, new RowDefinition { Height = new GridLength(RowHeight) });
             return currentRow;
         }
@@ -181,9 +176,7 @@ namespace CardCreator
 
             control.Click += new RoutedEventHandler((sender, e) =>
             {
-                previewFactory.SetCurrentPreview(name, GenerateImages).GetAwaiter().GetResult();
-                Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
-                UpdatePreviewTimer();
+                UpdatePreviewControls(name);
             });
 
             Grid.SetRow(control, row);
@@ -193,12 +186,7 @@ namespace CardCreator
 
             if (isChecked)
             {
-                PreviewAutoRefresh_Checkbox.Visibility = Visibility.Visible;
-                PreviousPreview_Button.Visibility = Visibility.Visible;
-                NextPreview_Button.Visibility = Visibility.Visible;
-                previewFactory.SetCurrentPreview(name, GenerateImages).GetAwaiter().GetResult();
-                Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
-                UpdatePreviewTimer();
+                UpdatePreviewControls(name);
             }
         }
 
@@ -313,9 +301,7 @@ namespace CardCreator
 
         private void Preview_RadioButton_ChoosenFile_Click(object sender, RoutedEventArgs e)
         {
-            previewFactory.SetCurrentPreview(ChoosenFile, GenerateImages).GetAwaiter().GetResult();
-            Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
-            UpdatePreviewTimer();
+            UpdatePreviewControls(ChoosenFile);
         }
 
         private void GenerateImages_Checkbox_Click(object sender, RoutedEventArgs e) =>
@@ -335,15 +321,44 @@ namespace CardCreator
             UpdatePreviewTimer();
         }
 
-        private void UpdatePreviewTimer()
+        private void UpdatePreviewTimer(bool? isEnabled = null)
         {
-            if (PreviewAutoRefresh_Checkbox.IsChecked == true)
+            if (isEnabled ?? PreviewAutoRefresh_Checkbox.IsChecked == true)
             {
                 if (!PreviewTimer.IsEnabled)
                     PreviewTimer.Start();
             }
             else if (PreviewTimer.IsEnabled)
                 PreviewTimer.Stop();
+        }
+
+        private void UpdatePreviewControls(string key)
+        {
+            if (key != null)
+            {
+                previewFactory.SetCurrentPreview(key, GenerateImages).GetAwaiter().GetResult();
+                Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
+            }
+            else
+            {
+                Preview_Image.Source = null;
+            }
+            Preview_RadioButton_ChoosenFile.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
+
+            var visibility = Preview_Image.Source == null ? Visibility.Hidden : Visibility.Visible;
+            PreviewAutoRefresh_Checkbox.Visibility = visibility;
+            PreviousPreview_Button.Visibility = visibility;
+            NextPreview_Button.Visibility = visibility;
+            GridHeight_TextBox.Visibility = visibility;
+            GridHeight_Label.Visibility = visibility;
+            GridWidth_TextBox.Visibility = visibility;
+            GridWidth_Label.Visibility = visibility;
+            PreviewHidden_Label.Visibility = Preview_Image.Source == null ? Visibility.Visible : Visibility.Hidden;
+
+            if (key == null)
+                UpdatePreviewTimer(false);
+            else
+                UpdatePreviewTimer();
         }
 
         protected override void OnClosing(CancelEventArgs e)
