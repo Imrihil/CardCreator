@@ -1,19 +1,17 @@
-﻿using System.IO;
-using System.Windows;
-using Microsoft.Win32;
-using CardCreator.Features.Cards;
-using CardCreator.Features.Drawing;
+﻿using CardCreator.Features.Cards;
 using CardCreator.Features.Fonts;
-using CardCreator.Features.Images;
+using CardCreator.Features.Preview;
+using CardCreator.Settings;
 using MediatR;
+using Microsoft.Extensions.Options;
+using Microsoft.Win32;
 using System;
 using System.ComponentModel;
-using System.Threading;
-using CardCreator.Settings;
-using Microsoft.Extensions.Options;
-using System.Windows.Controls;
+using System.IO;
 using System.Linq;
-using CardCreator.Features.Preview;
+using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace CardCreator
 {
@@ -33,6 +31,7 @@ namespace CardCreator
 
         private OpenFileDialog ChooseFileDialog { get; }
         private OpenFileDialog ChooseImagesDialog { get; }
+        private bool GenerateImages => GenerateImages_Checkbox.IsChecked ?? true;
 
         public MainWindow(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IPreviewFactory previewFactory)
         {
@@ -105,7 +104,6 @@ namespace CardCreator
             PreviewAutoRefresh_Checkbox.Visibility = Preview_Image.Source == null ? Visibility.Hidden : Visibility.Visible;
             PreviousPreview_Button.Visibility = Preview_Image.Source == null ? Visibility.Hidden : Visibility.Visible;
             NextPreview_Button.Visibility = Preview_Image.Source == null ? Visibility.Hidden : Visibility.Visible;
-            previewFactory.Register(ChoosenFile, null);
         }
 
         private void InitializeButtons()
@@ -158,15 +156,22 @@ namespace CardCreator
 
         private void InitializePreviewRadioButton(ButtonSettings button, int row, bool isChecked)
         {
-            var name = previewFactory.Register(button.File);
+            var name = previewFactory.Register(button.File, GenerateImages);
             var control = new RadioButton
             {
                 Name = $"Preview_RadioButton_{name}",
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
                 GroupName = "Preview",
-                IsChecked = isChecked
+                IsChecked = isChecked,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
             };
+
+            control.Click += new RoutedEventHandler((sender, e) =>
+            {
+                previewFactory.SetCurrentPreview(name, GenerateImages).GetAwaiter().GetResult();
+                Preview_Image.Source = previewFactory.GetPreviewImage().GetAwaiter().GetResult();
+            });
+
             Grid.SetRow(control, row);
             Grid.SetColumn(control, 5);
 
@@ -177,6 +182,8 @@ namespace CardCreator
                 PreviewAutoRefresh_Checkbox.Visibility = Visibility.Visible;
                 PreviousPreview_Button.Visibility = Visibility.Visible;
                 NextPreview_Button.Visibility = Visibility.Visible;
+                previewFactory.SetCurrentPreview(name, GenerateImages).GetAwaiter().GetResult();
+                Preview_Image.Source = previewFactory.GetPreviewImage().GetAwaiter().GetResult();
             }
         }
 
@@ -210,7 +217,7 @@ namespace CardCreator
 
                 GenerateCards_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
                 PreparePdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
-                previewFactory.Register(ChoosenFile, ChooseFileDialog.FileName);
+                previewFactory.Register(ChoosenFile, ChooseFileDialog.FileName, GenerateImages);
                 Preview_RadioButton_ChoosenFile.IsEnabled = true;
             }
             else
@@ -232,14 +239,14 @@ namespace CardCreator
         private void GenerateCard(string fileName)
         {
             var cts = new CancellationTokenSource();
-            var result = mediator.Send(new CardGeneratingCommand(fileName, GenerateImages_Checkbox.IsChecked ?? true, cts), cts.Token).GetAwaiter().GetResult();
+            var result = mediator.Send(new CardGeneratingCommand(fileName, GenerateImages, cts), cts.Token).GetAwaiter().GetResult();
             Console.WriteLine(result);
         }
 
         private void PreparePdf(string fileName)
         {
             var cts = new CancellationTokenSource();
-            var result = mediator.Send(new PdfGeneratingCommand(fileName, GenerateImages_Checkbox.IsChecked ?? true, cts), cts.Token).GetAwaiter().GetResult();
+            var result = mediator.Send(new PdfGeneratingCommand(fileName, GenerateImages, cts), cts.Token).GetAwaiter().GetResult();
             Console.WriteLine(result);
         }
 
@@ -274,18 +281,24 @@ namespace CardCreator
 
         private void PreviousPreview_Button_Click(object sender, RoutedEventArgs e)
         {
-            Preview_Image.Source = previewFactory.PreviousPreviewImage();
+            Preview_Image.Source = previewFactory.PreviousPreviewImage().GetAwaiter().GetResult();
         }
 
         private void NextPreview_Button_Click(object sender, RoutedEventArgs e)
         {
-            Preview_Image.Source = previewFactory.NextPreviewImage();
+            Preview_Image.Source = previewFactory.NextPreviewImage().GetAwaiter().GetResult();
         }
 
         private void Preview_RadioButton_ChoosenFile_Click(object sender, RoutedEventArgs e)
         {
-            previewFactory.SetCurrentPreview(ChoosenFile);
-            Preview_Image.Source = previewFactory.GetPreviewImage();
+            previewFactory.SetCurrentPreview(ChoosenFile, GenerateImages).GetAwaiter().GetResult();
+            Preview_Image.Source = previewFactory.GetPreviewImage().GetAwaiter().GetResult();
+        }
+
+        private void GenerateImages_Checkbox_Click(object sender, RoutedEventArgs e)
+        {
+            previewFactory.Refresh(GenerateImages).GetAwaiter().GetResult();
+            Preview_Image.Source = previewFactory.GetPreviewImage().GetAwaiter().GetResult();
         }
 
         protected override void OnClosing(CancelEventArgs e)

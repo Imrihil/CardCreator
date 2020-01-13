@@ -12,7 +12,7 @@ namespace CardCreator.Features
                 var result = parse(value);
                 if (!validate(result))
                 {
-                    logger.LogMessage(errorMessage);
+                    logger?.LogMessage(errorMessage);
                     throw new ArgumentException(errorMessage);
                 }
 

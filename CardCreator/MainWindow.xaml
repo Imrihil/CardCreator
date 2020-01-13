@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:CardCreator.Properties"
         mc:Ignorable="d"
-        Title="CardCreator v.1.2.3" Width="800" Height="420">
+        Title="CardCreator v.1.3" Width="800" Height="420">
     <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5"/>
@@ -39,7 +39,7 @@
         <TextBlock Text="{x:Static p:Resources.Hello}" Margin="5,5,5,5" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" />
         <TextBlock Text="{x:Static p:Resources.Description}" Margin="5,5,5,5" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" />
         <Rectangle Stroke="DarkGray" Height="1" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" />
-        <CheckBox Name="GenerateImages_Checkbox" Content="{x:Static p:Resources.GenerateImages}" Margin="5,5,5,5" IsChecked="True" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" />
+        <CheckBox Name="GenerateImages_Checkbox" Content="{x:Static p:Resources.GenerateImages}" Click="GenerateImages_Checkbox_Click" Margin="5,5,5,5" IsChecked="True" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" />
         <Rectangle Stroke="DarkGray" Height="1" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="4" />
         <Label Content="{x:Static p:Resources.Cards}" Margin="5,0,5,0" Grid.Row="6" Grid.Column="1" />
         <Button Name="ChooseImages_Button" Content="{x:Static p:Resources.ChooseImages}" Margin="5,5,5,5" Click="ChooseImages_Button_Click" Grid.Row="6" Grid.Column="2" />
