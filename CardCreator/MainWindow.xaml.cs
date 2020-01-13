@@ -13,6 +13,7 @@ using CardCreator.Settings;
 using Microsoft.Extensions.Options;
 using System.Windows.Controls;
 using System.Linq;
+using CardCreator.Features.Preview;
 
 namespace CardCreator
 {
@@ -23,21 +24,22 @@ namespace CardCreator
     public partial class MainWindow
     {
         private const int RowHeight = 30;
+        private const string ChoosenFile = "ChoosenFile";
 
         private readonly AppSettings settings;
         private readonly IMediator mediator;
         private readonly IFontProvider fontProvider;
-        private readonly IImageProvider imageProvider;
+        private readonly IPreviewFactory previewFactory;
 
         private OpenFileDialog ChooseFileDialog { get; }
         private OpenFileDialog ChooseImagesDialog { get; }
 
-        public MainWindow(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider)
+        public MainWindow(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IPreviewFactory previewFactory)
         {
             this.settings = settings.Value;
             this.mediator = mediator;
             this.fontProvider = fontProvider;
-            this.imageProvider = imageProvider;
+            this.previewFactory = previewFactory;
 
             InitializeComponent();
 
@@ -99,27 +101,39 @@ namespace CardCreator
             PreparePdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
             PrepareChoosenPdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
             Dpi_TextBox.Text = settings.Dpi.ToString();
+            Preview_RadioButton_ChoosenFile.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
+            PreviewAutoRefresh_Checkbox.Visibility = Preview_Image.Source == null ? Visibility.Hidden : Visibility.Visible;
+            PreviousPreview_Button.Visibility = Preview_Image.Source == null ? Visibility.Hidden : Visibility.Visible;
+            NextPreview_Button.Visibility = Preview_Image.Source == null ? Visibility.Hidden : Visibility.Visible;
+            previewFactory.Register(ChoosenFile, null);
         }
 
         private void InitializeButtons()
         {
             var currentRow = MainGrid.RowDefinitions.Count - 1;
+            var isFirst = true;
             foreach (var button in settings.Buttons)
             {
-                currentRow = NewButtonRow(currentRow);
+                currentRow = NewButtonRow(currentRow, isFirst);
 
                 if (!string.IsNullOrEmpty(button.Generate))
                     InitializeButton(button, ButtonAction.Generate, button.Generate, currentRow);
                 if (!string.IsNullOrEmpty(button.Pdf))
                     InitializeButton(button, ButtonAction.Pdf, button.Pdf, currentRow);
+                InitializePreviewRadioButton(button, currentRow, isFirst);
 
+                isFirst = false;
                 currentRow++;
             }
         }
 
-        private int NewButtonRow(int currentRow)
+        private int NewButtonRow(int currentRow, bool withSeparator)
         {
             Application.Current.MainWindow.Height += RowHeight;
+            Grid.SetRowSpan(Vertical_Rectangle, Grid.GetRowSpan(Vertical_Rectangle) + (withSeparator ? 2 : 1));
+            Grid.SetRowSpan(Preview_Image, Grid.GetRowSpan(Preview_Image) + (withSeparator ? 2 : 1));
+            Grid.SetRow(PreviousPreview_Button, Grid.GetRow(PreviousPreview_Button) + (withSeparator ? 2 : 1));
+            Grid.SetRow(NextPreview_Button, Grid.GetRow(NextPreview_Button) + (withSeparator ? 2 : 1));
             MainGrid.RowDefinitions.Insert(currentRow, new RowDefinition { Height = new GridLength(RowHeight) });
             return currentRow;
         }
@@ -140,6 +154,30 @@ namespace CardCreator
             Grid.SetColumnSpan(control, 2);
 
             MainGrid.Children.Add(control);
+        }
+
+        private void InitializePreviewRadioButton(ButtonSettings button, int row, bool isChecked)
+        {
+            var name = previewFactory.Register(button.File);
+            var control = new RadioButton
+            {
+                Name = $"Preview_RadioButton_{name}",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                GroupName = "Preview",
+                IsChecked = isChecked
+            };
+            Grid.SetRow(control, row);
+            Grid.SetColumn(control, 5);
+
+            MainGrid.Children.Add(control);
+
+            if (isChecked)
+            {
+                PreviewAutoRefresh_Checkbox.Visibility = Visibility.Visible;
+                PreviousPreview_Button.Visibility = Visibility.Visible;
+                NextPreview_Button.Visibility = Visibility.Visible;
+            }
         }
 
         private int GetColumnNumber(ButtonAction action)
@@ -172,6 +210,12 @@ namespace CardCreator
 
                 GenerateCards_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
                 PreparePdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
+                previewFactory.Register(ChoosenFile, ChooseFileDialog.FileName);
+                Preview_RadioButton_ChoosenFile.IsEnabled = true;
+            }
+            else
+            {
+                Preview_RadioButton_ChoosenFile.IsEnabled = false;
             }
         }
 
@@ -226,6 +270,22 @@ namespace CardCreator
             {
                 MessageBox.Show($"{Dpi_TextBox.Text} is not a valid integer", $"Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private void PreviousPreview_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Preview_Image.Source = previewFactory.PreviousPreviewImage();
+        }
+
+        private void NextPreview_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Preview_Image.Source = previewFactory.NextPreviewImage();
+        }
+
+        private void Preview_RadioButton_ChoosenFile_Click(object sender, RoutedEventArgs e)
+        {
+            previewFactory.SetCurrentPreview(ChoosenFile);
+            Preview_Image.Source = previewFactory.GetPreviewImage();
         }
 
         protected override void OnClosing(CancelEventArgs e)

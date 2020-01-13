@@ -204,4 +204,13 @@ Aby dodać nowe przyciski do panelu należy zmodyfikować plik "appsettings.json
   <data name="GenerateImages" xml:space="preserve">
     <value>Generuj obrazki</value>
   </data>
+  <data name="AutoRefresh" xml:space="preserve">
+    <value>Odświeżaj podgląd automatycznie</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>&gt;</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>&lt;</value>
+  </data>
 </root>

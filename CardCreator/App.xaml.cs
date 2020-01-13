@@ -2,6 +2,7 @@
 using CardCreator.Features.Drawing;
 using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
+using CardCreator.Features.Preview;
 using CardCreator.Settings;
 using CardCreator.View;
 using MediatR;
@@ -59,6 +60,7 @@ namespace CardCreator
 
             services.AddSingleton<IFontProvider, FontProvider>();
             services.AddSingleton<IImageProvider, ImageProvider>();
+            services.AddSingleton<IPreviewFactory, PreviewFactory>();
         }
     }
 }

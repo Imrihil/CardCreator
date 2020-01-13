@@ -71,6 +71,15 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Odświeżaj podgląd automatycznie.
+        /// </summary>
+        public static string AutoRefresh {
+            get {
+                return ResourceManager.GetString("AutoRefresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Anuluj.
         /// </summary>
         public static string Cancel {
@@ -217,6 +226,15 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &gt;.
+        /// </summary>
+        public static string Next {
+            get {
+                return ResourceManager.GetString("Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ok.
         /// </summary>
         public static string Ok {
@@ -240,6 +258,15 @@ namespace CardCreator.Properties {
         public static string PreparePdf {
             get {
                 return ResourceManager.GetString("PreparePdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;.
+        /// </summary>
+        public static string Previous {
+            get {
+                return ResourceManager.GetString("Previous", resourceCulture);
             }
         }
         
