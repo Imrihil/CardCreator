@@ -1,5 +1,6 @@
 ﻿using CardCreator.Features.Cards;
 using CardCreator.Features.Cards.Model;
+using CardCreator.Features.Drawing;
 using CardCreator.Features.Fonts;
 using CardCreator.Features.Images;
 using MediatR;
@@ -30,27 +31,33 @@ namespace CardCreator.Features.Preview
         private readonly IFontProvider fontProvider;
         private readonly IImageProvider imageProvider;
 
+        private readonly Color gridColor;
+        private readonly Font gridFont;
+
         public Preview(IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, string filePath, bool generateImages)
         {
             this.mediator = mediator;
             this.fontProvider = fontProvider;
             this.imageProvider = imageProvider;
 
+            gridColor = Color.FromArgb(128, 255, 0, 0);
+            gridFont = new Font(fontProvider.TryGet(string.Empty), 12, FontStyle.Bold, GraphicsUnit.Pixel);
+
             CardImages = new Dictionary<int, Image>();
             File = new FileInfo(filePath);
             GenerateImages = generateImages;
         }
 
-        public async Task<BitmapImage> GetImage() =>
-            LastBitmapImage ?? BitmapImageFromImage(await GetImage(CurrentPosition));
+        public async Task<BitmapImage> GetImage(int gridWidth, int gridHeight) =>
+            LastBitmapImage ?? BitmapImageFromImage(await GetImage(CurrentPosition, gridWidth, gridHeight));
 
-        public async Task<BitmapImage> Next() =>
-            BitmapImageFromImage(await GetImage((CurrentPosition + 1) % MaxPosition));
+        public async Task<BitmapImage> Next(int gridWidth, int gridHeight) =>
+            BitmapImageFromImage(await GetImage((CurrentPosition + 1) % MaxPosition, gridWidth, gridHeight));
 
-        public async Task<BitmapImage> Previous() =>
-            BitmapImageFromImage(await GetImage(CurrentPosition > 0 ? CurrentPosition - 1 : MaxPosition - 1));
+        public async Task<BitmapImage> Previous(int gridWidth, int gridHeight) =>
+            BitmapImageFromImage(await GetImage(CurrentPosition > 0 ? CurrentPosition - 1 : MaxPosition - 1, gridWidth, gridHeight));
 
-        private async Task<Image> GetImage(int position)
+        private async Task<Image> GetImage(int position, int gridWidth, int gridHeight)
         {
             CurrentPosition = position;
             if (CardSchema == null)
@@ -61,6 +68,9 @@ namespace CardCreator.Features.Preview
                 cardImage = new Card(imageProvider, CardSchema, CardsElements[CurrentPosition], File.DirectoryName, GenerateImages).GetImage();
                 CardImages.Add(CurrentPosition, cardImage);
             }
+
+            using var graphics = Graphics.FromImage(cardImage);
+            graphics.DrawGrid(gridWidth, gridHeight, cardImage.Width, cardImage.Height, gridColor, gridFont);
 
             return cardImage;
         }

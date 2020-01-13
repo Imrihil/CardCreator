@@ -14,14 +14,14 @@ namespace CardCreator.Features.Preview
             base(mediator, fontProvider, imageProvider)
         { }
 
-        public override async Task<BitmapImage> GetPreviewImage() =>
-            await Safe<BitmapImage>.CallAsync(async () => await base.GetPreviewImage(), new BitmapImage());
+        public override async Task<BitmapImage> GetPreviewImage(int gridWidth, int gridHeight) =>
+            await Safe<BitmapImage>.CallAsync(async () => await base.GetPreviewImage(gridWidth, gridHeight), new BitmapImage());
 
-        public override async Task<BitmapImage> NextPreviewImage() =>
-            await Safe<BitmapImage>.CallAsync(async () => await base.NextPreviewImage(), new BitmapImage());
+        public override async Task<BitmapImage> NextPreviewImage(int gridWidth, int gridHeight) =>
+            await Safe<BitmapImage>.CallAsync(async () => await base.NextPreviewImage(gridWidth, gridHeight), new BitmapImage());
 
-        public override async Task<BitmapImage> PreviousPreviewImage() =>
-            await Safe<BitmapImage>.CallAsync(async () => await base.PreviousPreviewImage(), new BitmapImage());
+        public override async Task<BitmapImage> PreviousPreviewImage(int gridWidth, int gridHeight) =>
+            await Safe<BitmapImage>.CallAsync(async () => await base.PreviousPreviewImage(gridWidth, gridHeight), new BitmapImage());
 
         public override async Task Refresh(bool generateImages) =>
             await Safe.CallAsync(async () => await base.Refresh(generateImages));

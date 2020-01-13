@@ -207,6 +207,12 @@ Aby dodać nowe przyciski do panelu należy zmodyfikować plik "appsettings.json
   <data name="AutoRefresh" xml:space="preserve">
     <value>Odświeżaj podgląd automatycznie</value>
   </data>
+  <data name="GridHeight" xml:space="preserve">
+    <value>Siatka pozioma</value>
+  </data>
+  <data name="GridWidth" xml:space="preserve">
+    <value>Siatka pionowa</value>
+  </data>
   <data name="Next" xml:space="preserve">
     <value>&gt;</value>
   </data>

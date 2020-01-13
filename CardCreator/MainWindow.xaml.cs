@@ -32,6 +32,8 @@ namespace CardCreator
         private OpenFileDialog ChooseFileDialog { get; }
         private OpenFileDialog ChooseImagesDialog { get; }
         private bool GenerateImages => GenerateImages_Checkbox.IsChecked ?? true;
+        private int GridWidth => IntParse(GridWidth_TextBox.Text, out var gridWidth) ? gridWidth : 0;
+        private int GridHeight => IntParse(GridHeight_TextBox.Text, out var gridHeight) ? gridHeight : 0;
 
         public MainWindow(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IPreviewFactory previewFactory)
         {
@@ -169,7 +171,7 @@ namespace CardCreator
             control.Click += new RoutedEventHandler((sender, e) =>
             {
                 previewFactory.SetCurrentPreview(name, GenerateImages).GetAwaiter().GetResult();
-                Preview_Image.Source = previewFactory.GetPreviewImage().GetAwaiter().GetResult();
+                Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
             });
 
             Grid.SetRow(control, row);
@@ -183,7 +185,7 @@ namespace CardCreator
                 PreviousPreview_Button.Visibility = Visibility.Visible;
                 NextPreview_Button.Visibility = Visibility.Visible;
                 previewFactory.SetCurrentPreview(name, GenerateImages).GetAwaiter().GetResult();
-                Preview_Image.Source = previewFactory.GetPreviewImage().GetAwaiter().GetResult();
+                Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
             }
         }
 
@@ -268,37 +270,48 @@ namespace CardCreator
         private void PrepareChoosenPdf_Button_Click(object sender, RoutedEventArgs e)
         {
             var cts = new CancellationTokenSource();
-            if (int.TryParse(Dpi_TextBox.Text, out var dpi))
+            if (IntParse(Dpi_TextBox.Text, out var dpi))
             {
                 var result = mediator.Send(new PdfGeneratingFromImagesCommand(ChooseImagesDialog.FileNames, dpi, cts), cts.Token).GetAwaiter().GetResult();
                 Console.WriteLine(result);
             }
-            else
-            {
-                MessageBox.Show($"{Dpi_TextBox.Text} is not a valid integer", $"Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+        }
+
+        private bool IntParse(string text, out int value)
+        {
+            if (int.TryParse(text, out value))
+                return true;
+
+            MessageBox.Show($"{Dpi_TextBox.Text} is not a valid integer", $"Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return false;
         }
 
         private void PreviousPreview_Button_Click(object sender, RoutedEventArgs e)
         {
-            Preview_Image.Source = previewFactory.PreviousPreviewImage().GetAwaiter().GetResult();
+            Preview_Image.Source = previewFactory.PreviousPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
         }
 
         private void NextPreview_Button_Click(object sender, RoutedEventArgs e)
         {
-            Preview_Image.Source = previewFactory.NextPreviewImage().GetAwaiter().GetResult();
+            Preview_Image.Source = previewFactory.NextPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
         }
 
         private void Preview_RadioButton_ChoosenFile_Click(object sender, RoutedEventArgs e)
         {
             previewFactory.SetCurrentPreview(ChoosenFile, GenerateImages).GetAwaiter().GetResult();
-            Preview_Image.Source = previewFactory.GetPreviewImage().GetAwaiter().GetResult();
+            Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
         }
 
-        private void GenerateImages_Checkbox_Click(object sender, RoutedEventArgs e)
+        private void GenerateImages_Checkbox_Click(object sender, RoutedEventArgs e) =>
+            RefreshPreview();
+
+        private void Grid_TextBox_LostFocus(object sender, RoutedEventArgs e) =>
+            RefreshPreview();
+
+        private void RefreshPreview()
         {
             previewFactory.Refresh(GenerateImages).GetAwaiter().GetResult();
-            Preview_Image.Source = previewFactory.GetPreviewImage().GetAwaiter().GetResult();
+            Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
         }
 
         protected override void OnClosing(CancelEventArgs e)

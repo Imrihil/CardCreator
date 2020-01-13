@@ -197,6 +197,24 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Siatka pozioma.
+        /// </summary>
+        public static string GridHeight {
+            get {
+                return ResourceManager.GetString("GridHeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Siatka pionowa.
+        /// </summary>
+        public static string GridWidth {
+            get {
+                return ResourceManager.GetString("GridWidth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Witaj w kreatorze kart!.
         /// </summary>
         public static string Hello {

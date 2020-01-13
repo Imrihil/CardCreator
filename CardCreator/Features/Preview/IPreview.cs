@@ -6,9 +6,9 @@ namespace CardCreator.Features.Preview
     public interface IPreview
     {
         bool GenerateImages { get; }
-        Task<BitmapImage> GetImage();
-        Task<BitmapImage> Next();
-        Task<BitmapImage> Previous();
+        Task<BitmapImage> GetImage(int gridWidth, int gridHeight);
+        Task<BitmapImage> Next(int gridWidth, int gridHeight);
+        Task<BitmapImage> Previous(int gridWidth, int gridHeight);
         Task Refresh(bool generateImages);
     }
 }

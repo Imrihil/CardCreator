@@ -217,5 +217,25 @@ namespace CardCreator.Features.Drawing
 
             return destImage;
         }
+
+        public static void DrawGrid(this Graphics graphics, int hSpaces, int vSpaces, int width, int height, Color color, Font font = null)
+        {
+            using var brush = new SolidBrush(color);
+            using var pen = new Pen(brush);
+            if (hSpaces > 0)
+                for (int x = hSpaces; x < width; x += hSpaces)
+                {
+                    graphics.DrawLine(pen, x, 0, x, height);
+                    if (font != null)
+                        graphics.DrawString(x.ToString(), font, brush, x + 2, 2);
+                }
+            if (vSpaces > 0)
+                for (int y = vSpaces; y < height; y += vSpaces)
+                {
+                    graphics.DrawLine(pen, 0, y, width, y);
+                    if (font != null)
+                        graphics.DrawString(y.ToString(), font, brush, 2, y + 2);
+                }
+        }
     }
 }

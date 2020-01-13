@@ -25,14 +25,14 @@ namespace CardCreator.Features.Preview
             previews = new Dictionary<string, IPreview>();
         }
 
-        public virtual async Task<BitmapImage> GetPreviewImage() =>
-            await CurrentPreview.GetImage();
+        public virtual async Task<BitmapImage> GetPreviewImage(int gridWidth, int gridHeight) =>
+            await CurrentPreview.GetImage(gridWidth, gridHeight);
 
-        public virtual async Task<BitmapImage> NextPreviewImage() =>
-            await CurrentPreview.Next();
+        public virtual async Task<BitmapImage> NextPreviewImage(int gridWidth, int gridHeight) =>
+            await CurrentPreview.Next(gridWidth, gridHeight);
 
-        public virtual async Task<BitmapImage> PreviousPreviewImage() =>
-            await CurrentPreview.Previous();
+        public virtual async Task<BitmapImage> PreviousPreviewImage(int gridWidth, int gridHeight) =>
+            await CurrentPreview.Previous(gridWidth, gridHeight);
 
         public virtual async Task<string> Register(string filePath, bool generateImages)
         {
