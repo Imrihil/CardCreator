@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CardCreator.Settings;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -10,12 +12,13 @@ namespace CardCreator.Features.Images
     {
         private readonly IDictionary<string, ImageStats> cacheCollection;
         private int MaxSize { get; } = 100;
-        private int MaxTime { get; } = 60; // in seconds
+        private int MaxTime { get; } = 10; // in seconds
         public DateTime ValidTime => DateTime.Now.AddSeconds(-MaxTime);
 
-        public ImageProvider()
+        public ImageProvider(IOptions<AppSettings> settings)
         {
             cacheCollection = new Dictionary<string, ImageStats>();
+            MaxTime = settings.Value.ImageCacheTimeout;
         }
 
         public Image Get(string name)

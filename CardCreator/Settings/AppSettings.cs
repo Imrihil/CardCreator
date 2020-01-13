@@ -23,6 +23,7 @@ namespace CardCreator.Settings
             PageSizeInch[PageSize].X;
         public double PageMarginPts { get; set; } = 20;
         public double CardsMarginPts { get; set; } = 1;
+        public int ImageCacheTimeout { get; set; } = 10;
 
         private readonly Dictionary<PageSize, PointF> PageSizeInch = new Dictionary<PageSize, PointF>
         {
