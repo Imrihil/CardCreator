@@ -156,7 +156,7 @@ namespace CardCreator
 
         private void InitializePreviewRadioButton(ButtonSettings button, int row, bool isChecked)
         {
-            var name = previewFactory.Register(button.File, GenerateImages);
+            var name = previewFactory.Register(button.File, GenerateImages).GetAwaiter().GetResult();
             var control = new RadioButton
             {
                 Name = $"Preview_RadioButton_{name}",
@@ -217,7 +217,7 @@ namespace CardCreator
 
                 GenerateCards_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
                 PreparePdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
-                previewFactory.Register(ChoosenFile, ChooseFileDialog.FileName, GenerateImages);
+                previewFactory.Register(ChoosenFile, ChooseFileDialog.FileName, GenerateImages).GetAwaiter().GetResult();
                 Preview_RadioButton_ChoosenFile.IsEnabled = true;
             }
             else

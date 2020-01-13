@@ -60,7 +60,7 @@ namespace CardCreator
 
             services.AddSingleton<IFontProvider, FontProvider>();
             services.AddSingleton<IImageProvider, ImageProvider>();
-            services.AddSingleton<IPreviewFactory, PreviewFactory>();
+            services.AddSingleton<IPreviewFactory, SafePreviewFactory>();
         }
     }
 }

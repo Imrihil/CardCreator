@@ -25,23 +25,26 @@ namespace CardCreator.Features.Preview
             previews = new Dictionary<string, IPreview>();
         }
 
-        public async Task<BitmapImage> GetPreviewImage() =>
+        public virtual async Task<BitmapImage> GetPreviewImage() =>
             await CurrentPreview.GetImage();
 
-        public async Task<BitmapImage> NextPreviewImage() =>
+        public virtual async Task<BitmapImage> NextPreviewImage() =>
             await CurrentPreview.Next();
 
-        public async Task<BitmapImage> PreviousPreviewImage() =>
+        public virtual async Task<BitmapImage> PreviousPreviewImage() =>
             await CurrentPreview.Previous();
 
-        public string Register(string filePath, bool generateImages)
+        public virtual async Task<string> Register(string filePath, bool generateImages)
         {
             var key = previews.Count.ToString();
             previews.Add(key, new Preview(mediator, fontProvider, imageProvider, filePath, generateImages));
-            return key;
+            return await Task.FromResult(key);
         }
 
-        public bool Register(string key, string filePath, bool generateImages)
+        public virtual async Task Refresh(bool generateImages) =>
+            await CurrentPreview.Refresh(generateImages);
+
+        public virtual async Task<bool> Register(string key, string filePath, bool generateImages)
         {
             if (previews.ContainsKey(key))
             {
@@ -49,18 +52,15 @@ namespace CardCreator.Features.Preview
                 return true;
             }
             previews.Add(key, new Preview(mediator, fontProvider, imageProvider, filePath, generateImages));
-            return false;
+            return await Task.FromResult(false);
         }
 
-        public async Task SetCurrentPreview(string key, bool generateImages)
+        public virtual async Task SetCurrentPreview(string key, bool generateImages)
         {
             CurrentPreview = previews[key];
 
             if (CurrentPreview.GenerateImages != generateImages)
                 await Refresh(generateImages);
         }
-
-        public async Task Refresh(bool generateImages) =>
-            await CurrentPreview.Refresh(generateImages);
     }
 }
