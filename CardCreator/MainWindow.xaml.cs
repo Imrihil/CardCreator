@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace CardCreator
 {
@@ -31,6 +32,7 @@ namespace CardCreator
 
         private OpenFileDialog ChooseFileDialog { get; }
         private OpenFileDialog ChooseImagesDialog { get; }
+        private DispatcherTimer PreviewTimer { get; }
         private bool GenerateImages => GenerateImages_Checkbox.IsChecked ?? true;
         private int GridWidth => IntParse(GridWidth_TextBox.Text, out var gridWidth) ? gridWidth : 0;
         private int GridHeight => IntParse(GridHeight_TextBox.Text, out var gridHeight) ? gridHeight : 0;
@@ -46,6 +48,7 @@ namespace CardCreator
 
             ChooseFileDialog = InitializeChooseFileDialog();
             ChooseImagesDialog = InitializeChooseImagesDialog();
+            PreviewTimer = InitializePreviewTimer();
             InitializeFonts();
             InitializeControls();
             InitializeButtons();
@@ -82,6 +85,14 @@ namespace CardCreator
 #endif
             };
             return openFileDialog;
+        }
+
+        private DispatcherTimer InitializePreviewTimer()
+        {
+            var timer = new DispatcherTimer();
+            timer.Tick += new EventHandler((sender, e) => RefreshPreview());
+            timer.Interval = new TimeSpan(0, 0, 1);
+            return timer;
         }
 
         private void InitializeFonts()
@@ -172,6 +183,7 @@ namespace CardCreator
             {
                 previewFactory.SetCurrentPreview(name, GenerateImages).GetAwaiter().GetResult();
                 Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
+                UpdatePreviewTimer();
             });
 
             Grid.SetRow(control, row);
@@ -186,6 +198,7 @@ namespace CardCreator
                 NextPreview_Button.Visibility = Visibility.Visible;
                 previewFactory.SetCurrentPreview(name, GenerateImages).GetAwaiter().GetResult();
                 Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
+                UpdatePreviewTimer();
             }
         }
 
@@ -289,17 +302,20 @@ namespace CardCreator
         private void PreviousPreview_Button_Click(object sender, RoutedEventArgs e)
         {
             Preview_Image.Source = previewFactory.PreviousPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
+            UpdatePreviewTimer();
         }
 
         private void NextPreview_Button_Click(object sender, RoutedEventArgs e)
         {
             Preview_Image.Source = previewFactory.NextPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
+            UpdatePreviewTimer();
         }
 
         private void Preview_RadioButton_ChoosenFile_Click(object sender, RoutedEventArgs e)
         {
             previewFactory.SetCurrentPreview(ChoosenFile, GenerateImages).GetAwaiter().GetResult();
             Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
+            UpdatePreviewTimer();
         }
 
         private void GenerateImages_Checkbox_Click(object sender, RoutedEventArgs e) =>
@@ -312,6 +328,22 @@ namespace CardCreator
         {
             previewFactory.Refresh(GenerateImages).GetAwaiter().GetResult();
             Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
+        }
+
+        private void PreviewAutoRefresh_Checkbox_Click(object sender, RoutedEventArgs e)
+        {
+            UpdatePreviewTimer();
+        }
+
+        private void UpdatePreviewTimer()
+        {
+            if (PreviewAutoRefresh_Checkbox.IsChecked == true)
+            {
+                if (!PreviewTimer.IsEnabled)
+                    PreviewTimer.Start();
+            }
+            else if (PreviewTimer.IsEnabled)
+                PreviewTimer.Stop();
         }
 
         protected override void OnClosing(CancelEventArgs e)
