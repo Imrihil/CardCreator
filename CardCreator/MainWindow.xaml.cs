@@ -138,6 +138,7 @@ namespace CardCreator
         private int NewButtonRow(int currentRow, bool withSeparator)
         {
             Application.Current.MainWindow.Height += RowHeight;
+            Application.Current.MainWindow.MinHeight += RowHeight;
             Grid.SetRowSpan(Vertical_Rectangle, Grid.GetRowSpan(Vertical_Rectangle) + (withSeparator ? 2 : 1));
             Grid.SetRowSpan(Preview_Image, Grid.GetRowSpan(Preview_Image) + (withSeparator ? 2 : 1));
             MainGrid.RowDefinitions.Insert(currentRow, new RowDefinition { Height = new GridLength(RowHeight) });
