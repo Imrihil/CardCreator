@@ -36,7 +36,8 @@ namespace CardCreator.Features.Images
             if (File.Exists(name))
             {
                 CleanCacheCollection();
-                var image = Image.FromFile(name);
+                using var bitmap = new Bitmap(name);
+                var image = new Bitmap(bitmap);
                 imageWithStats = new ImageStats(image);
                 cacheCollection[name] = imageWithStats;
                 return image;
