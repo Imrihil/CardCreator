@@ -6,12 +6,16 @@ using MediatR;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace CardCreator
@@ -33,6 +37,7 @@ namespace CardCreator
         private OpenFileDialog ChooseFileDialog { get; }
         private OpenFileDialog ChooseImagesDialog { get; }
         private DispatcherTimer PreviewTimer { get; }
+        private List<RadioButton> PreviewRadioButtons { get; }
         private bool GenerateImages => GenerateImages_Checkbox.IsChecked ?? true;
         private int GridWidth => IntParse(GridWidth_TextBox.Text, out var gridWidth) ? gridWidth : 0;
         private int GridHeight => IntParse(GridHeight_TextBox.Text, out var gridHeight) ? gridHeight : 0;
@@ -45,6 +50,8 @@ namespace CardCreator
             this.previewFactory = previewFactory;
 
             InitializeComponent();
+
+            PreviewRadioButtons = new List<RadioButton>(new[] { Preview_RadioButton_ChoosenFile });
 
             ChooseFileDialog = InitializeChooseFileDialog();
             ChooseImagesDialog = InitializeChooseImagesDialog();
@@ -175,7 +182,7 @@ namespace CardCreator
                 VerticalAlignment = VerticalAlignment.Center
             };
 
-            control.Click += new RoutedEventHandler((sender, e) =>
+            control.Checked += new RoutedEventHandler((sender, e) =>
             {
                 UpdatePreviewControls(name);
             });
@@ -184,6 +191,7 @@ namespace CardCreator
             Grid.SetColumn(control, 5);
 
             MainGrid.Children.Add(control);
+            PreviewRadioButtons.Add(control);
 
             if (isChecked)
             {
@@ -291,13 +299,11 @@ namespace CardCreator
         private void PreviousPreview_Button_Click(object sender, RoutedEventArgs e)
         {
             Preview_Image.Source = previewFactory.PreviousPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
-            UpdatePreviewTimer();
         }
 
         private void NextPreview_Button_Click(object sender, RoutedEventArgs e)
         {
             Preview_Image.Source = previewFactory.NextPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
-            UpdatePreviewTimer();
         }
 
         private void Preview_RadioButton_ChoosenFile_Click(object sender, RoutedEventArgs e)
@@ -360,6 +366,75 @@ namespace CardCreator
                 UpdatePreviewTimer(false);
             else
                 UpdatePreviewTimer();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Left:
+                    if (PreviousPreview_Button.IsEnabled && PreviousPreview_Button.IsVisible)
+                        ClickButton(PreviousPreview_Button);
+                    e.Handled = true;
+                    return;
+                case Key.Right:
+                    if (NextPreview_Button.IsEnabled && NextPreview_Button.IsVisible)
+                        ClickButton(NextPreview_Button);
+                    e.Handled = true;
+                    return;
+                case Key.Up:
+                    ClickPreviousPreviewRadioButton();
+                    e.Handled = true;
+                    return;
+                case Key.Down:
+                    ClickNextPreviewRadioButton();
+                    e.Handled = true;
+                    return;
+                default:
+                    return;
+            }
+        }
+
+        private void ClickPreviousPreviewRadioButton()
+        {
+            var choosenIdx = PreviewRadioButtons.FindIndex(button => button.IsChecked == true);
+            for (var i = choosenIdx - 1; i >= 0; i--)
+            {
+                var button = PreviewRadioButtons[i];
+                if (button.IsEnabled && button.IsVisible)
+                {
+                    ClickRadioButton(button);
+                    return;
+                }
+            }
+        }
+
+        private void ClickNextPreviewRadioButton()
+        {
+            var choosenIdx = PreviewRadioButtons.FindIndex(button => button.IsChecked == true);
+            for (var i = choosenIdx + 1; i < PreviewRadioButtons.Count; i++)
+            {
+                var button = PreviewRadioButtons[i];
+                if (button.IsEnabled && button.IsVisible)
+                {
+                    ClickRadioButton(button);
+                    return;
+                }
+            }
+        }
+
+        private void ClickButton(Button button)
+        {
+            var peer = new ButtonAutomationPeer(button);
+            var invokeProvider = peer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+            invokeProvider.Invoke();
+        }
+
+        private void ClickRadioButton(RadioButton button)
+        {
+            var peer = new RadioButtonAutomationPeer(button);
+            var selectionItemProvider = peer.GetPattern(PatternInterface.SelectionItem) as ISelectionItemProvider;
+            selectionItemProvider.Select();
         }
 
         protected override void OnClosing(CancelEventArgs e)

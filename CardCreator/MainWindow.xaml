@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:CardCreator.Properties"
         mc:Ignorable="d"
-        Title="CardCreator v.1.3" MinWidth="800" Width="800" MinHeight="420" Height="420">
+        Title="CardCreator v.1.3" MinWidth="800" Width="800" MinHeight="420" Height="420"
+        KeyDown="Window_KeyDown">
     <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5"/>
@@ -73,7 +74,7 @@
                 Grid.Row="12" Grid.Column="1" Grid.ColumnSpan="2" />
         <Button Name="PreparePdf_Button" Content="{x:Static p:Resources.PreparePdf}" Margin="5,5,5,5" Click="PreparePdf_Button_Click" 
                 Grid.Row="12" Grid.Column="3" Grid.ColumnSpan="2" />
-        <RadioButton Name="Preview_RadioButton_ChoosenFile" GroupName="Preview" Click="Preview_RadioButton_ChoosenFile_Click" HorizontalAlignment="Center" VerticalAlignment="Center" 
+        <RadioButton Name="Preview_RadioButton_ChoosenFile" GroupName="Preview" Checked="Preview_RadioButton_ChoosenFile_Click" HorizontalAlignment="Center" VerticalAlignment="Center" 
                      Grid.Row="11" Grid.RowSpan="2" Grid.Column="5" Height="14" Width="16" />
         <Rectangle Stroke="DarkGray" Height="1" 
                    Grid.Row="13" Grid.Column="1" Grid.ColumnSpan="5" />
