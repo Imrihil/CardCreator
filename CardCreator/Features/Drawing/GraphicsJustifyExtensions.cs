@@ -94,8 +94,8 @@ namespace CardCreator.Features.Drawing
                         layoutRectangle.Y + layoutRectangle.Height - height :
                         layoutRectangle.Y + i * ((layoutRectangle.Height - height) / (n - 1)),
                     layoutRectangle.Width,
-                    height),
-                _ => new RectangleF(layoutRectangle.X, layoutRectangle.Y + i * height, layoutRectangle.Width, height)
+                    height * 2),
+                _ => new RectangleF(layoutRectangle.X, layoutRectangle.Y + i * height, layoutRectangle.Width, height * 2)
             };
         }
 
