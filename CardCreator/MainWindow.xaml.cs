@@ -127,6 +127,7 @@ namespace CardCreator
         {
             var currentRow = MainGrid.RowDefinitions.Count - 2;
             var isFirst = true;
+            var isChecked = true;
             foreach (var button in settings.Buttons)
             {
                 currentRow = NewButtonRow(currentRow, isFirst);
@@ -135,9 +136,11 @@ namespace CardCreator
                     InitializeButton(button, ButtonAction.Generate, button.Generate, currentRow);
                 if (!string.IsNullOrEmpty(button.Pdf))
                     InitializeButton(button, ButtonAction.Pdf, button.Pdf, currentRow);
-                InitializePreviewRadioButton(button, currentRow, isFirst);
+                InitializePreviewRadioButton(button, currentRow, isChecked && File.Exists(button.File));
 
                 isFirst = false;
+                if (isChecked && File.Exists(button.File))
+                    isChecked = false;
                 currentRow++;
             }
         }
@@ -178,6 +181,7 @@ namespace CardCreator
                 Name = $"Preview_RadioButton_{name}",
                 GroupName = "Preview",
                 IsChecked = isChecked,
+                IsEnabled = File.Exists(button.File),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
             };
