@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:CardCreator.Properties"
         mc:Ignorable="d"
-        Title="CardCreator v.1.3" MinWidth="800" Width="800" MinHeight="420" Height="420"
+        Title="CardCreator v.1.3.1" MinWidth="800" Width="800" MinHeight="420" Height="420"
         KeyDown="Window_KeyDown">
     <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
