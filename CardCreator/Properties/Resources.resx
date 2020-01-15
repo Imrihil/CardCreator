@@ -222,4 +222,10 @@ Aby dodać nowe przyciski do panelu należy zmodyfikować plik "appsettings.json
   <data name="Previous" xml:space="preserve">
     <value>&lt;</value>
   </data>
+  <data name="GeneratingCards" xml:space="preserve">
+    <value>Generowanie kart z szablonu</value>
+  </data>
+  <data name="GeneratingPdf" xml:space="preserve">
+    <value>Generowanie pliku pdf z szablonu</value>
+  </data>
 </root>

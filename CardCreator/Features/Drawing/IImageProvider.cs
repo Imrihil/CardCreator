@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace CardCreator.Features.Images
+namespace CardCreator.Features.Drawing
 {
     public interface IImageProvider
     {

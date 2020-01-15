@@ -1,6 +1,6 @@
 ﻿using CardCreator.Extensions;
 using CardCreator.Features.Logging;
-using System;
+using CardCreator.Features.Threading;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows;
@@ -26,7 +26,7 @@ namespace CardCreator.View
         public void RegisterCancelationToken(CancellationTokenSource cts)
         {
             Cts = cts;
-            Cancel_Button.IsEnabled = true;
+            ThreadManager.RunActionWithDispatcher(Dispatcher, () => Cancel_Button.IsEnabled = true);
         }
 
         private void Ok_Button_Click(object sender, RoutedEventArgs e)
@@ -43,21 +43,27 @@ namespace CardCreator.View
 
         public void SetProgress(double value)
         {
-            ProgressBar.Value = value;
+            ThreadManager.RunActionWithDispatcher(Dispatcher, () =>
+            {
+                ProgressBar.Value = value;
 
-            if (value >= 100)
-                Ok_Button.IsEnabled = true;
+                if (value >= 100)
+                    Ok_Button.IsEnabled = true;
 
-            ProgressBar.Refresh();
-            ProgressBarText.Refresh();
+                ProgressBar.Refresh();
+                ProgressBarText.Refresh();
+            });
         }
 
         public void LogMessage(object message)
         {
-            TextBoxResultMessage.Text = (string.IsNullOrEmpty(TextBoxResultMessage.Text) ? "" : TextBoxResultMessage.Text + "\n") + message;
-            TextBoxResultMessage.ScrollToEnd();
+            ThreadManager.RunActionWithDispatcher(Dispatcher, () =>
+            {
+                TextBoxResultMessage.Text = (string.IsNullOrEmpty(TextBoxResultMessage.Text) ? "" : TextBoxResultMessage.Text + "\n") + message;
+                TextBoxResultMessage.ScrollToEnd();
 
-            TextBoxResultMessage.Refresh();
+                TextBoxResultMessage.Refresh();
+            });
         }
 
         protected override void OnClosing(CancelEventArgs e)

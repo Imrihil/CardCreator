@@ -4,7 +4,7 @@ using System.Drawing.Drawing2D;
 
 namespace CardCreator.Helpers
 {
-    public class DrawingHelper
+    public static class DrawingHelper
     {
         // Map a drawing coordinate rectangle to
         // a graphics object rectangle.
@@ -23,13 +23,11 @@ namespace CardCreator.Helpers
                 scaleY = scaleX;
             }
 
-            using (Image img = ResizeImage(image, (int)(image.Width * scaleX), (int)(image.Height * scaleY)))
-            {
-                var translateX = center ? (targetRect.Width - img.Width) / 2 : 0;
-                var translateY = center ? (targetRect.Height - img.Height) / 2 : 0;
+            using var img = ResizeImage(image, (int)(image.Width * scaleX), (int)(image.Height * scaleY));
+            var translateX = center ? (targetRect.Width - img.Width) / 2 : 0;
+            var translateY = center ? (targetRect.Height - img.Height) / 2 : 0;
 
-                graphic.DrawImage(img, targetRect.X + translateX, targetRect.Y + translateY);
-            }
+            graphic.DrawImage(img, targetRect.X + translateX, targetRect.Y + translateY);
             //graphic.DrawImage(image, target_rect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel);
         }
 
@@ -45,16 +43,14 @@ namespace CardCreator.Helpers
             var destRect = new Rectangle(0, 0, width, height);
             var destImage = new Bitmap(width, height);
 
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            using var graphics = Graphics.FromImage(destImage);
+            graphics.CompositingMode = CompositingMode.SourceCopy;
+            graphics.CompositingQuality = CompositingQuality.HighQuality;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel);
-            }
+            graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel);
 
             return destImage;
         }

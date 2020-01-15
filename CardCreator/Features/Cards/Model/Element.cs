@@ -1,15 +1,17 @@
 ﻿using CardCreator.Features.Drawing;
-using CardCreator.Features.Images;
+using System;
 using System.Drawing;
 using System.IO;
 
 namespace CardCreator.Features.Cards.Model
 {
-    public class Element : IDrawable
+    public sealed class Element : IDrawable, IDisposable
     {
         public string Content { get; }
         public ElementSchema ElementSchema { get; private set; }
         private Image Image { get; }
+
+        private bool disposed = false;
 
         public Element(IImageProvider imageProvider, string content, ElementSchema elementSchema, string directory, bool generateImages = true)
         {
@@ -29,12 +31,20 @@ namespace CardCreator.Features.Cards.Model
                 return;
 
             if (ElementSchema.Background != null)
-                graphics.DrawImage(ElementSchema.Background, ElementSchema.Area);
+            {
+                using var background = ElementSchema.Background.GetNewBitmap();
+                graphics.DrawImage(background, ElementSchema.Area);
+            }
 
             if (Image != null)
-                graphics.DrawImage(Image, ElementSchema.Area, ElementSchema.StringFormat);
+            {
+                using var image = Image.GetNewBitmap();
+                graphics.DrawImage(image, ElementSchema.Area, ElementSchema.StringFormat);
+            }
             else if (!string.IsNullOrWhiteSpace(Content) && ElementSchema.MaxSize > 0)
+            {
                 graphics.DrawAdjustedStringWithShadow(Content, ElementSchema.Font, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.Area, ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.MinSize, true, ElementSchema.Wrap);
+            }
         }
 
         internal void SetPosition(int position, int all)
@@ -52,6 +62,26 @@ namespace CardCreator.Features.Cards.Model
 
             ElementSchema = new ElementSchema(ElementSchema.Name, ElementSchema.Background, area, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.Font,
                 ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.Wrap, ElementSchema.JoinDirection);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+            {
+                ElementSchema.Dispose();
+                Image.Dispose();
+            }
+
+            disposed = true;
         }
     }
 }

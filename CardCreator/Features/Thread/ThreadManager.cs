@@ -27,5 +27,10 @@ namespace CardCreator.Features.Threading
             // Start the thread
             newThread.Start();
         }
+
+        public static void RunActionWithDispatcher(Dispatcher dispatcher, Action action)
+        {
+            dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(() => action()));
+        }
     }
 }

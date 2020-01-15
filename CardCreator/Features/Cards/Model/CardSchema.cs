@@ -1,5 +1,5 @@
 ﻿using CardCreator.Features.Fonts;
-using CardCreator.Features.Images;
+using CardCreator.Features.Drawing;
 using CardCreator.Features.Logging;
 using CardCreator.Features.System;
 using System;
@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace CardCreator.Features.Cards.Model
 {
-    public class CardSchema : List<ElementSchema>
+    public sealed class CardSchema : List<ElementSchema>, IDisposable
     {
         public const int ParamsNumber = 8;
 
@@ -33,6 +33,8 @@ namespace CardCreator.Features.Cards.Model
         public Color DefaultColor { get; }
         public Color DefaultShadowColor { get; }
         public ISet<int> CommentIdxs { get; }
+
+        private bool disposed = false;
 
         public CardSchema(string name, Image background, int widhtPx, int heightPx, double widthInch, double heightInch, IList<ElementSchema> elementSchemas, Color? defaultColor = null, Color? defaultShadowColor = null, ISet<int> commentIdx = null) : base(elementSchemas)
         {
@@ -95,6 +97,27 @@ namespace CardCreator.Features.Cards.Model
             {
                 return null;
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+            {
+                Background.Dispose();
+                foreach(var elementSchema in this)
+                    elementSchema.Dispose();
+            }
+
+            disposed = true;
         }
     }
 }

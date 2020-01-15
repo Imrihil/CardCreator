@@ -1,7 +1,8 @@
 ﻿using CardCreator.Features.Cards.Model;
 using CardCreator.Features.Fonts;
-using CardCreator.Features.Images;
+using CardCreator.Features.Drawing;
 using CardCreator.Features.System;
+using CardCreator.Features.Threading;
 using CardCreator.Settings;
 using CardCreator.View;
 using MediatR;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace CardCreator.Features.Cards
 {
-    public class PdfGeneratingCommand : IRequest<int>
+    public class PdfGeneratingCommand : IRequest<bool>
     {
         public string FilePath { get; set; }
         public bool GenerateImages { get; set; }
@@ -30,8 +31,10 @@ namespace CardCreator.Features.Cards
         }
     }
 
-    public class PdfGeneratingHandler : CardGeneratingBaseHandler, IRequestHandler<PdfGeneratingCommand, int>
+    public class PdfGeneratingHandler : CardGeneratingBaseHandler, IRequestHandler<PdfGeneratingCommand, bool>
     {
+        private const string titleResourceString = "GeneratingPdf";
+
         private readonly PageSize PageSize;
         private readonly PageOrientation PageOrientation;
         private readonly double PageWidthInch;
@@ -50,35 +53,39 @@ namespace CardCreator.Features.Cards
             CardsMarginPts = settings.Value.CardsMarginPts;
         }
 
-        public async Task<int> Handle(PdfGeneratingCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(PdfGeneratingCommand request, CancellationToken cancellationToken)
         {
             ProcessWindow.RegisterCancelationToken(request.Cts);
             ProcessWindow.Show();
-
-            var file = new FileInfo(request.FilePath);
-            if (!file.Exists)
+            ProcessWindow.Title = $"{Properties.Resources.ResourceManager.GetString(titleResourceString)} {request.FilePath}";
+            ThreadManager.RunActionInNewThread(async () =>
             {
-                ProcessWindow.LogMessage($"File {file.Name} not exists, so action cannot be processed.");
-                return 0;
-            }
 
-            ProcessWindow.LogMessage($"Reading {file.Name} ...");
-            var readCardFile = await ReadCardFile(file);
-            if (readCardFile == null) return 0;
-            ProcessWindow.LogMessage($"... done.");
-            ProcessWindow.SetProgress(100.0 / (1.0 + Math.Max(CardSchema.ParamsNumber, ElementSchema.ParamsNumber) + readCardFile.CardsElements.Count));
+                var file = new FileInfo(request.FilePath);
+                if (!file.Exists)
+                {
+                    ProcessWindow.LogMessage($"File {file.Name} not exists, so action cannot be processed.");
+                    return;
+                }
 
-            ProcessWindow.LogMessage($"Initializing card schemas ...");
-            var cardSchema = await GetCardSchema(readCardFile, file.DirectoryName, request.GenerateImages);
-            if (cardSchema == null) return 0;
-            ProcessWindow.LogMessage($"... done.");
-            ProcessWindow.SetProgress(GetProgress(0, readCardFile.CardsElements.Count));
+                ProcessWindow.LogMessage($"Reading {file.Name} ...");
+                var readCardFile = await ReadCardFile(file);
+                if (readCardFile == null) return;
+                ProcessWindow.LogMessage($"... done.");
+                ProcessWindow.SetProgress(100.0 / (1.0 + Math.Max(CardSchema.ParamsNumber, ElementSchema.ParamsNumber) + readCardFile.CardsElements.Count));
 
-            ProcessWindow.LogMessage("Creating document ...");
-            var successes = await GeneratePdf(readCardFile, cardSchema, file, request.GenerateImages);
-            ProcessWindow.LogMessage($"... done.");
+                ProcessWindow.LogMessage($"Initializing card schemas ...");
+                var cardSchema = await GetCardSchema(readCardFile, file.DirectoryName, request.GenerateImages);
+                if (cardSchema == null) return;
+                ProcessWindow.LogMessage($"... done.");
+                ProcessWindow.SetProgress(GetProgress(0, readCardFile.CardsElements.Count));
 
-            return successes;
+                ProcessWindow.LogMessage("Creating document ...");
+                var successes = await GeneratePdf(readCardFile, cardSchema, file, request.GenerateImages);
+                ProcessWindow.LogMessage($"... done.");
+            });
+
+            return await Task.FromResult(true);
         }
 
         private async Task<int> GeneratePdf(ReadCardFileResults readCardFile, CardSchema cardSchema, FileInfo file, bool generateImages)
@@ -105,7 +112,8 @@ namespace CardCreator.Features.Cards
                         var n = readCardFile.CardsRepetitions[i];
                         if (n > 0)
                         {
-                            using var xImage = XImage.FromGdiPlusImage(card.GetImage());
+                            using var image = card.Image;
+                            using var xImage = XImage.FromGdiPlusImage(image);
                             for (var j = 0; j < n; ++j)
                             {
                                 if (nCard % cardsPerPage == 0)

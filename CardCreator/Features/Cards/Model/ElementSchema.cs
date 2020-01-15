@@ -1,6 +1,6 @@
 ﻿using CardCreator.Features.Drawing.Model;
 using CardCreator.Features.Fonts;
-using CardCreator.Features.Images;
+using CardCreator.Features.Drawing;
 using CardCreator.Features.Logging;
 using CardCreator.Features.System;
 using System;
@@ -10,7 +10,7 @@ using System.IO;
 
 namespace CardCreator.Features.Cards.Model
 {
-    public class ElementSchema
+    public sealed class ElementSchema : IDisposable
     {
         public const int ParamsNumber = 15;
 
@@ -42,6 +42,8 @@ namespace CardCreator.Features.Cards.Model
         public StringFormatExtended StringFormat { get; }
         public bool Wrap { get; }
         public JoinDirection JoinDirection { get; }
+
+        private bool disposed = false;
 
         public ElementSchema(string name, Image background, Rectangle area, Color color, Color shadowColor, int shadowSize,
             FontFamily font, int maxSize, StringFormatExtended stringFormat, bool wrap, JoinDirection joinDirection)
@@ -119,6 +121,23 @@ namespace CardCreator.Features.Cards.Model
                 default:
                     return JoinDirection.None;
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+                Background.Dispose();
+
+            disposed = true;
         }
     }
 }

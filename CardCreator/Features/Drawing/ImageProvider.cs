@@ -6,14 +6,16 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 
-namespace CardCreator.Features.Images
+namespace CardCreator.Features.Drawing
 {
-    public class ImageProvider : IImageProvider
+    public sealed class ImageProvider : IImageProvider, IDisposable
     {
         private readonly IDictionary<string, ImageStats> cacheCollection;
         private int MaxSize { get; } = 100;
         private int MaxTime { get; } = 10; // in seconds
         public DateTime ValidTime => DateTime.Now.AddSeconds(-MaxTime);
+
+        private bool disposed = false;
 
         public ImageProvider(IOptions<AppSettings> settings)
         {
@@ -33,7 +35,7 @@ namespace CardCreator.Features.Images
 
             if (cacheCollection.TryGetValue(name, out var imageWithStats) && imageWithStats.Timestamp >= ValidTime)
             {
-                return imageWithStats.GetImage();
+                return imageWithStats.Image;
             }
 
             if (File.Exists(name))
@@ -57,27 +59,67 @@ namespace CardCreator.Features.Images
                 foreach (var image in oldest)
                 {
                     cacheCollection.Remove(image.Key);
+                    image.Value.Dispose();
                 }
             }
         }
 
-        private class ImageStats
+        public void Dispose()
         {
-            private Image Image { get; }
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+                foreach (var image in cacheCollection)
+                    image.Value.Dispose();
+
+            disposed = true;
+        }
+
+        private sealed class ImageStats : IDisposable
+        {
+            private readonly Image image;
+            public Image Image
+            {
+                get
+                {
+                    ++RequestsNumber;
+                    return image;
+                }
+            }
             public int RequestsNumber { get; private set; }
             public DateTime Timestamp { get; private set; }
 
+            private bool disposed = false;
+
             public ImageStats(Image image)
             {
-                Image = image;
+                this.image = image;
                 RequestsNumber = 1;
                 Timestamp = DateTime.Now;
             }
 
-            public Image GetImage()
+            public void Dispose()
             {
-                ++RequestsNumber;
-                return Image;
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            private void Dispose(bool disposing)
+            {
+                if (disposed)
+                    return;
+
+                if (disposing)
+                    image.Dispose();
+
+                disposed = true;
             }
         }
     }

@@ -187,6 +187,24 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generowanie kart z szablonu.
+        /// </summary>
+        public static string GeneratingCards {
+            get {
+                return ResourceManager.GetString("GeneratingCards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generowanie pliku pdf z szablonu.
+        /// </summary>
+        public static string GeneratingPdf {
+            get {
+                return ResourceManager.GetString("GeneratingPdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         public static byte[] Got_Heroin {
