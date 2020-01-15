@@ -1,6 +1,7 @@
 ﻿using CardCreator.Features.Cards;
 using CardCreator.Features.Fonts;
 using CardCreator.Features.Preview;
+using CardCreator.Features.Threading;
 using CardCreator.Settings;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -11,6 +12,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Automation.Provider;
@@ -255,15 +257,15 @@ namespace CardCreator
         private void GenerateCard(string fileName)
         {
             var cts = new CancellationTokenSource();
-            var result = mediator.Send(new CardGeneratingCommand(fileName, GenerateImages, cts), cts.Token).GetAwaiter().GetResult();
-            Console.WriteLine(result);
+            var generateImages = GenerateImages;
+            ThreadManager.RunActionInNewThread(async () => await mediator.Send(new CardGeneratingCommand(fileName, generateImages, cts), cts.Token));
         }
 
         private void PreparePdf(string fileName)
         {
             var cts = new CancellationTokenSource();
-            var result = mediator.Send(new PdfGeneratingCommand(fileName, GenerateImages, cts), cts.Token).GetAwaiter().GetResult();
-            Console.WriteLine(result);
+            var generateImages = GenerateImages;
+            ThreadManager.RunActionInNewThread(async () => await mediator.Send(new PdfGeneratingCommand(fileName, generateImages, cts), cts.Token));
         }
 
         private void ChooseImages_Button_Click(object sender, RoutedEventArgs e)

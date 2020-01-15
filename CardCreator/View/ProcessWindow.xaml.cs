@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace CardCreator.View
 {
@@ -61,8 +62,10 @@ namespace CardCreator.View
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            Cts?.Cancel();
             base.OnClosing(e);
+
+            Cts?.Cancel();
+            Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Background);
         }
     }
 }
