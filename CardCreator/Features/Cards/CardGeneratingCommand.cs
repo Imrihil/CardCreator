@@ -60,7 +60,7 @@ namespace CardCreator.Features.Cards
                 ProcessWindow.SetProgress(100.0 / (1.0 + Math.Max(CardSchema.ParamsNumber, ElementSchema.ParamsNumber) + readCardFile.CardsElements.Count));
 
                 ProcessWindow.LogMessage($"Initializing card schemas ...");
-                var cardSchema = await GetCardSchema(readCardFile, file.DirectoryName, request.GenerateImages);
+                using var cardSchema = await GetCardSchema(readCardFile, file.DirectoryName, request.GenerateImages);
                 if (cardSchema == null) return;
                 ProcessWindow.LogMessage($"... done.");
                 ProcessWindow.SetProgress(GetProgress(0, readCardFile.CardsElements.Count));
@@ -87,7 +87,7 @@ namespace CardCreator.Features.Cards
                 {
                     try
                     {
-                        var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
+                        using var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
                         try
                         {
                             using var cardImage = card.Image;

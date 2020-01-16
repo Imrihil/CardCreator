@@ -35,7 +35,7 @@ namespace CardCreator.Features.Drawing
 
             if (cacheCollection.TryGetValue(name, out var imageWithStats) && imageWithStats.Timestamp >= ValidTime)
             {
-                return imageWithStats.Image;
+                return imageWithStats.Image.GetNewBitmap();
             }
 
             if (File.Exists(name))
@@ -45,7 +45,7 @@ namespace CardCreator.Features.Drawing
                 var image = new Bitmap(bitmap);
                 imageWithStats = new ImageStats(image);
                 cacheCollection[name] = imageWithStats;
-                return image;
+                return image.GetNewBitmap();
             }
 
             return null;

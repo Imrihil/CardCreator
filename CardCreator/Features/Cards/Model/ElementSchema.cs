@@ -135,7 +135,7 @@ namespace CardCreator.Features.Cards.Model
                 return;
 
             if (disposing)
-                Background.Dispose();
+                Background?.Dispose();
 
             disposed = true;
         }

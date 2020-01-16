@@ -77,8 +77,7 @@ namespace CardCreator.Features.Cards.Model
 
             if (disposing)
             {
-                ElementSchema.Dispose();
-                Image.Dispose();
+                Image?.Dispose();
             }
 
             disposed = true;

@@ -112,7 +112,7 @@ namespace CardCreator.Features.Cards.Model
 
             if (disposing)
             {
-                Background.Dispose();
+                Background?.Dispose();
                 foreach(var elementSchema in this)
                     elementSchema.Dispose();
             }

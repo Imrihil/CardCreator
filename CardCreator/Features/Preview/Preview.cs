@@ -66,7 +66,8 @@ namespace CardCreator.Features.Preview
 
             if (!CardImages.TryGetValue(CurrentPosition, out var cardImage))
             {
-                cardImage = new Card(imageProvider, CardSchema, CardsElements[CurrentPosition], File.DirectoryName, GenerateImages).Image;
+                using var card = new Card(imageProvider, CardSchema, CardsElements[CurrentPosition], File.DirectoryName, GenerateImages);
+                cardImage = card.Image.GetNewBitmap();
                 CardImages.Add(CurrentPosition, cardImage);
             }
 

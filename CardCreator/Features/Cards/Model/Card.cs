@@ -98,8 +98,7 @@ namespace CardCreator.Features.Cards.Model
 
             if (disposing)
             {
-                CardSchema.Dispose();
-                image.Dispose();
+                image?.Dispose();
                 foreach (var element in this)
                     element.Dispose();
             }

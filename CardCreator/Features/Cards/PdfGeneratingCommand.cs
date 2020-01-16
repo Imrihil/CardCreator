@@ -106,7 +106,7 @@ namespace CardCreator.Features.Cards
             {
                 try
                 {
-                    var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
+                    using var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
                     try
                     {
                         var n = readCardFile.CardsRepetitions[i];
