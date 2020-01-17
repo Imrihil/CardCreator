@@ -1,4 +1,5 @@
 ﻿using CardCreator.Features.Drawing;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -32,22 +33,22 @@ namespace CardCreator.Features.Cards.Model
 
         private bool disposed = false;
 
-        public Card(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory, bool generateImages = true) :
-            base(InitElements(imageProvider, cardSchema, cardElements, directory, generateImages))
+        public Card(IMediator mediator, IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory, bool generateImages = true) :
+            base(InitElements(mediator, imageProvider, cardSchema, cardElements, directory, generateImages))
         {
             CardSchema = cardSchema;
 
             MergeElementsByName();
         }
 
-        private static IEnumerable<Element> InitElements(IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory, bool generateImages)
+        private static IEnumerable<Element> InitElements(IMediator mediator, IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory, bool generateImages)
         {
             var i = 0;
             var elements = cardElements
                 .Where(_ => !cardSchema.CommentIdxs.Contains(i++))
                 .Zip(cardSchema, (content, elementSchema) =>
                        elementSchema.Background == null && string.IsNullOrEmpty(content) ? null :
-                           new Element(imageProvider, content, elementSchema, directory, generateImages))
+                           new Element(mediator, imageProvider, content, elementSchema, directory, generateImages))
                        .Where(element => element != null);
 
             return elements;

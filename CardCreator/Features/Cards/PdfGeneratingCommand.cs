@@ -45,12 +45,12 @@ namespace CardCreator.Features.Cards
         public PdfGeneratingHandler(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, ProcessWindow processWindow) :
             base(mediator, fontProvider, imageProvider, processWindow)
         {
-            PageSize = settings.Value.PageSize;
-            PageOrientation = settings.Value.PageOrientation;
-            PageWidthInch = settings.Value.PageWidthInch;
-            PageHeightInch = settings.Value.PageHeightInch;
-            PageMarginPts = settings.Value.PageMarginPts;
-            CardsMarginPts = settings.Value.CardsMarginPts;
+            PageSize = settings.Value.Page.Size;
+            PageOrientation = settings.Value.Page.Orientation;
+            PageWidthInch = settings.Value.Page.WidthInch;
+            PageHeightInch = settings.Value.Page.HeightInch;
+            PageMarginPts = settings.Value.Page.MarginPts;
+            CardsMarginPts = settings.Value.Page.CardsMarginPts;
         }
 
         public async Task<bool> Handle(PdfGeneratingCommand request, CancellationToken cancellationToken)
@@ -106,7 +106,7 @@ namespace CardCreator.Features.Cards
             {
                 try
                 {
-                    using var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
+                    using var card = new Card(Mediator, ImageProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
                     try
                     {
                         var n = readCardFile.CardsRepetitions[i];

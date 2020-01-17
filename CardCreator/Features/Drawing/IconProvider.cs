@@ -14,7 +14,7 @@ namespace CardCreator.Features.Drawing
 
         public IconProvider(IImageProvider imageProvider, IOptions<AppSettings> settings)
         {
-            icons = new Dictionary<string, Image>(InitializeIcons(imageProvider, settings.Value.Icons));
+            icons = new Dictionary<string, Image>(InitializeIcons(imageProvider, settings.Value.Text.Icons));
         }
 
         public Image Get(string name) =>

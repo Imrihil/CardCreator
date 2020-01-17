@@ -87,7 +87,7 @@ namespace CardCreator.Features.Cards
                 {
                     try
                     {
-                        using var card = new Card(ImageProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
+                        using var card = new Card(Mediator, ImageProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
                         try
                         {
                             using var cardImage = card.Image;

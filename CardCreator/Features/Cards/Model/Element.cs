@@ -1,4 +1,6 @@
 ﻿using CardCreator.Features.Drawing;
+using CardCreator.Features.Drawing.Text;
+using MediatR;
 using System;
 using System.Drawing;
 using System.IO;
@@ -11,10 +13,13 @@ namespace CardCreator.Features.Cards.Model
         public ElementSchema ElementSchema { get; private set; }
         private Image Image { get; }
 
+        private readonly IMediator mediator;
         private bool disposed = false;
 
-        public Element(IImageProvider imageProvider, string content, ElementSchema elementSchema, string directory, bool generateImages = true)
+        public Element(IMediator mediator, IImageProvider imageProvider, string content, ElementSchema elementSchema, string directory, bool generateImages = true)
         {
+            this.mediator = mediator;
+
             Content = content;
             Image = imageProvider.TryGet(Path.Combine(directory, content));
             if (Image != null && !generateImages)
@@ -43,7 +48,7 @@ namespace CardCreator.Features.Cards.Model
             }
             else if (!string.IsNullOrWhiteSpace(Content) && ElementSchema.MaxSize > 0)
             {
-                graphics.DrawAdjustedStringWithShadow(Content, ElementSchema.Font, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.Area, ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.MinSize, true, ElementSchema.Wrap);
+                mediator.Send(new DrawTextCommand(graphics, Content, ElementSchema.StringFormat, ElementSchema.Font, ElementSchema.MaxSize, ElementSchema.MinSize, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.Wrap, ElementSchema.Area)).GetAwaiter();
             }
         }
 

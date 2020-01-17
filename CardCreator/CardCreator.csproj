@@ -68,8 +68,4 @@
     </Page>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Drawing\Text\" />
-  </ItemGroup>
-
 </Project>
