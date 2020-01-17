@@ -23,10 +23,8 @@ namespace CardCreator.Features.Drawing
             MaxTime = settings.Value.ImageCacheTimeout;
         }
 
-        public Image Get(string name)
-        {
-            return TryGet(name) ?? throw new FileNotFoundException($"File with path {name} not exists.");
-        }
+        public Image Get(string name) =>
+            TryGet(name) ?? throw new FileNotFoundException($"File with path {name} not exists.");
 
         public Image TryGet(string name)
         {

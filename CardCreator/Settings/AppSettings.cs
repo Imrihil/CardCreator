@@ -24,6 +24,7 @@ namespace CardCreator.Settings
         public double PageMarginPts { get; set; } = 20;
         public double CardsMarginPts { get; set; } = 1;
         public int ImageCacheTimeout { get; set; } = 10;
+        public IDictionary<string, string> Icons { get; set; } = new Dictionary<string, string>();
 
         private readonly Dictionary<PageSize, PointF> PageSizeInch = new Dictionary<PageSize, PointF>
         {
