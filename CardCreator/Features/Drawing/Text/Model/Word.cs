@@ -19,6 +19,12 @@ namespace CardCreator.Features.Drawing.Text.Model
             Icon = iconProvider.TryGet(content);
         }
 
+        public bool IsAlone(int shortestAloneWords) =>
+            Icon != null ? false : Content.Length < shortestAloneWords;
+
+        public SizeF Measure(Graphics graphics, Font font) =>
+            Icon == null ? graphics.MeasureString(Content, font) : Icon.Measure(font);
+
         public override string ToString() => Content;
 
         public void Dispose()

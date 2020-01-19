@@ -27,5 +27,8 @@ namespace CardCreator.Features.Drawing
 
             return bitmapImage;
         }
+
+        public static SizeF Measure(this Image image, Font font) =>
+            new SizeF((float)font.Height * image.Width / image.Height, font.Height);
     }
 }

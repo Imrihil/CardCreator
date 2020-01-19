@@ -1,6 +1,8 @@
 ﻿using CardCreator.Features.Drawing.Model;
 using CardCreator.Features.Drawing.Text.Model;
+using CardCreator.Settings;
 using MediatR;
+using Microsoft.Extensions.Options;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,15 +42,17 @@ namespace CardCreator.Features.Drawing.Text
     public class DrawTextHandler : IRequestHandler<DrawTextCommand, bool>
     {
         private readonly IIconProvider iconProvider;
+        private readonly int shortestAloneWords;
 
-        public DrawTextHandler(IIconProvider iconProvider)
+        public DrawTextHandler(IOptions<AppSettings> settings, IIconProvider iconProvider)
         {
             this.iconProvider = iconProvider;
+            shortestAloneWords = settings.Value.Text.ShortestAloneWords;
         }
 
         public async Task<bool> Handle(DrawTextCommand request, CancellationToken cancellationToken)
         {
-            using var article = new Article(iconProvider, request.Content);
+            using var article = new Article(iconProvider, shortestAloneWords, request.Content);
             article.Draw(request.Graphics, request.StringFormat, request.FontFamily, request.MaxSize, request.MinSize, request.Color, request.ShadowColor, request.ShadowSize, request.WrapLines, request.LayoutRectangle);
 
             return await Task.FromResult(true);
