@@ -3,6 +3,7 @@ using CardCreator.Features.Drawing.Text.Model;
 using CardCreator.Settings;
 using MediatR;
 using Microsoft.Extensions.Options;
+using System;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,8 +53,8 @@ namespace CardCreator.Features.Drawing.Text
 
         public async Task<bool> Handle(DrawTextCommand request, CancellationToken cancellationToken)
         {
-            using var article = new Article(iconProvider, shortestAloneWords, request.Content);
-            article.Draw(request.Graphics, request.StringFormat, request.FontFamily, request.MaxSize, request.MinSize, request.Color, request.ShadowColor, request.ShadowSize, request.WrapLines, request.LayoutRectangle);
+            using var article = new Article(iconProvider, request.Graphics, request.Content, request.StringFormat, request.FontFamily, request.MaxSize, request.MinSize, request.Color, request.ShadowColor, request.ShadowSize, request.WrapLines, shortestAloneWords, request.LayoutRectangle);
+            article.Draw(request.Graphics);
 
             return await Task.FromResult(true);
         }

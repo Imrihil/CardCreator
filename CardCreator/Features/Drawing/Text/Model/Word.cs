@@ -1,23 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CardCreator.Features.Drawing.Model;
+using System;
 using System.Drawing;
-using System.Text;
 
 namespace CardCreator.Features.Drawing.Text.Model
 {
-    public sealed class Word : IDisposable
+    public sealed class Word : IDisposable, IDrawable
     {
+        public static readonly StringFormatExtended DefaultStringFormat = new StringFormatExtended(StringAlignmentExtended.Near, StringAlignmentExtended.Near);
+
         public string Content { get; }
         public Image Icon { get; }
         public Font Font { get; }
         public Color Color { get; }
         public Color ShadowColor { get; }
         public int ShadowSize { get; }
+        public bool IsAloneWord { get; }
+        public RectangleF LayoutRectangle { get; private set; }
+        public SizeF Size { get; }
 
         private bool disposed = false;
-        private string wordContent;
 
-        public Word(IIconProvider iconProvider, string content, Font font, Color color, Color shadowColor, int shadowSize)
+        public Word(IIconProvider iconProvider, Graphics graphics, string content, Font font, Color color, Color shadowColor, int shadowSize, int shortestAloneWords, PointF layoutPoint)
         {
             Content = content;
             Icon = iconProvider.TryGet(content);
@@ -25,13 +28,26 @@ namespace CardCreator.Features.Drawing.Text.Model
             Color = color;
             ShadowColor = shadowColor;
             ShadowSize = shadowSize;
+            IsAloneWord = Icon != null ? false : Content.Length < shortestAloneWords;
+            Size = GetSize(graphics);
+            LayoutRectangle = new RectangleF(layoutPoint.X, layoutPoint.Y, Size.Width, Size.Height);
         }
 
-        public bool IsAlone(int shortestAloneWords) =>
-            Icon != null ? false : Content.Length < shortestAloneWords;
+        private SizeF GetSize(Graphics graphics) =>
+            Icon == null ? graphics.MeasureString(Content, Font) : Icon.Measure(Font);
 
-        public SizeF Measure(Graphics graphics, Font font) =>
-            Icon == null ? graphics.MeasureString(Content, font) : Icon.Measure(font);
+        public void Draw(Graphics graphics)
+        {
+            if (Icon != null)
+                graphics.DrawImage(Icon, LayoutRectangle, DefaultStringFormat);
+            else
+                graphics.DrawStringWithShadow(ToString(), Font, Color, ShadowColor, ShadowSize, LayoutRectangle, DefaultStringFormat.StringFormat);
+        }
+
+        public void Shift(PointF shiftPoint)
+        {
+            LayoutRectangle = new RectangleF(LayoutRectangle.X + shiftPoint.X, LayoutRectangle.Y + shiftPoint.Y, LayoutRectangle.Width, LayoutRectangle.Height);
+        }
 
         public override string ToString() => Content;
 

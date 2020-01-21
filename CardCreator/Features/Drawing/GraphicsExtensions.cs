@@ -154,7 +154,7 @@ namespace CardCreator.Features.Drawing
         /// <param name="height">The height to resize to.</param>
         /// <returns>The resized image.</returns>
         public static void DrawImage(this Graphics graphics, Image image,
-            Rectangle layoutRectangle, StringFormatExtended stringFormat)
+            RectangleF layoutRectangle, StringFormatExtended stringFormat)
         {
             // Scale.
             // Get scale factors for both directions.

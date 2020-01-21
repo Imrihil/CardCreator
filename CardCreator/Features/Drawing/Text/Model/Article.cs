@@ -2,47 +2,36 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace CardCreator.Features.Drawing.Text.Model
 {
-    public sealed class Article : List<Paragraph>, IDisposable, IDrawable
+    public sealed class Article : IDisposable, IDrawable
     {
+        private List<Paragraph> Paragraphs { get; }
         public StringFormatExtended StringFormat { get; }
         public RectangleF LayoutRectangle { get; }
-
-        private SizeF size;
-        public SizeF Size
-        {
-            get
-            {
-                return size;
-            }
-        }
+        public SizeF Size { get; }
 
         private bool disposed = false;
 
-        public Article(IIconProvider iconProvider, string content, StringFormatExtended stringFormat, FontFamily fontFamily, int maxSize, int minSize, Color color, Color shadowColor, int shadowSize, bool wrapLines, int shortestAloneWords, RectangleF layoutRectangle) : base()
+        public Article(IIconProvider iconProvider, Graphics graphics, string content, StringFormatExtended stringFormat, FontFamily fontFamily, int maxSize, int minSize, Color color, Color shadowColor, int shadowSize, bool wrapLines, int shortestAloneWords, RectangleF layoutRectangle)
         {
             StringFormat = stringFormat;
             LayoutRectangle = layoutRectangle;
-
-            InitializeParagraphs(iconProvider, content, fontFamily, maxSize, minSize, color, shadowColor, shadowSize, wrapLines, shortestAloneWords);
+            Paragraphs = GetParagraphs(iconProvider, graphics, content, fontFamily, maxSize, minSize, color, shadowColor, shadowSize, wrapLines, shortestAloneWords);
         }
 
-        private void InitializeParagraphs(IIconProvider iconProvider, string content, FontFamily fontFamily, int maxSize, int minSize, Color color, Color shadowColor, int shadowSize, bool wrapLines, int shortestAloneWords)
+        private List<Paragraph> GetParagraphs(IIconProvider iconProvider, Graphics graphics, string content, FontFamily fontFamily, int maxSize, int minSize, Color color, Color shadowColor, int shadowSize, bool wrapLines, int shortestAloneWords)
         {
-            using var image = new Bitmap((int)Math.Ceiling(LayoutRectangle.Width), (int)Math.Ceiling(LayoutRectangle.Height));
-            using var graphics = Graphics.FromImage(image);
-
             var font = GetAdjustedFont(graphics, fontFamily, maxSize, minSize, wrapLines, LayoutRectangle, out var linesCount);
             var interline = StringFormat.LineAlignment == StringAlignmentExtended.Justify ?
                 (LayoutRectangle.Height - font.Height) / ((linesCount - 1) * font.Height) :
                 1;
 
-            foreach (var paragraphContent in content.Split(new[] { "\n", "\r\n" }, StringSplitOptions.None))
-            {
-                Add(new Paragraph(iconProvider, paragraphContent, StringFormat, font, color, shadowColor, shadowSize, wrapLines, shortestAloneWords, LayoutRectangle));
-            }
+            return content.Split(new[] { "\n", "\r\n" }, StringSplitOptions.None)
+                .Select(paragraphContent => new Paragraph(iconProvider, graphics, paragraphContent, StringFormat, interline, font, color, shadowColor, shadowSize, wrapLines, shortestAloneWords, LayoutRectangle))
+                .ToList();
         }
 
         private Font GetAdjustedFont(Graphics graphics, FontFamily fontFamily, int maxSize, int minSize, bool wrapLines, RectangleF layoutRectangle, out int linesCount)
@@ -97,7 +86,7 @@ namespace CardCreator.Features.Drawing.Text.Model
 
             if (disposing)
             {
-                foreach (var paragraph in this)
+                foreach (var paragraph in Paragraphs)
                     paragraph.Dispose();
             }
 

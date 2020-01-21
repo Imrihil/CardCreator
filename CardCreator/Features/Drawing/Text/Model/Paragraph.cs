@@ -7,49 +7,27 @@ using System.Linq;
 
 namespace CardCreator.Features.Drawing.Text.Model
 {
-    public sealed class Paragraph : List<Word>, IDisposable, IDrawable
+    public sealed class Paragraph : IDisposable, IDrawable
     {
         private const string Separator = " ";
 
-        public ReadOnlyCollection<Line> Lines { get; }
-        public bool WrapLines { get; }
-        public int ShortestAloneWords { get; }
-        public RectangleF LayoutRectangle { get; }
+        private List<Line> Lines { get; }
         public float Interline { get; }
-
-        private SizeF size;
-        public SizeF Size
-        {
-            get
-            {
-                return size;
-            }
-        }
+        public bool WrapLines { get; }
+        public RectangleF LayoutRectangle { get; }
+        public SizeF Size { get; }
 
         private bool disposed = false;
 
-        public Paragraph(IIconProvider iconProvider, string content, StringFormatExtended stringFormat, Font font, Color color, Color shadowColor, int shadowSize, bool wrapLines, int shortestAloneWords, RectangleF layoutRectangle) : base()
+        public Paragraph(IIconProvider iconProvider, Graphics graphics, string content, StringFormatExtended stringFormat, float interline, Font font, Color color, Color shadowColor, int shadowSize, bool wrapLines, int shortestAloneWords, RectangleF layoutRectangle)
         {
+            Interline = interline;
             WrapLines = wrapLines;
-            ShortestAloneWords = shortestAloneWords;
             LayoutRectangle = layoutRectangle;
-
-            InitializeWords(iconProvider, content, font, color, shadowColor, shadowSize);
-
-            using var image = new Bitmap((int)Math.Ceiling(layoutRectangle.Width), (int)Math.Ceiling(layoutRectangle.Height));
-            using var graphics = Graphics.FromImage(image);
-            Lines = GetLines(graphics, font, layoutRectangle.Width, wrapLines).AsReadOnly();
+            Lines = GetLines(iconProvider, graphics, content, font, color, shadowColor, shadowSize, layoutRectangle.Width, wrapLines, shortestAloneWords);
         }
 
-        private static void InitializeWords(IIconProvider iconProvider, string content, Font font, Color color, Color shadowColor, int shadowSize)
-        {
-            foreach (var wordContent in content.Split(' '))
-            {
-                Add(new Word(iconProvider, wordContent, font, color, shadowColor, shadowSize));
-            }
-        }
-
-        private List<Line> GetLines(Graphics graphics, Font font, float width, bool wrapLines)
+        private List<Line> GetLines(IIconProvider iconProvider, Graphics graphics, string content, Font font, Color color, Color shadowColor, int shadowSize, float width, bool wrapLines, int shortestAloneWords)
         {
             var lines = new List<Line>();
             if (!wrapLines)
@@ -60,7 +38,7 @@ namespace CardCreator.Features.Drawing.Text.Model
             size = new SizeF();
             SizeF lineSize;
             var line = new Line();
-            foreach (var word in this)
+            foreach (var word in content.Split(' ').Select(wordContent => new Word(iconProvider, graphics, wordContent, font, color, shadowColor, shadowSize)))
             {
                 while (!line.TryAdd(word, width, graphics, font))
                 {
@@ -122,8 +100,8 @@ namespace CardCreator.Features.Drawing.Text.Model
 
             if (disposing)
             {
-                foreach (var word in this)
-                    word.Dispose();
+                foreach (var line in Lines)
+                    line.Dispose();
             }
 
             disposed = true;
