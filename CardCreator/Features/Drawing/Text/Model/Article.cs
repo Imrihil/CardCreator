@@ -2,27 +2,46 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace CardCreator.Features.Drawing.Text.Model
 {
-    public sealed class Article : List<Paragraph>, IDisposable
+    public sealed class Article : List<Paragraph>, IDisposable, IDrawable
     {
+        public StringFormatExtended StringFormat { get; }
+        public RectangleF LayoutRectangle { get; }
+
+        private SizeF size;
+        public SizeF Size
+        {
+            get
+            {
+                return size;
+            }
+        }
+
         private bool disposed = false;
 
-        public Article(IIconProvider iconProvider, int shortestAloneWords, string content) : base(InitializeParagraphs(iconProvider, shortestAloneWords, content)) { }
-
-        public void Draw(Graphics graphics, StringFormatExtended stringFormat, FontFamily fontFamily, int maxSize, int minSize, Color color, Color shadowColor, int shadowSize, bool wrapLines, RectangleF layoutRectangle)
+        public Article(IIconProvider iconProvider, string content, StringFormatExtended stringFormat, FontFamily fontFamily, int maxSize, int minSize, Color color, Color shadowColor, int shadowSize, bool wrapLines, int shortestAloneWords, RectangleF layoutRectangle) : base()
         {
-            var font = GetAdjustedFont(graphics, fontFamily, maxSize, minSize, wrapLines, layoutRectangle, out var linesCount);
-            var interline = stringFormat.LineAlignment == StringAlignmentExtended.Justify ? 
-                (layoutRectangle.Height - font.Height) / ((linesCount - 1) * font.Height) :
+            StringFormat = stringFormat;
+            LayoutRectangle = layoutRectangle;
+
+            InitializeParagraphs(iconProvider, content, fontFamily, maxSize, minSize, color, shadowColor, shadowSize, wrapLines, shortestAloneWords);
+        }
+
+        private void InitializeParagraphs(IIconProvider iconProvider, string content, FontFamily fontFamily, int maxSize, int minSize, Color color, Color shadowColor, int shadowSize, bool wrapLines, int shortestAloneWords)
+        {
+            using var image = new Bitmap((int)Math.Ceiling(LayoutRectangle.Width), (int)Math.Ceiling(LayoutRectangle.Height));
+            using var graphics = Graphics.FromImage(image);
+
+            var font = GetAdjustedFont(graphics, fontFamily, maxSize, minSize, wrapLines, LayoutRectangle, out var linesCount);
+            var interline = StringFormat.LineAlignment == StringAlignmentExtended.Justify ?
+                (LayoutRectangle.Height - font.Height) / ((linesCount - 1) * font.Height) :
                 1;
-            var paragraphLayoutRectangle = new RectangleF(layoutRectangle.X, layoutRectangle.Y, layoutRectangle.Width, layoutRectangle.Height);
-            foreach (var paragraph in this)
+
+            foreach (var paragraphContent in content.Split(new[] { "\n", "\r\n" }, StringSplitOptions.None))
             {
-                paragraph.Draw(graphics, stringFormat, interline, font, color, shadowColor, shadowSize, wrapLines, paragraphLayoutRectangle, out var size);
-                paragraphLayoutRectangle = new RectangleF(paragraphLayoutRectangle.X, paragraphLayoutRectangle.Y + size.Height, layoutRectangle.Width, paragraphLayoutRectangle.Height - size.Height);
+                Add(new Paragraph(iconProvider, paragraphContent, StringFormat, font, color, shadowColor, shadowSize, wrapLines, shortestAloneWords, LayoutRectangle));
             }
         }
 
@@ -52,6 +71,16 @@ namespace CardCreator.Features.Drawing.Text.Model
             return new Font(fontFamily, minSize, GraphicsUnit.Pixel);
         }
 
+        public void Draw(Graphics graphics)
+        {
+            var paragraphLayoutRectangle = new RectangleF(LayoutRectangle.X, LayoutRectangle.Y, LayoutRectangle.Width, LayoutRectangle.Height);
+            foreach (var paragraph in this)
+            {
+                paragraph.Draw(graphics);
+                paragraphLayoutRectangle = new RectangleF(paragraphLayoutRectangle.X, paragraphLayoutRectangle.Y + Size.Height, LayoutRectangle.Width, paragraphLayoutRectangle.Height - Size.Height);
+            }
+        }
+
         public override string ToString() =>
             string.Join(Environment.NewLine, this);
 
@@ -74,8 +103,5 @@ namespace CardCreator.Features.Drawing.Text.Model
 
             disposed = true;
         }
-
-        private static IEnumerable<Paragraph> InitializeParagraphs(IIconProvider iconProvider, int shortestAloneWords, string content) =>
-            content.Split(new[] { "\n", "\r\n" }, StringSplitOptions.None).Select(paragraphContent => new Paragraph(iconProvider, shortestAloneWords, paragraphContent));
     }
 }

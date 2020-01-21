@@ -9,14 +9,22 @@ namespace CardCreator.Features.Drawing.Text.Model
     {
         public string Content { get; }
         public Image Icon { get; }
+        public Font Font { get; }
+        public Color Color { get; }
+        public Color ShadowColor { get; }
+        public int ShadowSize { get; }
 
         private bool disposed = false;
         private string wordContent;
 
-        public Word(IIconProvider iconProvider, string content)
+        public Word(IIconProvider iconProvider, string content, Font font, Color color, Color shadowColor, int shadowSize)
         {
             Content = content;
             Icon = iconProvider.TryGet(content);
+            Font = font;
+            Color = color;
+            ShadowColor = shadowColor;
+            ShadowSize = shadowSize;
         }
 
         public bool IsAlone(int shortestAloneWords) =>

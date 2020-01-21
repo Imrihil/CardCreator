@@ -10,6 +10,9 @@ namespace CardCreator.Features.Drawing.Text.Model
     {
         private const string Separator = " ";
 
+        public StringFormatExtended StringFormat { get; }
+        public RectangleF LayoutRectangle { get; }
+
         private bool disposed = false;
 
         public Line() : base(new List<Word>()) { }
