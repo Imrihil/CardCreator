@@ -72,9 +72,7 @@ namespace CardCreator.Features.Drawing.Text.Model
             Color color, Color shadowColor, int shadowSize, bool wrapLines, int shortestAloneWords)
         {
             if (!wrapLines)
-            {
                 return new[] { new Line(iconProvider, graphics, content, stringFormat, font, color, shadowColor, shadowSize, shortestAloneWords, true, LayoutRectangle) }.ToList();
-            }
 
             var lines = new List<Line>();
 
@@ -103,16 +101,30 @@ namespace CardCreator.Features.Drawing.Text.Model
             if (!words.Any())
                 return 0;
 
+            List<Word> wordsRange = null;
             var lIdx = startIdx + 1;
             var rIdx = words.Count;
             while (lIdx < rIdx)
             {
                 var mIdx = (lIdx + rIdx) / 2;
-                var lineSize = Line.Measure(words.GetRange(startIdx, mIdx - startIdx + 1), font, SeparatorWidth);
+                wordsRange = words.GetRange(startIdx, mIdx - startIdx);
+                var lineSize = Line.Measure(wordsRange, font, SeparatorWidth);
                 if (lineSize.Width < LayoutRectangle.Width)
                     lIdx = mIdx + 1;
                 else
                     rIdx = mIdx;
+            }
+
+            if (lIdx - startIdx <= 1 || wordsRange.All(word => word.IsAloneWord) || lIdx == words.Count)
+                return lIdx;
+
+            wordsRange.Reverse();
+            foreach (var word in wordsRange)
+            {
+                if (word.IsAloneWord)
+                    lIdx--;
+                else
+                    return lIdx;
             }
 
             return lIdx;
