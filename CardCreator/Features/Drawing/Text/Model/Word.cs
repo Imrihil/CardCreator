@@ -6,21 +6,24 @@ namespace CardCreator.Features.Drawing.Text.Model
 {
     public sealed class Word : IDisposable, IDrawable
     {
-        public static readonly StringFormatExtended DefaultStringFormat = new StringFormatExtended(StringAlignmentExtended.Near, StringAlignmentExtended.Near);
+        public static readonly StringFormatExtended DefaultStringFormat =
+            new StringFormatExtended(StringAlignmentExtended.Near, StringAlignmentExtended.Near);
 
-        public string Content { get; }
-        public Image Icon { get; }
         public Font Font { get; }
         public Color Color { get; }
         public Color ShadowColor { get; }
         public int ShadowSize { get; }
         public bool IsAloneWord { get; }
+        public bool IsImage => Icon != null;
         public RectangleF LayoutRectangle { get; private set; }
         public SizeF Size { get; }
+        private string Content { get; }
+        private Image Icon { get; }
 
         private bool disposed = false;
 
-        public Word(IIconProvider iconProvider, Graphics graphics, string content, Font font, Color color, Color shadowColor, int shadowSize, int shortestAloneWords, PointF layoutPoint)
+        public Word(IIconProvider iconProvider, Graphics graphics, string content,
+            Font font, Color color, Color shadowColor, int shadowSize, int shortestAloneWords, PointF layoutPoint)
         {
             Content = content;
             Icon = iconProvider.TryGet(content);
@@ -28,25 +31,32 @@ namespace CardCreator.Features.Drawing.Text.Model
             Color = color;
             ShadowColor = shadowColor;
             ShadowSize = shadowSize;
-            IsAloneWord = Icon != null ? false : Content.Length < shortestAloneWords;
+            IsAloneWord = IsImage ? false : Content.Length < shortestAloneWords;
+
             Size = GetSize(graphics);
             LayoutRectangle = new RectangleF(layoutPoint.X, layoutPoint.Y, Size.Width, Size.Height);
         }
 
-        private SizeF GetSize(Graphics graphics) =>
-            Icon == null ? graphics.MeasureString(Content, Font) : Icon.Measure(Font);
-
         public void Draw(Graphics graphics)
         {
-            if (Icon != null)
+            if (IsImage)
                 graphics.DrawImage(Icon, LayoutRectangle, DefaultStringFormat);
             else
                 graphics.DrawStringWithShadow(ToString(), Font, Color, ShadowColor, ShadowSize, LayoutRectangle, DefaultStringFormat.StringFormat);
         }
 
-        public void Shift(PointF shiftPoint)
+        public void LineShift(float height)
         {
-            LayoutRectangle = new RectangleF(LayoutRectangle.X + shiftPoint.X, LayoutRectangle.Y + shiftPoint.Y, LayoutRectangle.Width, LayoutRectangle.Height);
+            LayoutRectangle = new RectangleF(
+                LayoutRectangle.X, LayoutRectangle.Y + height,
+                LayoutRectangle.Width, LayoutRectangle.Height);
+        }
+
+        public void Shift(float width)
+        {
+            LayoutRectangle = new RectangleF(
+                LayoutRectangle.X + width, LayoutRectangle.Y,
+                LayoutRectangle.Width, LayoutRectangle.Height);
         }
 
         public override string ToString() => Content;
@@ -67,5 +77,8 @@ namespace CardCreator.Features.Drawing.Text.Model
 
             disposed = true;
         }
+
+        private SizeF GetSize(Graphics graphics) =>
+            IsImage ? Icon.Measure(Font) : graphics.MeasureString(Content, Font);
     }
 }

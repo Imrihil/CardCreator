@@ -1,7 +1,6 @@
 ﻿using CardCreator.Features.Drawing.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 
@@ -9,83 +8,45 @@ namespace CardCreator.Features.Drawing.Text.Model
 {
     public sealed class Paragraph : IDisposable, IDrawable
     {
-        private const string Separator = " ";
-
-        private List<Line> Lines { get; }
-        public float Interline { get; }
         public bool WrapLines { get; }
-        public RectangleF LayoutRectangle { get; }
+        public int LinesCount => Lines.Count;
+        public RectangleF LayoutRectangle { get; private set; }
         public SizeF Size { get; }
+        private List<Line> Lines { get; }
+        private float LineSeparatorHeight { get; }
+        private float SeparatorWidth { get; }
 
         private bool disposed = false;
 
-        public Paragraph(IIconProvider iconProvider, Graphics graphics, string content, StringFormatExtended stringFormat, float interline, Font font, Color color, Color shadowColor, int shadowSize, bool wrapLines, int shortestAloneWords, RectangleF layoutRectangle)
+        public Paragraph(IIconProvider iconProvider, Graphics graphics, string content, StringFormatExtended stringFormat,
+            Font font, Color color, Color shadowColor, int shadowSize, bool wrapLines, int shortestAloneWords, RectangleF layoutRectangle)
         {
-            Interline = interline;
             WrapLines = wrapLines;
             LayoutRectangle = layoutRectangle;
-            Lines = GetLines(iconProvider, graphics, content, font, color, shadowColor, shadowSize, layoutRectangle.Width, wrapLines, shortestAloneWords);
-        }
 
-        private List<Line> GetLines(IIconProvider iconProvider, Graphics graphics, string content, Font font, Color color, Color shadowColor, int shadowSize, float width, bool wrapLines, int shortestAloneWords)
-        {
-            var lines = new List<Line>();
-            if (!wrapLines)
-            {
-                lines.Add(new Line(this));
-                return lines;
-            }
-            size = new SizeF();
-            SizeF lineSize;
-            var line = new Line();
-            foreach (var word in content.Split(' ').Select(wordContent => new Word(iconProvider, graphics, wordContent, font, color, shadowColor, shadowSize)))
-            {
-                while (!line.TryAdd(word, width, graphics, font))
-                {
-                    var newLine = line.TrimAloneWords(ShortestAloneWords);
-                    lines.Add(line);
-                    lineSize = line.Measure(graphics, font);
-                    size.Width = Math.Max(size.Width, lineSize.Width);
-                    size.Height += lineSize.Height;
-                    line = newLine;
-                }
-            }
-            lines.Add(line);
-            lineSize = line.Measure(graphics, font);
-            size.Width = Math.Max(size.Width, lineSize.Width);
-            size.Height += lineSize.Height;
-
-            return lines;
+            SeparatorWidth = Line.GetDefaultSeparatorWidth(graphics, font);
+            Lines = GetLines(iconProvider, graphics, content, stringFormat, font, color, shadowColor, shadowSize, wrapLines, shortestAloneWords);
+            Size = GetSize();
         }
 
         public void Draw(Graphics graphics)
         {
-            var lineLayoutRectangle = LayoutRectangle;
             foreach (var line in Lines)
-            {
                 line.Draw(graphics);
-                lineLayoutRectangle = new RectangleF(lineLayoutRectangle.X, lineLayoutRectangle.Y + Interline * Font.Height, LayoutRectangle.Width, lineLayoutRectangle.Height - Interline * Font.Height);
-            }
         }
 
-        public static SizeF GetSeparatorSize(Graphics graphics, Font font) =>
-            graphics.MeasureString(Separator, font);
-
-        public SizeF Measure(Graphics graphics, Font font, float width, bool wrapLines, out int linesCount)
+        public void Shift(float height, float lineSeparatorHeight)
         {
-            if (!wrapLines)
-            {
-                linesCount = 1;
-                return new Line(this).Measure(graphics, font);
-            }
+            LayoutRectangle = new RectangleF(
+                LayoutRectangle.X, LayoutRectangle.Y + height,
+                LayoutRectangle.Width, LayoutRectangle.Height);
 
-            var lines = GetLines(graphics, font, width, out var size);
-            linesCount = lines.Count;
-            return size;
+            var i = 0;
+            Lines.ForEach(line => line.Shift(height + lineSeparatorHeight * i++));
         }
 
         public override string ToString() =>
-            string.Join(' ', this);
+            string.Join(' ', Lines);
 
         public void Dispose()
         {
@@ -105,6 +66,71 @@ namespace CardCreator.Features.Drawing.Text.Model
             }
 
             disposed = true;
+        }
+
+        private List<Line> GetLines(IIconProvider iconProvider, Graphics graphics, string content, StringFormatExtended stringFormat, Font font,
+            Color color, Color shadowColor, int shadowSize, bool wrapLines, int shortestAloneWords)
+        {
+            if (!wrapLines)
+            {
+                return new[] { new Line(iconProvider, graphics, content, stringFormat, font, color, shadowColor, shadowSize, shortestAloneWords, true, LayoutRectangle) }.ToList();
+            }
+
+            var lines = new List<Line>();
+
+            var words = content.Split(Line.Separator)
+                .Select(wordContent =>
+                new Word(iconProvider, graphics, wordContent, font, color, shadowColor, shadowSize, shortestAloneWords,
+                new PointF(LayoutRectangle.X, LayoutRectangle.Y))).ToList();
+
+            var startIdx = 0;
+            while (startIdx < words.Count)
+            {
+                var endIdx = GetBreakLineIdx(words, startIdx, font);
+                var line = new Line(graphics, words.GetRange(startIdx, endIdx - startIdx), stringFormat, font,
+                    endIdx == words.Count,
+                    new RectangleF(LayoutRectangle.X, LayoutRectangle.Y, LayoutRectangle.Width, font.Height));
+                line.Shift(lines.Count * font.Height);
+                lines.Add(line);
+                startIdx = endIdx;
+            }
+
+            return lines;
+        }
+
+        private int GetBreakLineIdx(List<Word> words, int startIdx, Font font)
+        {
+            if (!words.Any())
+                return 0;
+
+            var lIdx = startIdx + 1;
+            var rIdx = words.Count;
+            while (lIdx < rIdx)
+            {
+                var mIdx = (lIdx + rIdx) / 2;
+                var lineSize = Line.Measure(words.GetRange(startIdx, mIdx - startIdx + 1), font, SeparatorWidth);
+                if (lineSize.Width < LayoutRectangle.Width)
+                    lIdx = mIdx + 1;
+                else
+                    rIdx = mIdx;
+            }
+
+            return lIdx;
+        }
+
+        private SizeF GetSize()
+        {
+            var size = Lines.Aggregate(new SizeF(), (size, line) =>
+            {
+                size.Width = Math.Max(size.Width, line.Size.Width);
+                size.Height += line.Size.Height;
+                return size;
+            });
+
+            if (Lines.Any())
+                size.Height += (Lines.Count - 1) * LineSeparatorHeight;
+
+            return size;
         }
     }
 }
