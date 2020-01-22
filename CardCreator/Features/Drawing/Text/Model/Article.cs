@@ -90,23 +90,29 @@ namespace CardCreator.Features.Drawing.Text.Model
                 }
             }
 
+            var shift = GetFirstShift(StringFormat.LineAlignment, size.Height);
             var linesCount = paragraphs.Aggregate(0, (count, paragraph) => count += paragraph.LinesCount);
             lineSeparatorHeight = linesCount < 2 || StringFormat.LineAlignment != StringAlignmentExtended.Justify ?
                 0 :
                 (LayoutRectangle.Height - size.Height) / (linesCount - 1);
 
-            if (lineSeparatorHeight > 0)
+            var i = 0;
+            foreach (var paragraph in paragraphs)
             {
-                var i = 0;
-                foreach (var paragraph in paragraphs)
-                {
-                    paragraph.Shift(i * lineSeparatorHeight, lineSeparatorHeight);
-                    i += paragraph.LinesCount;
-                }
+                paragraph.Shift(shift + i * lineSeparatorHeight, lineSeparatorHeight);
+                i += paragraph.LinesCount;
             }
 
             return paragraphs;
         }
+
+        private float GetFirstShift(StringAlignmentExtended alignment, float contentHeight) =>
+            alignment switch
+            {
+                StringAlignmentExtended.Center => (LayoutRectangle.Height - contentHeight) / 2,
+                StringAlignmentExtended.Far => LayoutRectangle.Height - contentHeight,
+                _ => 0
+            };
 
         private SizeF GetSize()
         {

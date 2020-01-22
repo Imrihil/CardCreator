@@ -107,7 +107,7 @@ namespace CardCreator.Features.Drawing.Text.Model
             while (lIdx < rIdx)
             {
                 var mIdx = (lIdx + rIdx) / 2;
-                wordsRange = words.GetRange(startIdx, mIdx - startIdx);
+                wordsRange = words.GetRange(startIdx, mIdx - startIdx + 1);
                 var lineSize = Line.Measure(wordsRange, font, SeparatorWidth);
                 if (lineSize.Width < LayoutRectangle.Width)
                     lIdx = mIdx + 1;
