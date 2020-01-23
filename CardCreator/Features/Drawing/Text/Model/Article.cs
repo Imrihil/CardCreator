@@ -109,7 +109,7 @@ namespace CardCreator.Features.Drawing.Text.Model
         private float GetFirstShift(StringAlignmentExtended alignment, float contentHeight) =>
             alignment switch
             {
-                StringAlignmentExtended.Center => (LayoutRectangle.Height - contentHeight) / 2,
+                StringAlignmentExtended.Center => (int)Math.Floor((LayoutRectangle.Height - contentHeight) / 2),
                 StringAlignmentExtended.Far => LayoutRectangle.Height - contentHeight,
                 _ => 0
             };

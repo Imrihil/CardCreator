@@ -114,6 +114,7 @@ namespace CardCreator.Features.Drawing.Text.Model
                 else
                     rIdx = mIdx;
             }
+            wordsRange = words.GetRange(startIdx, lIdx - startIdx);
 
             if (lIdx - startIdx <= 1 || wordsRange.All(word => word.IsAloneWord) || lIdx == words.Count)
                 return lIdx;
