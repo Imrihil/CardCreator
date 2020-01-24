@@ -71,7 +71,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Odświeżaj podgląd automatycznie.
+        ///   Looks up a localized string similar to Auto refresh preview.
         /// </summary>
         public static string AutoRefresh {
             get {
@@ -80,7 +80,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Anuluj.
+        ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
             get {
@@ -89,7 +89,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Karty:.
+        ///   Looks up a localized string similar to Cards:.
         /// </summary>
         public static string Cards {
             get {
@@ -98,7 +98,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wybierz plik.
+        ///   Looks up a localized string similar to Choose file.
         /// </summary>
         public static string ChooseFile {
             get {
@@ -107,7 +107,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wybierz karty.
+        ///   Looks up a localized string similar to Choose cards.
         /// </summary>
         public static string ChooseImages {
             get {
@@ -116,7 +116,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wybrano kart: .
+        ///   Looks up a localized string similar to Choosen cards: .
         /// </summary>
         public static string Choosen {
             get {
@@ -135,12 +135,12 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Aby wygenerować karty wskaż plik z danymi.
+        ///   Looks up a localized string similar to To generate cards choose a file with data.
         ///
-        ///Wygenerowane karty zostaną umieszczone w folderze &quot;cards&quot; utworzonym w tym samym katalogu, w którym znajduje się wskazany plik.
-        ///Wygenerowany plik pdf zostanie umieszczony w folderze z wybranym plikiem i będzie miał taką samą nazwę.
+        ///Generated cards will be saved in dictionary &quot;cards&quot; created in dictionary with choosen file.
+        ///Generated pdf file will be saved in dictionary with choosen file with the same name and &quot;pdf&quot; extension.
         ///
-        ///Aby dodać nowe przyciski do panelu należy zmodyfikować plik &quot;appsettings.json&quot;..
+        ///To add custom buttons to main window, modify &quot;appsettings.json&quot; file..
         /// </summary>
         public static string Description {
             get {
@@ -169,7 +169,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generuj karty.
+        ///   Looks up a localized string similar to Generate cards.
         /// </summary>
         public static string GenerateCards {
             get {
@@ -178,7 +178,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generuj obrazki.
+        ///   Looks up a localized string similar to Generate images.
         /// </summary>
         public static string GenerateImages {
             get {
@@ -187,7 +187,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generowanie kart z szablonu.
+        ///   Looks up a localized string similar to Generating cards from a template.
         /// </summary>
         public static string GeneratingCards {
             get {
@@ -196,7 +196,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generowanie pliku pdf z szablonu.
+        ///   Looks up a localized string similar to Generating pdf from a template.
         /// </summary>
         public static string GeneratingPdf {
             get {
@@ -215,7 +215,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Siatka pozioma.
+        ///   Looks up a localized string similar to Vertical grid.
         /// </summary>
         public static string GridHeight {
             get {
@@ -224,7 +224,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Siatka pionowa.
+        ///   Looks up a localized string similar to Horizontal grid.
         /// </summary>
         public static string GridWidth {
             get {
@@ -233,7 +233,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Witaj w kreatorze kart!.
+        ///   Looks up a localized string similar to Welcome at Card Creator!.
         /// </summary>
         public static string Hello {
             get {
@@ -280,7 +280,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Przygotuj pdf z wybranych kart.
+        ///   Looks up a localized string similar to Prepare pdf from choosen files.
         /// </summary>
         public static string PrepareChoosenPdf {
             get {
@@ -289,7 +289,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Przygotuj pdf do druku.
+        ///   Looks up a localized string similar to Prepare pdf to print.
         /// </summary>
         public static string PreparePdf {
             get {
@@ -298,7 +298,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wybierz plik, aby wyświetlić podgląd.
+        ///   Looks up a localized string similar to Choose a template to show preview..
         /// </summary>
         public static string PreviewHidden {
             get {
@@ -336,7 +336,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Zapisz dokument jako.
+        ///   Looks up a localized string similar to Save a document as....
         /// </summary>
         public static string SavePdf {
             get {
@@ -345,7 +345,7 @@ namespace CardCreator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Plik z danymi:.
+        ///   Looks up a localized string similar to Template file:.
         /// </summary>
         public static string SourceFile {
             get {

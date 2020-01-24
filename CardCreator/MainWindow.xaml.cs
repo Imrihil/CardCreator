@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -51,6 +52,7 @@ namespace CardCreator
             this.fontProvider = fontProvider;
             this.previewFactory = previewFactory;
 
+            InitializeLanguage(settings.Value);
             InitializeComponent();
 
             PreviewRadioButtons = new List<RadioButton>(new[] { Preview_RadioButton_ChoosenFile });
@@ -61,6 +63,18 @@ namespace CardCreator
             InitializeFonts();
             InitializeControls();
             InitializeButtons();
+        }
+
+        private void InitializeLanguage(AppSettings settings)
+        {
+            if (settings.Language == null) 
+                return;
+
+            try
+            {
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(settings.Language);
+            }
+            catch { }
         }
 
         private OpenFileDialog InitializeChooseFileDialog()

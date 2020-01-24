@@ -1,6 +1,4 @@
-﻿using PdfSharp;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 
 namespace CardCreator.Settings
 {
@@ -14,5 +12,6 @@ namespace CardCreator.Settings
         public string CardsDirectory { get; set; } = "cards";
         public int Dpi { get; set; } = 150;
         public int ImageCacheTimeout { get; set; } = 10;
+        public string Language { get; set; }
     }
 }

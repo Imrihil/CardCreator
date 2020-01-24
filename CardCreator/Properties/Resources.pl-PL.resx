@@ -117,115 +117,75 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Akvaléir_Normal_v2007" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Akvaléir_Normal_v2007.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="colonna_mt" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\colonna-mt.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Exocet1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Exocet1.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Gargoyles_Normal" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Gargoyles Normal.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Got_Heroin" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Got_Heroin.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Neverwinter" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Neverwinter.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="runic" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\runic.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="runic_altno" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\runic_altno.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="trebuc" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\trebuc.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="trebucbd" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\trebucbd.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="trebucbi" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\trebucbi.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="trebucit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\trebucit.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Description" xml:space="preserve">
-    <value>To generate cards choose a file with data.
-
-Generated cards will be saved in dictionary "cards" created in dictionary with choosen file.
-Generated pdf file will be saved in dictionary with choosen file with the same name and "pdf" extension.
-
-To add custom buttons to main window, modify "appsettings.json" file.</value>
-  </data>
-  <data name="Hello" xml:space="preserve">
-    <value>Welcome at Card Creator!</value>
-  </data>
-  <data name="PreparePdf" xml:space="preserve">
-    <value>Prepare pdf to print</value>
-  </data>
-  <data name="GenerateCards" xml:space="preserve">
-    <value>Generate cards</value>
+  <data name="AutoRefresh" xml:space="preserve">
+    <value>Odświeżaj podgląd automatycznie</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="Ok" xml:space="preserve">
-    <value>Ok</value>
-  </data>
-  <data name="SourceFile" xml:space="preserve">
-    <value>Template file:</value>
-  </data>
-  <data name="ChooseFile" xml:space="preserve">
-    <value>Choose file</value>
+    <value>Anuluj</value>
   </data>
   <data name="Cards" xml:space="preserve">
-    <value>Cards:</value>
+    <value>Karty:</value>
+  </data>
+  <data name="ChooseFile" xml:space="preserve">
+    <value>Wybierz plik</value>
   </data>
   <data name="ChooseImages" xml:space="preserve">
-    <value>Choose cards</value>
+    <value>Wybierz karty</value>
   </data>
   <data name="Choosen" xml:space="preserve">
-    <value>Choosen cards: </value>
+    <value>Wybrano kart: </value>
   </data>
-  <data name="PrepareChoosenPdf" xml:space="preserve">
-    <value>Prepare pdf from choosen files</value>
+  <data name="Description" xml:space="preserve">
+    <value>Aby wygenerować karty wskaż plik z danymi.
+
+Wygenerowane karty zostaną umieszczone w folderze "cards" utworzonym w tym samym katalogu, w którym znajduje się wskazany plik.
+Wygenerowany plik pdf zostanie umieszczony w folderze z wybranym plikiem i będzie miał taką samą nazwę.
+
+Aby dodać nowe przyciski do panelu należy zmodyfikować plik "appsettings.json".</value>
   </data>
-  <data name="SavePdf" xml:space="preserve">
-    <value>Save a document as...</value>
+  <data name="GenerateCards" xml:space="preserve">
+    <value>Generuj karty</value>
   </data>
   <data name="GenerateImages" xml:space="preserve">
-    <value>Generate images</value>
+    <value>Generuj obrazki</value>
   </data>
-  <data name="AutoRefresh" xml:space="preserve">
-    <value>Auto refresh preview</value>
+  <data name="GeneratingCards" xml:space="preserve">
+    <value>Generowanie kart z szablonu</value>
+  </data>
+  <data name="GeneratingPdf" xml:space="preserve">
+    <value>Generowanie pliku pdf z szablonu</value>
   </data>
   <data name="GridHeight" xml:space="preserve">
-    <value>Vertical grid</value>
+    <value>Siatka pozioma</value>
   </data>
   <data name="GridWidth" xml:space="preserve">
-    <value>Horizontal grid</value>
+    <value>Siatka pionowa</value>
+  </data>
+  <data name="Hello" xml:space="preserve">
+    <value>Witaj w kreatorze kart!</value>
   </data>
   <data name="Next" xml:space="preserve">
     <value>&gt;</value>
   </data>
+  <data name="Ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="PrepareChoosenPdf" xml:space="preserve">
+    <value>Przygotuj pdf z wybranych kart</value>
+  </data>
+  <data name="PreparePdf" xml:space="preserve">
+    <value>Przygotuj pdf do druku</value>
+  </data>
   <data name="PreviewHidden" xml:space="preserve">
-    <value>Choose a template to show preview.</value>
+    <value>Wybierz plik, aby wyświetlić podgląd</value>
   </data>
   <data name="Previous" xml:space="preserve">
     <value>&lt;</value>
   </data>
-  <data name="GeneratingCards" xml:space="preserve">
-    <value>Generating cards from a template</value>
+  <data name="SavePdf" xml:space="preserve">
+    <value>Zapisz dokument jako</value>
   </data>
-  <data name="GeneratingPdf" xml:space="preserve">
-    <value>Generating pdf from a template</value>
+  <data name="SourceFile" xml:space="preserve">
+    <value>Plik z danymi:</value>
   </data>
 </root>
