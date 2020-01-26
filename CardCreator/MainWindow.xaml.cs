@@ -141,6 +141,8 @@ namespace CardCreator
 
         private void InitializeButtons()
         {
+            if (settings.Buttons == null) return;
+
             var currentRow = MainGrid.RowDefinitions.Count - 2;
             var isFirst = true;
             var isChecked = true;
@@ -251,6 +253,7 @@ namespace CardCreator
                 PreparePdf_Button.IsEnabled = !string.IsNullOrEmpty(ChooseFileDialog.FileName);
                 previewFactory.Register(ChoosenFile, ChooseFileDialog.FileName, GenerateImages).GetAwaiter().GetResult();
                 Preview_RadioButton_ChoosenFile.IsEnabled = true;
+                ClickRadioButton(Preview_RadioButton_ChoosenFile);
             }
             else
             {
