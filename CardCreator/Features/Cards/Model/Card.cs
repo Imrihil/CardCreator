@@ -1,4 +1,5 @@
 ﻿using CardCreator.Features.Drawing;
+using CardCreator.Settings;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -33,22 +34,24 @@ namespace CardCreator.Features.Cards.Model
 
         private bool disposed = false;
 
-        public Card(IMediator mediator, IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory, bool generateImages = true) :
-            base(InitElements(mediator, imageProvider, cardSchema, cardElements, directory, generateImages))
+        public Card(TextSettings settings, IImageProvider imageProvider, IIconProvider iconProvider,
+            CardSchema cardSchema, IEnumerable<string> cardElements, string directory, bool generateImages = true) :
+            base(InitElements(settings, imageProvider, iconProvider, cardSchema, cardElements, directory, generateImages))
         {
             CardSchema = cardSchema;
 
             MergeElementsByName();
         }
 
-        private static IEnumerable<Element> InitElements(IMediator mediator, IImageProvider imageProvider, CardSchema cardSchema, IEnumerable<string> cardElements, string directory, bool generateImages)
+        private static IEnumerable<Element> InitElements(TextSettings settings, IImageProvider imageProvider, IIconProvider iconProvider,
+            CardSchema cardSchema, IEnumerable<string> cardElements, string directory, bool generateImages)
         {
             var i = 0;
             var elements = cardElements
                 .Where(_ => !cardSchema.CommentIdxs.Contains(i++))
                 .Zip(cardSchema, (content, elementSchema) =>
                        elementSchema.Background == null && string.IsNullOrEmpty(content) ? null :
-                           new Element(mediator, imageProvider, content, elementSchema, directory, generateImages))
+                           new Element(settings, imageProvider, iconProvider, content, elementSchema, directory, generateImages))
                        .Where(element => element != null);
 
             return elements;

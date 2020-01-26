@@ -1,8 +1,9 @@
-﻿using CardCreator.Features.Drawing.Model;
+﻿using CardCreator.Features.Drawing;
+using CardCreator.Features.Drawing.Model;
 using System;
 using System.Drawing;
 
-namespace CardCreator.Features.Drawing.Text.Model
+namespace CardCreator.Features.Cards.Model
 {
     public sealed class Word : IDisposable, IDrawable
     {

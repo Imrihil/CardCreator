@@ -1,6 +1,5 @@
 ﻿using CardCreator.Features.Drawing;
-using CardCreator.Features.Drawing.Text;
-using MediatR;
+using CardCreator.Settings;
 using System;
 using System.Drawing;
 using System.IO;
@@ -12,22 +11,31 @@ namespace CardCreator.Features.Cards.Model
         public string Content { get; }
         public ElementSchema ElementSchema { get; private set; }
         private Image Image { get; }
+        private Article Article { get; }
 
-        private readonly IMediator mediator;
         private bool disposed = false;
 
-        public Element(IMediator mediator, IImageProvider imageProvider, string content, ElementSchema elementSchema, string directory, bool generateImages = true)
+        public Element(TextSettings settings, IImageProvider imageProvider, IIconProvider iconProvider,
+            string content, ElementSchema elementSchema, string directory, bool generateImages = true)
         {
-            this.mediator = mediator;
-
+            ElementSchema = elementSchema;
+            if (string.IsNullOrEmpty(content))
+                return;
             Content = content;
             Image = imageProvider.TryGet(Path.Combine(directory, content));
+            if (Image == null && elementSchema.MaxSize > 0)
+            {
+                using var tmpImage = new Bitmap(ElementSchema.Area.Width, ElementSchema.Area.Height);
+                using var graphics = Graphics.FromImage(tmpImage);
+                Article = new Article(iconProvider, graphics, content, ElementSchema.StringFormat, ElementSchema.FontFamily, ElementSchema.MaxSize, ElementSchema.MinSize,
+                    ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.WrapLines, settings.ShortestAloneWords, ElementSchema.Area);
+            }
+
             if (Image != null && !generateImages)
             {
                 Content = null;
                 Image = null;
             }
-            ElementSchema = elementSchema;
         }
 
         public void Draw(Graphics graphics)
@@ -46,9 +54,13 @@ namespace CardCreator.Features.Cards.Model
                 using var image = Image.GetNewBitmap();
                 graphics.DrawImage(image, ElementSchema.Area, ElementSchema.StringFormat);
             }
+            else if (Article != null)
+            {
+                Article.Draw(graphics);
+            }
             else if (!string.IsNullOrWhiteSpace(Content) && ElementSchema.MaxSize > 0)
             {
-                mediator.Send(new DrawTextCommand(graphics, Content, ElementSchema.StringFormat, ElementSchema.Font, ElementSchema.MaxSize, ElementSchema.MinSize, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.Wrap, ElementSchema.Area)).GetAwaiter();
+                graphics.DrawAdjustedStringWithShadow(Content, ElementSchema.FontFamily, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.Area, ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.MinSize, true, ElementSchema.WrapLines);
             }
         }
 
@@ -65,8 +77,8 @@ namespace CardCreator.Features.Cards.Model
                 new Rectangle(ElementSchema.Area.X + position * shift, ElementSchema.Area.Y, shift, ElementSchema.Area.Height) :
                 new Rectangle(ElementSchema.Area.X, ElementSchema.Area.Y + position * shift, ElementSchema.Area.Width, shift);
 
-            ElementSchema = new ElementSchema(ElementSchema.Name, ElementSchema.Background, area, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.Font,
-                ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.Wrap, ElementSchema.JoinDirection);
+            ElementSchema = new ElementSchema(ElementSchema.Name, ElementSchema.Background, area, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.FontFamily,
+                ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.WrapLines, ElementSchema.JoinDirection);
         }
 
         public void Dispose()

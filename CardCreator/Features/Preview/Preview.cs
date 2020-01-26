@@ -2,7 +2,9 @@
 using CardCreator.Features.Cards.Model;
 using CardCreator.Features.Drawing;
 using CardCreator.Features.Fonts;
+using CardCreator.Settings;
 using MediatR;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -25,20 +27,24 @@ namespace CardCreator.Features.Preview
         private List<List<string>> CardsElements { get; set; }
         private Dictionary<CardImagesKey, Image> CardImages { get; }
 
+        private readonly TextSettings textSettings;
         private readonly IMediator mediator;
         private readonly IFontProvider fontProvider;
         private readonly IImageProvider imageProvider;
+        private readonly IIconProvider iconProvider;
 
         private readonly Color gridColor;
         private readonly Font gridFont;
 
         private bool disposed = false;
 
-        public Preview(IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, string filePath, bool generateImages)
+        public Preview(TextSettings settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, IIconProvider iconProvider, string filePath, bool generateImages)
         {
+            textSettings = settings;
             this.mediator = mediator;
             this.fontProvider = fontProvider;
             this.imageProvider = imageProvider;
+            this.iconProvider = iconProvider;
 
             gridColor = Color.FromArgb(128, 255, 0, 0);
             gridFont = new Font(fontProvider.TryGet(string.Empty), 12, FontStyle.Bold, GraphicsUnit.Pixel);
@@ -66,7 +72,7 @@ namespace CardCreator.Features.Preview
             var key = new CardImagesKey(CurrentPosition, gridWidth, gridHeight);
             if (!CardImages.TryGetValue(key, out var cardImage))
             {
-                using var card = new Card(mediator, imageProvider, CardSchema, CardsElements[CurrentPosition], File.DirectoryName, GenerateImages);
+                using var card = new Card(textSettings, imageProvider, iconProvider, CardSchema, CardsElements[CurrentPosition], File.DirectoryName, GenerateImages);
                 cardImage = card.Image.GetNewBitmap();
                 CardImages.Add(key, cardImage);
 

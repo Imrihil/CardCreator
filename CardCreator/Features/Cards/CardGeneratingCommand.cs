@@ -34,7 +34,9 @@ namespace CardCreator.Features.Cards
         private const string titleResourceString = "GeneratingCards";
         private readonly string directoryName;
 
-        public CardGeneratingHandler(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, ProcessWindow processWindow) : base(mediator, fontProvider, imageProvider, processWindow)
+        public CardGeneratingHandler(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, 
+            IImageProvider imageProvider, IIconProvider iconProvider, ProcessWindow processWindow) : 
+            base(settings, mediator, fontProvider, imageProvider, iconProvider, processWindow)
         {
             directoryName = settings.Value.CardsDirectory;
         }
@@ -87,7 +89,7 @@ namespace CardCreator.Features.Cards
                 {
                     try
                     {
-                        using var card = new Card(Mediator, ImageProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
+                        using var card = new Card(TextSettings, ImageProvider, IconProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
                         try
                         {
                             using var cardImage = card.Image;

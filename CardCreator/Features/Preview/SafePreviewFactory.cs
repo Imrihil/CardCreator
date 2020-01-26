@@ -5,13 +5,15 @@ using MediatR;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Microsoft.Extensions.Options;
+using CardCreator.Settings;
 
 namespace CardCreator.Features.Preview
 {
     public class SafePreviewFactory : PreviewFactory
     {
-        public SafePreviewFactory(IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider) :
-            base(mediator, fontProvider, imageProvider)
+        public SafePreviewFactory(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, IIconProvider iconProvider) :
+            base(settings, mediator, fontProvider, imageProvider, iconProvider)
         { }
 
         public override async Task<BitmapImage> GetPreviewImage(int gridWidth, int gridHeight) =>

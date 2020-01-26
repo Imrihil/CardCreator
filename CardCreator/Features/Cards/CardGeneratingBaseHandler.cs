@@ -6,21 +6,27 @@ using MediatR;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using CardCreator.Settings;
 
 namespace CardCreator.Features.Cards
 {
     public abstract class CardGeneratingBaseHandler
     {
+        protected readonly TextSettings TextSettings;
         protected readonly IMediator Mediator;
         protected readonly IImageProvider ImageProvider;
+        protected readonly IIconProvider IconProvider;
         protected readonly IFontProvider FontProvider;
         protected readonly ProcessWindow ProcessWindow;
 
-        public CardGeneratingBaseHandler(IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, ProcessWindow processWindow)
+        protected CardGeneratingBaseHandler(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, IIconProvider iconProvider, ProcessWindow processWindow)
         {
+            TextSettings = settings.Value.Text;
             Mediator = mediator;
             FontProvider = fontProvider;
             ImageProvider = imageProvider;
+            IconProvider = iconProvider;
             ProcessWindow = processWindow;
         }
 

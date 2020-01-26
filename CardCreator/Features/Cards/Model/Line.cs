@@ -1,12 +1,13 @@
-﻿using CardCreator.Features.Drawing.Model;
+﻿using CardCreator.Features.Drawing;
+using CardCreator.Features.Drawing.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace CardCreator.Features.Drawing.Text.Model
+namespace CardCreator.Features.Cards.Model
 {
-    public class Line : IDisposable, IDrawable
+    public sealed class Line : IDisposable, IDrawable
     {
         public const string Separator = " ";
 

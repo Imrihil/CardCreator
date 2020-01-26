@@ -1,10 +1,11 @@
-﻿using CardCreator.Features.Drawing.Model;
+﻿using CardCreator.Features.Drawing;
+using CardCreator.Features.Drawing.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace CardCreator.Features.Drawing.Text.Model
+namespace CardCreator.Features.Cards.Model
 {
     public sealed class Paragraph : IDisposable, IDrawable
     {

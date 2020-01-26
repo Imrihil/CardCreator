@@ -42,8 +42,9 @@ namespace CardCreator.Features.Cards
         private readonly double PageMarginPts;
         private readonly double CardsMarginPts;
 
-        public PdfGeneratingHandler(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, ProcessWindow processWindow) :
-            base(mediator, fontProvider, imageProvider, processWindow)
+        public PdfGeneratingHandler(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, 
+            IImageProvider imageProvider, IIconProvider iconProvider, ProcessWindow processWindow) :
+            base(settings, mediator, fontProvider, imageProvider, iconProvider, processWindow)
         {
             PageSize = settings.Value.Page.Size;
             PageOrientation = settings.Value.Page.Orientation;
@@ -106,7 +107,7 @@ namespace CardCreator.Features.Cards
             {
                 try
                 {
-                    using var card = new Card(Mediator, ImageProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
+                    using var card = new Card(TextSettings, ImageProvider, IconProvider, cardSchema, cardElements, file.DirectoryName, generateImages);
                     try
                     {
                         var n = readCardFile.CardsRepetitions[i];

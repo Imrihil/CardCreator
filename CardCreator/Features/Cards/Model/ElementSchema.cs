@@ -36,17 +36,17 @@ namespace CardCreator.Features.Cards.Model
         public Color Color { get; }
         public Color ShadowColor { get; }
         public int ShadowSize { get; }
-        public FontFamily Font { get; }
+        public FontFamily FontFamily { get; }
         public int MaxSize { get; }
         public int MinSize { get; }
         public StringFormatExtended StringFormat { get; }
-        public bool Wrap { get; }
+        public bool WrapLines { get; }
         public JoinDirection JoinDirection { get; }
 
         private bool disposed = false;
 
         public ElementSchema(string name, Image background, Rectangle area, Color color, Color shadowColor, int shadowSize,
-            FontFamily font, int maxSize, StringFormatExtended stringFormat, bool wrap, JoinDirection joinDirection)
+            FontFamily fontFamily, int maxSize, StringFormatExtended stringFormat, bool wrapLines, JoinDirection joinDirection)
         {
             Name = name;
             Background = background;
@@ -54,17 +54,17 @@ namespace CardCreator.Features.Cards.Model
             Color = color;
             ShadowColor = shadowColor;
             ShadowSize = shadowSize;
-            Font = font;
+            FontFamily = fontFamily;
             MaxSize = maxSize;
             MinSize = Math.Min(6, MaxSize);
             StringFormat = stringFormat;
-            Wrap = wrap;
+            WrapLines = wrapLines;
             JoinDirection = joinDirection;
         }
 
-        public ElementSchema(string name, Image background, int x, int y, int width, int height, Color color, Color shadowColor, int shadowSize, FontFamily font,
-            int maxSize, StringFormatExtended stringFormat, bool wrap, JoinDirection joinDirection)
-            : this(name, background, new Rectangle(x, y, width, height), color, shadowColor, shadowSize, font, maxSize, stringFormat, wrap, joinDirection) { }
+        public ElementSchema(string name, Image background, int x, int y, int width, int height, Color color, Color shadowColor, int shadowSize, FontFamily fontFamily,
+            int maxSize, StringFormatExtended stringFormat, bool wrapLines, JoinDirection joinDirection)
+            : this(name, background, new Rectangle(x, y, width, height), color, shadowColor, shadowSize, fontFamily, maxSize, stringFormat, wrapLines, joinDirection) { }
 
         public ElementSchema(ILogger logger, IImageProvider imageProvider, IFontProvider fontProvider,
             IList<string> parameters, string directory, Color defaultColor, Color defaultBorderColor, bool generateImages = true) :

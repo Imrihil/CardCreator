@@ -4,6 +4,8 @@ using MediatR;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using CardCreator.Settings;
+using Microsoft.Extensions.Options;
 
 namespace CardCreator.Features.Preview
 {
@@ -12,15 +14,19 @@ namespace CardCreator.Features.Preview
         private readonly Dictionary<string, IPreview> previews;
         private IPreview CurrentPreview { get; set; }
 
+        private readonly TextSettings textSettings;
         private readonly IMediator mediator;
         private readonly IFontProvider fontProvider;
         private readonly IImageProvider imageProvider;
+        private readonly IIconProvider iconProvider;
 
-        public PreviewFactory(IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider)
+        public PreviewFactory(IOptions<AppSettings> settings, IMediator mediator, IFontProvider fontProvider, IImageProvider imageProvider, IIconProvider iconProvider)
         {
+            textSettings = settings.Value.Text;
             this.mediator = mediator;
             this.fontProvider = fontProvider;
             this.imageProvider = imageProvider;
+            this.iconProvider = iconProvider;
 
             previews = new Dictionary<string, IPreview>();
         }
@@ -37,7 +43,7 @@ namespace CardCreator.Features.Preview
         public virtual async Task<string> Register(string filePath, bool generateImages)
         {
             var key = previews.Count.ToString();
-            previews.Add(key, new Preview(mediator, fontProvider, imageProvider, filePath, generateImages));
+            previews.Add(key, new Preview(textSettings, mediator, fontProvider, imageProvider, iconProvider, filePath, generateImages));
             return await Task.FromResult(key);
         }
 
@@ -48,10 +54,10 @@ namespace CardCreator.Features.Preview
         {
             if (previews.ContainsKey(key))
             {
-                previews[key] = new Preview(mediator, fontProvider, imageProvider, filePath, generateImages);
+                previews[key] = new Preview(textSettings, mediator, fontProvider, imageProvider, iconProvider, filePath, generateImages);
                 return true;
             }
-            previews.Add(key, new Preview(mediator, fontProvider, imageProvider, filePath, generateImages));
+            previews.Add(key, new Preview(textSettings, mediator, fontProvider, imageProvider, iconProvider, filePath, generateImages));
             return await Task.FromResult(false);
         }
 
