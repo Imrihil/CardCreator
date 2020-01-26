@@ -132,6 +132,7 @@ namespace CardCreator.Features.Drawing.Text.Model
 
             var contentWidth = Measure(Words, font, SeparatorWidth).Width;
             var shift = GetFirstShift(StringFormat.Alignment, contentWidth);
+            size.Width = contentWidth + shift;
 
             foreach (var word in Words)
             {

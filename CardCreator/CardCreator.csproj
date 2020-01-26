@@ -6,15 +6,19 @@
     <UseWPF>true</UseWPF>
     <StartupObject></StartupObject>
     <ApplicationIcon>icon.ico</ApplicationIcon>
-    <Version>1.4.1</Version>
+    <Version>1.4.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="appsettings.debug.json" />
+    <None Remove="appsettings.docs.json" />
     <None Remove="appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.docs.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="appsettings.debug.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

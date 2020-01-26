@@ -26,7 +26,7 @@ namespace CardCreator.Features.Drawing
                 return null;
 
             return icons.TryGetValue(name, out var image) ?
-                image :
+                image.GetNewBitmap() :
                 null;
         }
 

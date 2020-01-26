@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 
 namespace CardCreator.Features.Preview
 {
-    public class Preview : IPreview, IDisposable
+    public sealed class Preview : IPreview, IDisposable
     {
         private FileInfo File { get; }
 
@@ -23,8 +23,7 @@ namespace CardCreator.Features.Preview
 
         private CardSchema CardSchema { get; set; }
         private List<List<string>> CardsElements { get; set; }
-        private Dictionary<int, Image> CardImages { get; }
-        private BitmapImage LastBitmapImage { get; set; }
+        private Dictionary<CardImagesKey, Image> CardImages { get; }
 
         private readonly IMediator mediator;
         private readonly IFontProvider fontProvider;
@@ -44,19 +43,19 @@ namespace CardCreator.Features.Preview
             gridColor = Color.FromArgb(128, 255, 0, 0);
             gridFont = new Font(fontProvider.TryGet(string.Empty), 12, FontStyle.Bold, GraphicsUnit.Pixel);
 
-            CardImages = new Dictionary<int, Image>();
+            CardImages = new Dictionary<CardImagesKey, Image>();
             File = new FileInfo(filePath);
             GenerateImages = generateImages;
         }
 
         public async Task<BitmapImage> GetImage(int gridWidth, int gridHeight) =>
-            LastBitmapImage ?? DisposeLastBitmapImage((await GetImage(CurrentPosition, gridWidth, gridHeight)).ToBitmapImage());
+           (await GetImage(CurrentPosition, gridWidth, gridHeight)).ToBitmapImage();
 
         public async Task<BitmapImage> Next(int gridWidth, int gridHeight) =>
-            DisposeLastBitmapImage((await GetImage((CurrentPosition + 1) % MaxPosition, gridWidth, gridHeight)).ToBitmapImage());
+            (await GetImage((CurrentPosition + 1) % MaxPosition, gridWidth, gridHeight)).ToBitmapImage();
 
         public async Task<BitmapImage> Previous(int gridWidth, int gridHeight) =>
-            DisposeLastBitmapImage((await GetImage(CurrentPosition > 0 ? CurrentPosition - 1 : MaxPosition - 1, gridWidth, gridHeight)).ToBitmapImage());
+            (await GetImage(CurrentPosition > 0 ? CurrentPosition - 1 : MaxPosition - 1, gridWidth, gridHeight)).ToBitmapImage();
 
         private async Task<Image> GetImage(int position, int gridWidth, int gridHeight)
         {
@@ -64,15 +63,16 @@ namespace CardCreator.Features.Preview
             if (CardSchema == null)
                 await Refresh(GenerateImages);
 
-            if (!CardImages.TryGetValue(CurrentPosition, out var cardImage))
+            var key = new CardImagesKey(CurrentPosition, gridWidth, gridHeight);
+            if (!CardImages.TryGetValue(key, out var cardImage))
             {
                 using var card = new Card(mediator, imageProvider, CardSchema, CardsElements[CurrentPosition], File.DirectoryName, GenerateImages);
                 cardImage = card.Image.GetNewBitmap();
-                CardImages.Add(CurrentPosition, cardImage);
-            }
+                CardImages.Add(key, cardImage);
 
-            using var graphics = Graphics.FromImage(cardImage);
-            graphics.DrawGrid(gridWidth, gridHeight, cardImage.Width, cardImage.Height, gridColor, gridFont);
+                using var graphics = Graphics.FromImage(cardImage);
+                graphics.DrawGrid(gridWidth, gridHeight, cardImage.Width, cardImage.Height, gridColor, gridFont);
+            }
 
             return cardImage;
         }
@@ -95,17 +95,6 @@ namespace CardCreator.Features.Preview
             foreach (var image in CardImages.Values)
                 image.Dispose();
             CardImages.Clear();
-
-            LastBitmapImage?.StreamSource.Dispose();
-            LastBitmapImage = null;
-        }
-
-        private BitmapImage DisposeLastBitmapImage(BitmapImage bitmapImage)
-        {
-            if (LastBitmapImage != null)
-                LastBitmapImage.StreamSource.Dispose();
-            LastBitmapImage = bitmapImage;
-            return LastBitmapImage;
         }
 
         public void Dispose()
@@ -122,12 +111,25 @@ namespace CardCreator.Features.Preview
             if (disposing)
             {
                 CardSchema.Dispose();
-                LastBitmapImage.StreamSource.Dispose();
                 foreach (var image in CardImages.Values)
                     image.Dispose();
             }
 
             disposed = true;
+        }
+
+        private struct CardImagesKey
+        {
+            public CardImagesKey(int position, int gridWidth, int gridHeight)
+            {
+                Position = position;
+                GridWidth = gridWidth;
+                GridHeight = gridHeight;
+            }
+
+            private readonly int Position;
+            private readonly int GridWidth;
+            private readonly int GridHeight;
         }
     }
 }

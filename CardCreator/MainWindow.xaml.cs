@@ -335,7 +335,7 @@ namespace CardCreator
             RefreshPreview();
 
         private void Grid_TextBox_LostFocus(object sender, RoutedEventArgs e) =>
-            RefreshPreview();
+            Preview_Image.Source = previewFactory.GetPreviewImage(GridWidth, GridHeight).GetAwaiter().GetResult();
 
         private void RefreshPreview()
         {
