@@ -88,7 +88,7 @@ namespace CardCreator.Features.Preview
             GenerateImages = generateImages;
             ClearCache();
 
-            var readCardFile = await mediator.Send(new ReadCardFileCommand(File));
+            var readCardFile = await mediator.Send(new ReadCardFileCommand(null, File));
 
             CardsElements = readCardFile.CardsRepetitions
                 .Zip(readCardFile.CardsElements, (cardRepetition, cardElements) => new KeyValuePair<List<string>, int>(cardElements, cardRepetition))

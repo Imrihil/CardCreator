@@ -34,7 +34,7 @@ namespace CardCreator.Features.Cards
         {
             try
             {
-                return await Mediator.Send(new ReadCardFileCommand(file));
+                return await Mediator.Send(new ReadCardFileCommand(ProcessWindow, file));
             }
             catch (Exception ex)
             {

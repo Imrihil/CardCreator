@@ -12,6 +12,8 @@ namespace CardCreator.Settings
         public string CardsDirectory { get; set; } = "cards";
         public int Dpi { get; set; } = 150;
         public int ImageCacheTimeout { get; set; } = 10;
+        public int ColumnLimit { get; set; }
+        public int RowLimit { get; set; }
         public string Language { get; set; }
     }
 }

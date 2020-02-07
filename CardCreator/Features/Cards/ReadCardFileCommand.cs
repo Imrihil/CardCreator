@@ -1,6 +1,10 @@
 ﻿using CardCreator.Features.Cards.Model;
+using CardCreator.Features.Logging;
+using CardCreator.Settings;
 using MediatR;
+using Microsoft.Extensions.Options;
 using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,16 +15,27 @@ namespace CardCreator.Features.Cards
 {
     public class ReadCardFileCommand : IRequest<ReadCardFileResults>
     {
+        public ILogger Logger { get; set; }
         public FileInfo File { get; set; }
 
-        public ReadCardFileCommand(FileInfo file)
+        public ReadCardFileCommand(ILogger logger, FileInfo file)
         {
+            Logger = logger;
             File = file;
         }
     }
 
     public class ReadCardFileHandler : IRequestHandler<ReadCardFileCommand, ReadCardFileResults>
     {
+        public int ColumnLimit { get; set; }
+        public int RowLimit { get; set; }
+
+        public ReadCardFileHandler(IOptions<AppSettings> settings)
+        {
+            ColumnLimit = settings.Value.ColumnLimit;
+            RowLimit = settings.Value.RowLimit;
+        }
+
         public async Task<ReadCardFileResults> Handle(ReadCardFileCommand request, CancellationToken cancellationToken)
         {
             var results = new ReadCardFileResults();
@@ -28,8 +43,10 @@ namespace CardCreator.Features.Cards
             using var xlPackage = new ExcelPackage(request.File);
 
             var worksheet = xlPackage.Workbook.Worksheets.First();
-            var totalColumns = worksheet.Dimension.End.Column;
-            var totalRows = worksheet.Dimension.End.Row;
+            var totalColumns = ColumnLimit > 0 ? Math.Min(ColumnLimit, worksheet.Dimension.End.Column) : worksheet.Dimension.End.Column;
+            var totalRows = RowLimit > 0 ? Math.Min(RowLimit, worksheet.Dimension.End.Row) : worksheet.Dimension.End.Row;
+
+            request.Logger?.LogMessage($"{totalRows} rows and {totalColumns} columns to read...");
 
             results.CardSchemaParams = ListFromRange(worksheet, 1, 1, CardSchema.ParamsNumber, 1, true).First();
             results.ElementSchemasParams = ListFromRange(worksheet, 1, 2, ElementSchema.ParamsNumber, totalColumns, true);
