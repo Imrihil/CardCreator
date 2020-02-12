@@ -5,11 +5,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CardCreator.Features.Drawing
 {
     public sealed class ImageProvider : IImageProvider, IDisposable
     {
+        private static readonly Regex HtmlRegex = new Regex(@"#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})");
+
         private readonly IDictionary<string, ImageStats> cacheCollection;
         private int MaxSize { get; } = 100;
         private int MaxTime { get; } = 10; // in seconds
@@ -44,6 +47,32 @@ namespace CardCreator.Features.Drawing
                 imageWithStats = new ImageStats(image);
                 cacheCollection[name] = imageWithStats;
                 return image.GetNewBitmap();
+            }
+
+            return null;
+        }
+
+        public Image TryGetImageFromColor(string color, string widthStr, string heightStr)
+        {
+            if (!int.TryParse(widthStr, out var width))
+                return null;
+
+            if (!int.TryParse(heightStr, out var height))
+                return null;
+
+            return TryGetImageFromColor(color, width, height);
+        }
+
+        public Image TryGetImageFromColor(string color, int width, int height)
+        {
+            if (HtmlRegex.IsMatch(color))
+            {
+                using var brush = new SolidBrush(ColorTranslator.FromHtml(color));
+                var image = new Bitmap(width, height);
+                using var graphics = Graphics.FromImage(image);
+                graphics.FillRectangle(brush, 0, 0, width, height);
+
+                return image;
             }
 
             return null;

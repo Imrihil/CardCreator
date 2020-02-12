@@ -22,7 +22,7 @@ namespace CardCreator.Features.Cards.Model
             if (string.IsNullOrEmpty(content))
                 return;
             Content = content;
-            Image = imageProvider.TryGet(Path.Combine(directory, content));
+            Image = imageProvider.TryGet(Path.Combine(directory, content)) ?? imageProvider.TryGetImageFromColor(content, ElementSchema.Area.Width, ElementSchema.Area.Height);
             if (Image == null && elementSchema.MaxSize > 0 && ElementSchema.Area.Width > 0 && ElementSchema.Area.Height > 0)
             {
                 using var tmpImage = new Bitmap(ElementSchema.Area.Width, ElementSchema.Area.Height);

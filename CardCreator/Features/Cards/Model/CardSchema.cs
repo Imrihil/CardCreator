@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CardCreator.Features.Cards.Model
 {
@@ -52,7 +53,7 @@ namespace CardCreator.Features.Cards.Model
         public CardSchema(ILogger logger, IFontProvider fontProvider, IImageProvider imageProvider, IList<string> parameters, List<List<string>> elementSchemasParams, string directory, bool generateImages = true) :
             this(
                 parameters[NameIdx],
-                generateImages ? imageProvider.TryGet(Path.Combine(directory, parameters[BackgroundIdx])) : null,
+                generateImages ? imageProvider.TryGet(Path.Combine(directory, parameters[BackgroundIdx])) ?? imageProvider.TryGetImageFromColor(parameters[BackgroundIdx], parameters[WidthPxIdx], parameters[HeightPxIdx]) : null,
                 Parser<int>.Parse(logger, parameters[WidthPxIdx], (param) => int.Parse(param), (val) => val > 0,
                 $"{(WidthPxIdx + 1).ToOrdinal()} parameter must be a positive integer, but \"{parameters[WidthPxIdx]}\" is not."),
                 Parser<int>.Parse(logger, parameters[HeightPxIdx], (param) => int.Parse(param), (val) => val > 0,
@@ -113,7 +114,7 @@ namespace CardCreator.Features.Cards.Model
             if (disposing)
             {
                 Background?.Dispose();
-                foreach(var elementSchema in this)
+                foreach (var elementSchema in this)
                     elementSchema.Dispose();
             }
 

@@ -70,7 +70,7 @@ namespace CardCreator.Features.Cards.Model
             IList<string> parameters, string directory, Color defaultColor, Color defaultBorderColor, bool generateImages = true) :
             this(
                 parameters[NameIdx],
-                generateImages ? imageProvider.TryGet(Path.Combine(directory, parameters[BackgroundIdx])) : null,
+                generateImages ? imageProvider.TryGet(Path.Combine(directory, parameters[BackgroundIdx])) ?? imageProvider.TryGetImageFromColor(parameters[BackgroundIdx], parameters[WidthIdx], parameters[HeightIdx]) : null,
                 Parser<int>.Parse(logger, parameters[XIdx], (param) => string.IsNullOrEmpty(param) ? 0 : int.Parse(param), (val) => val >= 0,
                 $"{(XIdx + 1).ToOrdinal()} parameter must be a nonnegative integer, but \"{parameters[XIdx]}\" is not."),
                 Parser<int>.Parse(logger, parameters[YIdx], (param) => string.IsNullOrEmpty(param) ? 0 : int.Parse(param), (val) => val >= 0,
