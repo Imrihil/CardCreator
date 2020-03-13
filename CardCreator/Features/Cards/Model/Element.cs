@@ -11,13 +11,19 @@ namespace CardCreator.Features.Cards.Model
         public string Content { get; }
         public ElementSchema ElementSchema { get; private set; }
         private Image Image { get; }
-        private Article Article { get; }
+        private Article Article { get; set; }
+
+        private readonly int shortestAloneWords;
+        private readonly IIconProvider iconProvider;
 
         private bool disposed = false;
 
         public Element(TextSettings settings, IImageProvider imageProvider, IIconProvider iconProvider,
             string content, ElementSchema elementSchema, string directory, bool generateImages = true)
         {
+            shortestAloneWords = settings.ShortestAloneWords;
+            this.iconProvider = iconProvider;
+
             ElementSchema = elementSchema;
             if (string.IsNullOrEmpty(content))
                 return;
@@ -28,7 +34,7 @@ namespace CardCreator.Features.Cards.Model
                 using var tmpImage = new Bitmap(ElementSchema.Area.Width, ElementSchema.Area.Height);
                 using var graphics = Graphics.FromImage(tmpImage);
                 Article = new Article(iconProvider, graphics, content, ElementSchema.StringFormat, ElementSchema.FontFamily, ElementSchema.MaxSize, ElementSchema.MinSize,
-                    ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.WrapLines, settings.ShortestAloneWords, ElementSchema.Area);
+                    ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.WrapLines, shortestAloneWords, ElementSchema.Area);
             }
 
             if (Image != null && !generateImages)
@@ -79,6 +85,13 @@ namespace CardCreator.Features.Cards.Model
 
             ElementSchema = new ElementSchema(ElementSchema.Name, ElementSchema.Background, area, ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.FontFamily,
                 ElementSchema.MaxSize, ElementSchema.StringFormat, ElementSchema.WrapLines, ElementSchema.JoinDirection);
+            if (Article != null)
+            {
+                using var tmpImage = new Bitmap(ElementSchema.Area.Width, ElementSchema.Area.Height);
+                using var graphics = Graphics.FromImage(tmpImage);
+                Article = new Article(iconProvider, graphics, Content, ElementSchema.StringFormat, ElementSchema.FontFamily, ElementSchema.MaxSize, ElementSchema.MinSize,
+                    ElementSchema.Color, ElementSchema.ShadowColor, ElementSchema.ShadowSize, ElementSchema.WrapLines, shortestAloneWords, ElementSchema.Area);
+            }
         }
 
         public void Dispose()
