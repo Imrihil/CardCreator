@@ -11,6 +11,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace CardCreator
 {
@@ -25,6 +26,8 @@ namespace CardCreator
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+
             var builder = new ConfigurationBuilder()
              .SetBasePath(Directory.GetCurrentDirectory())
 #if DEBUG
@@ -59,6 +62,13 @@ namespace CardCreator
             services.AddSingleton<IImageProvider, ImageProvider>();
             services.AddSingleton<IIconProvider, IconProvider>();
             services.AddSingleton<IPreviewFactory, SafePreviewFactory>();
+        }
+
+        private static void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            using var file = File.Create($"log-{DateTime.Now:yy-MM-dd_HH-mm-ss}.json");
+            using var writer = new StreamWriter(file);
+            writer.WriteLine(e.Exception);
         }
     }
 }
